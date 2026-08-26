@@ -1,0 +1,11 @@
+problem_id,problem_title,problem_description,location,category
+P001,Contaminated Groundwater,"Our village has contaminated groundwater and needs an affordable monitoring system to detect harmful substances.",Rural Jharkhand,Environment
+P002,Crop Disease Detection,"Farmers are facing major crop losses because they cannot identify crop diseases at an early stage.",Rural Jharkhand,Agriculture
+P003,Rural Healthcare Access,"People in remote villages have difficulty accessing doctors and need a reliable system for basic healthcare consultation.",Rural Jharkhand,Healthcare
+P004,Waste Management,"Our town does not have an effective waste segregation and collection system, resulting in garbage accumulation.",Urban Jharkhand,Waste Management
+P005,Flood Early Warning,"Villagers living near rivers do not receive flood warnings early enough to evacuate safely.",Flood-prone area,Disaster Management
+P006,School Dropout,"Many students in rural areas are dropping out of school because of financial difficulties and lack of educational support.",Rural Jharkhand,Education
+P007,Streetlight Problems,"Several streets have non-functional streetlights, creating safety problems for pedestrians at night.",Urban Jharkhand,Public Safety
+P008,Unemployment,"Young people in rural communities struggle to find suitable employment because they lack access to skill-development and job opportunities.",Rural Jharkhand,Employment
+P009,Air Pollution,"Increasing air pollution near industrial areas is affecting the quality of life, but there is no affordable local monitoring system.",Industrial area,Environment
+P010,Traffic Congestion,"Rapidly increasing traffic around major roads is causing congestion and delays during peak hours.",Urban Jharkhand,Transportation
