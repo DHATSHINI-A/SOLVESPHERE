@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SolveSphere — Problem-Solution Platform</title>
+  <title>SolveSphere — AI Innovation & Matchmaking Platform</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -12,22 +12,19 @@
         extend: {
           colors: {
             brand: {
-              50: '#f8fafc',
-              100: '#f1f5f9',
-              500: '#475569',
-              600: '#334155',
-              900: '#0f172a',
-            },
-            gold: {
-              300: '#f3e5ab',
-              400: '#e6ca65',
-              500: '#d4af37', // Champagne Gold Accent
-              600: '#b8860b',
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
             }
           },
           animation: {
             'fade-in': 'fadeIn 0.3s ease-out forwards',
             'slide-up': 'slideUp 0.4s ease-out forwards',
+            'glow-pulse': 'glowPulse 2s infinite',
+            'pop-in': 'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
           },
           keyframes: {
             fadeIn: {
@@ -37,6 +34,14 @@
             slideUp: {
               '0%': { opacity: '0', transform: 'translateY(12px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            popIn: {
+              '0%': { opacity: '0', transform: 'scale(0.9)' },
+              '100%': { opacity: '1', transform: 'scale(1)' },
+            },
+            glowPulse: {
+              '0%, 100%': { boxShadow: '0 0 15px rgba(99, 102, 241, 0.3)' },
+              '50%': { boxShadow: '0 0 25px rgba(99, 102, 241, 0.6)' },
             }
           }
         }
@@ -46,46 +51,58 @@
   <style>
     .view-section { display: none; }
     .view-section.active { display: block; animation: fadeIn 0.35s ease-out forwards; }
-    .nav-tab.active { border-bottom: 2.5px solid #d4af37; color: #0f172a; font-weight: 800; }
-    .gold-btn { background-color: #d4af37; color: #0f172a; font-weight: 700; transition: all 0.2s ease; }
-    .gold-btn:hover { background-color: #b8860b; color: #ffffff; }
+    .nav-tab.active { border-bottom: 2.5px solid #6366f1; color: #4f46e5; font-weight: 700; }
+    
+    /* Contained Confetti Burst FX */
+    .confetti-particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      animation: confettiFall 1.2s ease-out forwards;
+      pointer-events: none;
+    }
+    @keyframes confettiFall {
+      0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) rotate(360deg); }
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col relative selection:bg-gold-500 selection:text-slate-900">
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col relative selection:bg-indigo-500 selection:text-white">
 
   <!-- FLOATING TOAST NOTIFICATIONS -->
   <div id="toast-container" class="fixed top-20 right-6 z-50 space-y-3 pointer-events-none"></div>
 
   <!-- HEADER NAVBAR -->
-  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
-      <!-- Brand Logo (Clean Emblem without "Match Making Engine" label) -->
-      <div class="flex items-center space-x-3 cursor-pointer group" onclick="navigateHome()">
-        <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-gold-400 font-black text-xl shadow-md border border-gold-500/30 group-hover:scale-105 transition-transform">
-          <svg class="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
+      <!-- Brand Logo with Uploaded Solution Hub Image -->
+      <div class="flex items-center space-x-3 cursor-pointer group" onclick="showView('dashboard')">
+        <img src="solution_hub_logo.jpg" alt="Solution Hub Logo" class="w-10 h-10 object-contain rounded-xl shadow-sm border border-slate-200 group-hover:scale-105 transition-transform" onError="this.src='public/solution_hub_logo.jpg'">
+        <div>
+          <span class="font-black text-xl tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">SolveSphere</span>
+          <span class="text-[10px] text-slate-400 block -mt-1 font-semibold">Solution Hub Engine</span>
         </div>
-        <span class="font-black text-xl tracking-tight text-slate-900">SolveSphere</span>
       </div>
 
-      <!-- ROLE-SEPARATED NAVIGATION TABS -->
+      <!-- MAIN NAVIGATION MENU -->
       <nav id="nav-menu" class="hidden md:flex space-x-6 text-xs font-semibold text-slate-600">
-        <!-- Rendered dynamically based on logged in role -->
+        <button onclick="showView('dashboard')" id="tab-dashboard" class="nav-tab py-5 px-1 hover:text-indigo-600 transition active">Dashboard</button>
+        <button onclick="showView('suggestions-feed')" id="tab-suggestions-feed" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Top Suggestions</button>
+        <button onclick="showView('workspaces-list')" id="tab-workspaces-list" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Workspaces</button>
+        <button onclick="showView('submit-problem')" id="tab-submit-problem" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Post Problem</button>
+        <button onclick="showView('qa-forum')" id="tab-qa-forum" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Q&A Forum</button>
       </nav>
 
-      <!-- USER PROFILE BADGE & PROFILE LINK -->
+      <!-- USER PROFILE & AUTH BUTTON -->
       <div class="flex items-center space-x-3">
-        <div id="user-badge" class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200 text-xs font-bold text-slate-800">
-          <span id="badge-role-type" class="bg-gold-500 text-slate-900 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider">PB Giver</span>
-          <span id="badge-name" class="truncate max-w-[110px]">Citizen Rakesh</span>
+        <div id="user-badge" class="flex items-center space-x-2 bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 text-xs font-semibold text-indigo-700">
+          <span id="badge-role" class="bg-indigo-600 text-white px-2 py-0.5 rounded-md text-[10px] uppercase font-bold">Citizen</span>
+          <span id="badge-name" class="truncate max-w-[110px]">Alex Citizen</span>
         </div>
-        <button onclick="showView('profile')" class="bg-slate-900 hover:bg-slate-800 text-gold-400 text-xs font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center space-x-1">
-          <span>👤 Profile</span>
-        </button>
-        <button onclick="showView('login')" class="text-xs text-slate-500 hover:text-slate-900 font-semibold px-2 py-1">
-          Logout
+        <button onclick="showView('login')" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition">
+          Sign In / Register
         </button>
       </div>
     </div>
@@ -94,355 +111,354 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- 1. LOGIN & ROLE-BASED REGISTRATION PAGE -->
-    <section id="view-login" class="view-section active max-w-md mx-auto my-6">
-      <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
-        <div class="text-center space-y-1">
-          <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-900 text-gold-400 flex items-center justify-center font-black text-2xl mb-2">
-            ⚡
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900">Welcome to SolveSphere</h2>
-          <p class="text-xs text-slate-500">Select your account role to proceed</p>
+    <!-- 1. SIGN-IN / REGISTER CARD SCREEN (MATCHING SPECIFICATION & DESIGN REFERENCE) -->
+    <section id="view-login" class="view-section active max-w-md mx-auto my-8">
+      <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-2xl space-y-6 animate-pop-in">
+        
+        <!-- Header & Logo -->
+        <div class="text-center space-y-2">
+          <img src="solution_hub_logo.jpg" alt="Solution Hub" class="w-16 h-16 object-contain mx-auto rounded-2xl shadow-md border border-slate-100" onError="this.src='public/solution_hub_logo.jpg'">
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Welcome to SolveSphere</h2>
+          <p class="text-xs text-slate-500 font-medium">Access your role-based innovation portal</p>
         </div>
 
-        <!-- Role Selection Tabs -->
-        <div class="space-y-2">
-          <label class="text-xs font-bold text-slate-700 block">Select Role Type</label>
-          <div class="grid grid-cols-3 gap-2 text-[11px] font-bold">
-            <button id="role-btn-citizen" onclick="selectLoginRole('Citizen')" class="py-2.5 rounded-xl border border-gold-500 bg-gold-500 text-slate-900 shadow">Citizen (Giver)</button>
-            <button id="role-btn-ngo" onclick="selectLoginRole('NGO')" class="py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600">NGO (Giver)</button>
-            <button id="role-btn-solver" onclick="selectLoginRole('Solver')" class="py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600">Student/College (Solver)</button>
-          </div>
+        <!-- Pill Toggle: Login / Register -->
+        <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+          <button id="pill-login" onclick="switchAuthMode('login')" class="py-2.5 rounded-xl bg-white shadow-sm text-indigo-600 transition">Login</button>
+          <button id="pill-register" onclick="switchAuthMode('register')" class="py-2.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Register</button>
         </div>
 
-        <!-- Auth Form -->
-        <form onsubmit="handleLoginSubmit(event)" class="space-y-4 text-xs">
+        <!-- Clean Form -->
+        <form onsubmit="handleAuthSubmit(event)" class="space-y-4 text-xs">
+          <!-- Full Name Field -->
+          <div id="field-name-box" class="space-y-1">
+            <label class="font-bold text-slate-700 block">Full Name</label>
+            <input type="text" id="auth-name" required value="Alex Citizen" placeholder="e.g. Alex Citizen" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-slate-800">
+          </div>
+
+          <!-- Email Address Field -->
           <div class="space-y-1">
-            <label class="font-bold text-slate-800">Full Name</label>
-            <input type="text" id="auth-name" required value="Citizen Rakesh" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <label class="font-bold text-slate-700 block">Email Address</label>
+            <input type="email" id="auth-email" required value="alex.citizen@example.com" placeholder="alex@example.com" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-slate-800">
           </div>
 
+          <!-- Password Field -->
           <div class="space-y-1">
-            <label class="font-bold text-slate-800">Email Address</label>
-            <input type="email" id="auth-email" required value="rakesh@example.com" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <label class="font-bold text-slate-700 block">Password</label>
+            <input type="password" id="auth-password" required value="password123" placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-slate-800">
           </div>
 
-          <!-- Conditional Field for NGO/Organisation Name (Giver path) -->
-          <div id="field-ngo-name" class="hidden space-y-1">
-            <label class="font-bold text-slate-800">NGO / Organisation Name (Optional)</label>
-            <input type="text" id="auth-ngo-name" placeholder="e.g. Rural Health Foundation" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+          <!-- Select Stakeholder Role Dropdown -->
+          <div class="space-y-1">
+            <label class="font-bold text-slate-700 block">Select Stakeholder Role</label>
+            <select id="auth-role" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-800 bg-white">
+              <option value="Citizen">Citizen / Community Leader</option>
+              <option value="NGO/Government">NGO / Local Government</option>
+              <option value="University">University R&D Cell</option>
+              <option value="Industry">Industry / Corporate Sponsor</option>
+              <option value="Admin">System Administrator</option>
+            </select>
           </div>
 
-          <!-- Conditional Fields for Solvers (Multi-Select Expertise & Team Name) -->
-          <div id="field-solver-details" class="hidden space-y-3">
-            <div class="space-y-1">
-              <label class="font-bold text-slate-800">Team / Institution Name (Optional)</label>
-              <input type="text" id="auth-team-name" placeholder="e.g. AquaSense R&D Team" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
-            </div>
-
-            <div class="space-y-2">
-              <label class="font-bold text-slate-900 block">Select Areas of Expertise (Multi-Select)</label>
-              <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                <label class="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" value="Water & Sanitation" checked class="w-4 h-4 text-gold-600 rounded">
-                  <span class="font-medium text-slate-700">Water & Sanitation</span>
-                </label>
-                <label class="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" value="Renewable Energy & Solar" checked class="w-4 h-4 text-gold-600 rounded">
-                  <span class="font-medium text-slate-700">Solar Energy</span>
-                </label>
-                <label class="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" value="Waste Management" class="w-4 h-4 text-gold-600 rounded">
-                  <span class="font-medium text-slate-700">Waste Management</span>
-                </label>
-                <label class="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" value="Smart Cities & IoT" checked class="w-4 h-4 text-gold-600 rounded">
-                  <span class="font-medium text-slate-700">IoT & Sensors</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <button type="submit" class="w-full gold-btn py-3.5 rounded-xl shadow transition">
-            Login & Continue →
+          <!-- Bold Indigo/Purple Gradient CTA Button -->
+          <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 active:scale-95 text-white font-bold py-3.5 rounded-2xl shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center space-x-2 text-sm mt-2">
+            <span>Continue to Platform</span>
+            <span class="text-base">→</span>
           </button>
         </form>
       </div>
     </section>
 
-    <!-- 2. PROFILE MANAGEMENT PAGE (NO ROLE SWITCHING ALLOWED) -->
-    <section id="view-profile" class="view-section max-w-xl mx-auto space-y-6">
-      <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div>
-            <h2 class="text-2xl font-bold text-slate-900">User Profile Management</h2>
-            <p class="text-xs text-slate-500">Edit account details & expertise tags</p>
+    <!-- 2. MAIN DASHBOARD (RESTRUCTURED FOR FLOW & CLARITY) -->
+    <section id="view-dashboard" class="view-section space-y-8">
+      
+      <!-- Top Overview Header & Quick Action -->
+      <div class="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white rounded-3xl p-8 shadow-xl flex flex-wrap items-center justify-between gap-6 border border-indigo-500/20">
+        <div class="space-y-2 max-w-2xl">
+          <div class="inline-flex items-center space-x-2 bg-indigo-500/20 border border-indigo-400/30 px-3 py-1 rounded-full text-xs font-semibold text-indigo-300">
+            <span>⚡ Solution Hub Matchmaking Engine</span>
           </div>
-          <span id="profile-role-badge" class="bg-gold-500 text-slate-900 px-3 py-1 rounded-full text-xs font-bold uppercase">PB Giver</span>
+          <h2 class="text-3xl font-black">Innovation & Solution Dashboard</h2>
+          <p class="text-slate-300 text-xs md:text-sm">Real-time crowdsourced problem tracking, automated matchmaking, and progress metrics.</p>
         </div>
 
-        <form onsubmit="handleProfileSave(event)" class="space-y-4 text-xs">
-          <div class="space-y-1">
-            <label class="font-bold text-slate-800">Full Name</label>
-            <input type="text" id="prof-name" required value="Citizen Rakesh" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
-          </div>
-
-          <div class="space-y-1">
-            <label class="font-bold text-slate-800">Email Address</label>
-            <input type="email" id="prof-email" required value="rakesh@example.com" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
-          </div>
-
-          <!-- Non-editable Role Notice -->
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-500 space-y-1">
-            <span class="font-bold text-slate-800 block">Account Role Lock</span>
-            <p class="text-[11px]">Role cannot be changed after registration to preserve structure security & matchmaking integrity.</p>
-          </div>
-
-          <!-- Solver Expertise Tag Editor -->
-          <div id="prof-expertise-section" class="hidden space-y-2">
-            <label class="font-bold text-slate-900 block">Edit Areas of Expertise Tags</label>
-            <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" value="Water & Sanitation" checked class="w-4 h-4 text-gold-600 rounded">
-                <span class="font-medium text-slate-700">Water & Sanitation</span>
-              </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" value="Renewable Energy & Solar" checked class="w-4 h-4 text-gold-600 rounded">
-                <span class="font-medium text-slate-700">Solar Energy</span>
-              </label>
-            </div>
-          </div>
-
-          <button type="submit" class="w-full gold-btn py-3 rounded-xl shadow">
-            Save Profile Updates
+        <div class="flex items-center space-x-3">
+          <button onclick="openWorkspaceModal()" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 active:scale-95 text-white font-bold px-5 py-3 rounded-2xl shadow-lg flex items-center space-x-2 text-xs transition">
+            <span class="text-base">+</span>
+            <span>Create Workspace</span>
           </button>
-        </form>
+        </div>
+      </div>
+
+      <!-- Stat Counter Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[11px] text-slate-400 font-bold uppercase block">Total Problems</span>
+          <span class="text-2xl font-black text-slate-900">150</span>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[11px] text-slate-400 font-bold uppercase block">Verified</span>
+          <span class="text-2xl font-black text-blue-600">126</span>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[11px] text-slate-400 font-bold uppercase block">Active Projects</span>
+          <span class="text-2xl font-black text-purple-600" id="dash-active-count">3</span>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[11px] text-slate-400 font-bold uppercase block">Developed</span>
+          <span class="text-2xl font-black text-amber-600">20</span>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[11px] text-slate-400 font-bold uppercase block">Deployed</span>
+          <span class="text-2xl font-black text-emerald-600">14</span>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[11px] text-slate-400 font-bold uppercase block">Impacted</span>
+          <span class="text-2xl font-black text-indigo-600">155,000</span>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <span class="text-[11px] text-slate-400 font-bold uppercase block">Success Rate</span>
+          <span class="text-2xl font-black text-teal-600">84%</span>
+        </div>
+      </div>
+
+      <!-- RESTRUCTURED SECTION 1: TOP 5 SITE-WIDE MATCHMAKING SUGGESTIONS FEED -->
+      <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-indigo-600 animate-ping"></span>
+            <h3 class="font-black text-slate-900 text-lg">Top 5 Most Relevant Matchmaking Suggestions</h3>
+          </div>
+          <span class="text-xs text-slate-400 font-bold">Site-Wide Ranked by Relevance Score</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="top-5-suggestions-grid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- RESTRUCTURED SECTION 2: ACTIVE WORKSPACES LIST WITH NUMERIC PROGRESS INDICATORS -->
+      <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-black text-slate-900 text-lg">Active Project Workspaces</h3>
+          <button onclick="openWorkspaceModal()" class="text-indigo-600 text-xs font-bold hover:underline">+ New Workspace</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="dashboard-workspaces-grid">
+          <!-- Rendered dynamically with numeric percentage indicators -->
+        </div>
       </div>
     </section>
 
-    <!-- 3. PB GIVER WEB STRUCTURE — MAIN PAGE: REPORT A PROBLEM -->
-    <section id="view-report-problem" class="view-section max-w-2xl mx-auto space-y-6">
-      <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+    <!-- 3. TOP 5 SUGGESTIONS FEED DETAILED VIEW -->
+    <section id="view-suggestions-feed" class="view-section space-y-6 max-w-4xl mx-auto">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <div class="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold mb-1">
+            <span>🎯 Matchmaking Algorithm Audit</span>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Site-Wide Top 5 Relevant Suggestions Feed</h2>
+          <p class="text-xs text-slate-500">Ranked automatically by weighted multi-factor relevance scores across all reported problems.</p>
+        </div>
+      </div>
+
+      <div class="space-y-4" id="detailed-suggestions-list">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 4. WORKSPACES LIST DETAILED VIEW -->
+    <section id="view-workspaces-list" class="view-section space-y-6">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-900">Concurrent Workspaces Repository</h2>
+          <p class="text-xs text-slate-500">Track task milestones, fixed estimated budgets, and numeric progress percentages.</p>
+        </div>
+        <button onclick="openWorkspaceModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow transition">
+          + Create Workspace
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="full-workspaces-grid">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. SUBMIT PROBLEM PAGE -->
+    <section id="view-submit-problem" class="view-section max-w-2xl mx-auto space-y-6">
+      <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6">
         <div class="space-y-1">
-          <h2 class="text-2xl font-bold text-slate-900">Report a Grassroots Problem Statement</h2>
-          <p class="text-xs text-slate-500">Post a community challenge. Backend match engine automatically tags and notifies qualified solvers.</p>
+          <h2 class="text-2xl font-bold text-slate-900">Post a Societal Problem Statement</h2>
+          <p class="text-xs text-slate-500">Submit a real-world problem to trigger automated backend matchmaking.</p>
         </div>
 
-        <form onsubmit="handleReportProblemSubmit(event)" class="space-y-4 text-xs">
+        <form onsubmit="handleProblemFormSubmit(event)" class="space-y-4 text-xs">
           <div class="space-y-1">
-            <label class="font-bold text-slate-800">Problem Title</label>
-            <input type="text" id="report-title" required value="Affordable Groundwater Monitoring System" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <label class="font-bold text-slate-700 block">Problem Title</label>
+            <input type="text" id="prob-form-title" required value="Smart Water Contamination Sensor Node" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
           </div>
 
-          <!-- Extended Category Selector with "Other" Option -->
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1">
-              <label class="font-bold text-slate-800">Category Sector</label>
-              <select id="report-category" onchange="toggleOtherCategory(this.value)" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none font-medium">
+              <label class="font-bold text-slate-700 block">Category Sector</label>
+              <select id="prob-form-category" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium bg-white">
                 <option value="Water & Sanitation">Water & Sanitation</option>
-                <option value="Agriculture">Agriculture</option>
-                <option value="Environment & Pollution">Environment & Pollution</option>
-                <option value="Healthcare & Sanitation">Healthcare & Sanitation</option>
+                <option value="Renewable Energy">Renewable Energy</option>
                 <option value="Waste Management">Waste Management</option>
-                <option value="Renewable Energy & Solar">Renewable Energy & Solar</option>
-                <option value="Education & Literacy">Education & Literacy</option>
-                <option value="Infrastructure & Roads">Infrastructure & Roads</option>
-                <option value="Disaster Management">Disaster Management</option>
-                <option value="Smart Cities & IoT">Smart Cities & IoT</option>
-                <option value="Other">Other (Custom Free Text Input)</option>
+                <option value="Agriculture">Agriculture</option>
               </select>
             </div>
             <div class="space-y-1">
-              <label class="font-bold text-slate-800">Target Location</label>
-              <input type="text" id="report-location" required value="Village X, Ranchi, Jharkhand" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+              <label class="font-bold text-slate-700 block">Location</label>
+              <input type="text" id="prob-form-location" required value="Village X, Ranchi, Jharkhand" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
             </div>
           </div>
 
-          <!-- Free-text Input Box when "Other" is selected -->
-          <div id="box-other-category" class="hidden space-y-1 bg-gold-500/10 p-3 rounded-2xl border border-gold-500/30">
-            <label class="font-bold text-slate-900 block">Custom Category Description (AI Processing Enabled)</label>
-            <input type="text" id="report-other-text" placeholder="Type your custom problem sector domain..." class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
-            <span class="text-[10px] text-slate-500 block">AI engine will auto-extract skills and categorize free text.</span>
-          </div>
-
           <div class="space-y-1">
-            <label class="font-bold text-slate-800">Detailed Description of Problem</label>
-            <textarea id="report-desc" rows="4" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">Our village has contaminated groundwater and needs an affordable monitoring system to detect heavy metals and nitrate pollutants continuously.</textarea>
+            <label class="font-bold text-slate-700 block">Detailed Description</label>
+            <textarea id="prob-form-desc" rows="4" required class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">Our village groundwater requires an affordable sensor node to detect heavy metals and nitrate pollutants.</textarea>
           </div>
 
-          <button type="submit" class="w-full gold-btn py-3.5 rounded-xl shadow-lg flex items-center justify-center space-x-2">
-            <span>Report Problem & Trigger Background Matchmaker</span>
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center space-x-2">
+            <span>Submit Problem & Run Matchmaker</span>
             <span>⚡</span>
           </button>
         </form>
       </div>
     </section>
 
-    <!-- 4. PB GIVER WEB STRUCTURE — MY SUBMISSIONS & PROGRESS VISIBILITY (WITH AFFORDABILITY) -->
-    <section id="view-giver-progress" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center">
+    <!-- 6. Q&A FORUM PAGE -->
+    <section id="view-qa-forum" class="view-section space-y-6 max-w-3xl mx-auto">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
         <div>
-          <h2 class="text-2xl font-bold text-slate-900">My Submissions & Solver Progress</h2>
-          <p class="text-xs text-slate-500">Track progress and photos/videos posted by solvers working on your problem.</p>
-        </div>
-        <button onclick="showView('report-problem')" class="gold-btn px-4 py-2 rounded-xl text-xs shadow">+ Report New Problem</button>
-      </div>
-
-      <!-- Problem Progress Cards List -->
-      <div class="space-y-6" id="giver-progress-cards">
-        <!-- Rendered via JS -->
-      </div>
-    </section>
-
-    <!-- 5. PB SOLVER WEB STRUCTURE — HOME PAGE (EXPERTISE MATCHED NOTIFICATIONS) -->
-    <section id="view-solver-home" class="view-section space-y-6">
-      <div class="bg-slate-900 text-white p-6 rounded-3xl border border-gold-500/30 shadow-xl space-y-4">
-        <div class="flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <div class="inline-flex items-center space-x-2 bg-gold-500/20 text-gold-400 px-3 py-1 rounded-full text-xs font-bold mb-1 border border-gold-500/30">
-              <span>🔔 PB Solver Expertise Feed</span>
-            </div>
-            <h2 class="text-2xl font-bold text-white">Identified Problems Matching Your Expertise</h2>
-            <p class="text-xs text-slate-300">Only problems matching your selected expertise tags are displayed here.</p>
-          </div>
-
-          <div class="flex flex-wrap gap-1.5 text-xs">
-            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Water & Sanitation</span>
-            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Solar Energy</span>
-            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Smart Cities & IoT</span>
-          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Q&A Community Forum</h2>
+          <p class="text-xs text-slate-500">Ask questions and post solutions across all societal challenges.</p>
         </div>
       </div>
 
-      <!-- Matched Notifications Feed -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="solver-matched-feed">
-        <!-- Rendered via JS -->
-      </div>
-    </section>
-
-    <!-- 6. PB SOLVER WEB STRUCTURE — MULTIPLE DEDICATED WORKSPACES -->
-    <section id="view-solver-workspaces" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center">
-        <div>
-          <h2 class="text-2xl font-bold text-slate-900">Active Concurrent Workspaces</h2>
-          <p class="text-xs text-slate-500">Manage multiple projects simultaneously. Update task progress, budget, and media.</p>
-        </div>
-      </div>
-
-      <!-- Workspace Switcher Tabs -->
-      <div class="flex space-x-2 border-b border-slate-200 pb-2 text-xs font-bold" id="workspace-tabs-container">
-        <!-- Rendered via JS -->
-      </div>
-
-      <!-- Active Workspace Content View -->
-      <div id="active-workspace-content" class="space-y-6">
-        <!-- Rendered via JS -->
-      </div>
-    </section>
-
-    <!-- 7. COMMON SHARED Q&A SECTION (BIDIRECTIONAL GIVERS & SOLVERS) -->
-    <section id="view-qa-forum" class="view-section space-y-6 max-w-4xl mx-auto">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center">
-        <div>
-          <div class="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold mb-1">
-            <span>💬 Community Q&A Section</span>
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900">Bidirectional Doubts & Solutions Forum</h2>
-          <p class="text-xs text-slate-500">Citizens & NGOs ask doubts; Solvers & peers post clear answers.</p>
-        </div>
-      </div>
-
-      <!-- Ask New Doubt Form -->
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-        <h3 class="font-bold text-slate-900 text-sm">Ask a Question / Doubt</h3>
-        <form onsubmit="handlePostDoubt(event)" class="space-y-3 text-xs">
-          <input type="text" id="qa-title" required placeholder="Question Title (e.g. How often does groundwater testing need sensor calibration?)" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
-          <textarea id="qa-desc" rows="2" required placeholder="Detailed question description..." class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none"></textarea>
-          <button type="submit" class="gold-btn px-5 py-2 rounded-xl text-xs shadow">Post Question</button>
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+        <h3 class="font-bold text-slate-900 text-sm">Post a Doubt</h3>
+        <form onsubmit="handlePostQA(event)" class="space-y-3 text-xs">
+          <input type="text" id="qa-input-title" required placeholder="Question Title..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <textarea id="qa-input-body" rows="2" required placeholder="Question details..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+          <button type="submit" class="bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Post Question</button>
         </form>
       </div>
 
-      <!-- Q&A Feed -->
-      <div class="space-y-4" id="qa-feed-container">
-        <!-- Rendered via JS -->
-      </div>
+      <div id="qa-posts-feed" class="space-y-4"></div>
     </section>
 
   </main>
 
+  <!-- WORKSPACE CREATION MODAL (EXACTLY TWO FIXED FIELDS: PROBLEM TITLE + ESTIMATED BUDGET) -->
+  <div id="workspace-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 border border-slate-200 shadow-2xl animate-pop-in space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="flex items-center space-x-2">
+          <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-black text-lg">+</span>
+          <h3 class="text-xl font-black text-slate-900">Create New Workspace</h3>
+        </div>
+        <button onclick="closeWorkspaceModal()" class="text-slate-400 font-bold hover:text-slate-600">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-500">Provide the two required fixed parameters for this workspace project.</p>
+
+      <form onsubmit="handleWorkspaceCreation(event)" class="space-y-4 text-xs">
+        <!-- FIELD 1: PROBLEM TITLE -->
+        <div class="space-y-1">
+          <label class="font-bold text-slate-700 block">1. Problem Title <span class="text-red-500">*</span></label>
+          <input type="text" id="modal-prob-title" required value="Smart Water Monitoring Project" placeholder="Problem title you are solving..." class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-800">
+        </div>
+
+        <!-- FIELD 2: ESTIMATED BUDGET (FIXED/LOCKED ONCE SET) -->
+        <div class="space-y-1">
+          <label class="font-bold text-slate-700 block">2. Estimated Budget (Fixed / Locked) <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <span class="absolute left-4 top-3 text-slate-400 font-bold">₹</span>
+            <input type="number" id="modal-prob-budget" required value="35000" placeholder="35000" class="w-full pl-8 pr-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-800">
+          </div>
+          <span class="text-[11px] text-amber-600 font-semibold block">🔒 Budget is locked once workspace is created.</span>
+        </div>
+
+        <div class="pt-2 flex space-x-3">
+          <button type="button" onclick="closeWorkspaceModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl">Cancel</button>
+          <button type="submit" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-3 rounded-2xl shadow-lg transition">Create Workspace →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer class="bg-white border-t border-slate-200 py-6 mt-12">
     <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-1">
-      <p class="font-bold text-slate-700">SolveSphere — Role-Separated Platform</p>
-      <p>Clean Emblem Logo | Affordability Translation Engine | Shared Bidirectional Q&A</p>
+      <p class="font-bold text-slate-700">SolveSphere — Solution Hub Platform</p>
+      <p>Clean Numeric Progress Indicators | Top 5 Matchmaking Feed | Contained Confetti Burst FX</p>
     </div>
   </footer>
 
   <!-- DYNAMIC JAVASCRIPT STATE ENGINE -->
   <script>
-    // Global User State
+    // User State
     let currentUser = {
-      role: 'Citizen', // 'Citizen', 'NGO', 'Solver'
-      name: 'Citizen Rakesh',
-      email: 'rakesh@example.com',
-      expertise: ['Water & Sanitation', 'Renewable Energy & Solar', 'Smart Cities & IoT'],
-      teamName: 'AquaSense R&D'
+      name: 'Alex Citizen',
+      email: 'alex.citizen@example.com',
+      role: 'Citizen'
     };
 
-    // Global Data Store
-    let problemsList = [
+    // Site-Wide Top 5 Matchmaking Suggestions Data
+    let top5Suggestions = [
+      { rank: 1, problemId: 'P-34E65C', problemTitle: 'Affordable Groundwater Monitoring System', category: 'Water & Sanitation', partnerName: 'AquaSense Technologies', partnerType: 'Industry', score: 40.25, location: 'Ranchi, Jharkhand', rec: 'AquaSense Technologies has core capability in IoT water sensors and hardware labs.' },
+      { rank: 2, problemId: 'P-289F10', problemTitle: 'Solar Powered Cold Storage for Farmers', category: 'Renewable Energy', partnerName: 'BuildSmart Infrastructure', partnerType: 'Industry', score: 38.50, location: 'Dhanbad, Jharkhand', rec: 'BuildSmart Infrastructure has extensive solar microgrid deployment experience.' },
+      { rank: 3, problemId: 'P-34E65C', problemTitle: 'Affordable Groundwater Monitoring System', category: 'Water & Sanitation', partnerName: 'Aranya Institute of Technology', partnerType: 'University', score: 32.50, location: 'Ranchi, Jharkhand', rec: 'Aranya Institute provides certified water quality testing labs and student R&D teams.' },
+      { rank: 4, problemId: 'P-104A92', problemTitle: 'Automated Urban Waste Segregation Unit', category: 'Waste Management', partnerName: 'EcoCycle Robotics', partnerType: 'Industry', score: 31.75, location: 'Bokaro, Jharkhand', rec: 'EcoCycle Robotics has computer-vision sorting algorithms and automated bin hardware.' },
+      { rank: 5, problemId: 'P-5472E9', problemTitle: 'Smart Water Contamination Early Warning', category: 'Water & Sanitation', partnerName: 'National Hydrology Lab', partnerType: 'Research Org', score: 29.80, location: 'Jamshedpur, Jharkhand', rec: 'National Hydrology Lab brings certified toxic chemical analysis protocols.' }
+    ];
+
+    // Workspaces List Data with Numeric Progress Indicators & Fixed Budgets
+    let workspacesData = [
       {
-        id: 'P-34E65C',
-        title: 'Affordable Groundwater Monitoring System',
-        category: 'Water & Sanitation',
-        location: 'Village X, Ranchi, Jharkhand',
-        desc: 'Our village has contaminated groundwater and needs an affordable monitoring system.',
-        giver: 'Citizen Rakesh',
+        id: 'ws-101',
+        title: 'Smart Water Monitoring Project',
+        budget: 35000,
+        progress: 62, // Numeric progress percentage indicator (e.g. 62% Complete)
+        partner: 'AquaSense Technologies',
         status: 'In Progress',
-        solver: 'AquaSense Technologies',
-        progress: 50,
-        budget: 25000,
-        affordability: 'Highly Affordable / Low Cost (Est. ₹25,000)',
-        gallery: ['📷 Circuit Prototype', '🎥 Village Water Test']
+        animating: false,
+        justCompleted: false
       },
       {
-        id: 'P-289F10',
-        title: 'Solar Powered Cold Storage for Farmers',
-        category: 'Renewable Energy & Solar',
-        location: 'Dhanbad, Jharkhand',
-        desc: 'Perishable crops spoil quickly due to lack of electricity in rural mandis.',
-        giver: 'NGO Rural Hope',
-        status: 'Submitted',
-        solver: null,
-        progress: 0,
-        budget: 45000,
-        affordability: 'Moderate Cost (Est. ₹45,000)',
-        gallery: []
+        id: 'ws-102',
+        title: 'Solar Cold Storage Microgrid',
+        budget: 48000,
+        progress: 40,
+        partner: 'BuildSmart Infra',
+        status: 'In Progress',
+        animating: false,
+        justCompleted: false
+      },
+      {
+        id: 'ws-103',
+        title: 'Urban Waste Segregation Unit',
+        budget: 25000,
+        progress: 100,
+        partner: 'EcoCycle Robotics',
+        status: 'Completed',
+        animating: false,
+        justCompleted: true
       }
     ];
 
-    let activeSolverWorkspaces = ['P-34E65C'];
-    let selectedWorkspaceId = 'P-34E65C';
-
-    let qaPosts = [
-      {
-        id: 'Q-101',
-        author: 'Citizen Rakesh',
-        role: 'PB Giver',
-        title: 'How often do groundwater sensors need maintenance?',
-        desc: 'We want to make sure village youth can maintain the sensors easily without complex lab tools.',
-        answers: [
-          { author: 'AquaSense Solvers', role: 'PB Solver', text: 'Our sensors use solid-state ion electrodes requiring calibration only once every 6 months using standard saline water.' }
-        ]
-      }
+    let qaData = [
+      { id: 'q-1', title: 'How often are sensors calibrated?', author: 'Alex Citizen', body: 'We want to ensure rural youth can maintain calibration without expensive equipment.', replies: ['AquaSense: Calibration is required once every 6 months using standard saline solution.'] }
     ];
 
     // Notification Toast System
-    function showToast(msg) {
+    function showToast(msg, isSuccess = true) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      toast.className = 'bg-slate-900 text-gold-400 border border-gold-500/40 px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center space-x-2 animate-slide-up pointer-events-auto';
-      toast.innerHTML = `<span>⚡</span><span>${msg}</span>`;
+      const bg = isSuccess ? 'bg-gradient-to-r from-indigo-600 to-purple-600' : 'bg-slate-900';
+      toast.className = `${bg} text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center space-x-2 animate-slide-up pointer-events-auto border border-white/20`;
+      toast.innerHTML = `<span>✓</span><span>${msg}</span>`;
       container.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = '0';
@@ -451,7 +467,7 @@
       }, 3200);
     }
 
-    // Navigation & View Controller
+    // View Navigation Controller
     function showView(viewId) {
       document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('view-' + viewId);
@@ -464,392 +480,254 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function navigateHome() {
-      if (currentUser.role === 'Solver') {
-        showView('solver-home');
-      } else {
-        showView('report-problem');
-      }
+    // Auth Mode Switcher (Login / Register Pill Toggle)
+    function switchAuthMode(mode) {
+      const isLogin = mode === 'login';
+      document.getElementById('pill-login').className = isLogin ? 'py-2.5 rounded-xl bg-white shadow-sm text-indigo-600 font-bold transition' : 'py-2.5 rounded-xl text-slate-500 hover:text-slate-900 transition';
+      document.getElementById('pill-register').className = !isLogin ? 'py-2.5 rounded-xl bg-white shadow-sm text-indigo-600 font-bold transition' : 'py-2.5 rounded-xl text-slate-500 hover:text-slate-900 transition';
+      document.getElementById('field-name-box').style.display = isLogin ? 'none' : 'block';
     }
 
-    // Login & Role Selection Controller
-    let pendingRole = 'Citizen';
-    function selectLoginRole(role) {
-      pendingRole = role;
-      document.getElementById('role-btn-citizen').className = role === 'Citizen' ? 'py-2.5 rounded-xl border border-gold-500 bg-gold-500 text-slate-900 shadow' : 'py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600';
-      document.getElementById('role-btn-ngo').className = role === 'NGO' ? 'py-2.5 rounded-xl border border-gold-500 bg-gold-500 text-slate-900 shadow' : 'py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600';
-      document.getElementById('role-btn-solver').className = role === 'Solver' ? 'py-2.5 rounded-xl border border-gold-500 bg-gold-500 text-slate-900 shadow' : 'py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600';
-
-      document.getElementById('field-ngo-name').style.display = role === 'NGO' ? 'block' : 'none';
-      document.getElementById('field-solver-details').style.display = role === 'Solver' ? 'block' : 'none';
-    }
-
-    function handleLoginSubmit(e) {
+    function handleAuthSubmit(e) {
       e.preventDefault();
-      const name = document.getElementById('auth-name').value;
+      const role = document.getElementById('auth-role').value;
+      const name = document.getElementById('auth-name').value || 'Alex Citizen';
       const email = document.getElementById('auth-email').value;
 
-      currentUser.role = pendingRole;
-      currentUser.name = name;
-      currentUser.email = email;
+      currentUser = { name, email, role };
+      document.getElementById('badge-role').textContent = role;
+      document.getElementById('badge-name').textContent = name;
 
-      updateNavigationMenu();
-
-      showToast(`Logged in as ${name} (${pendingRole})`);
-
-      if (pendingRole === 'Solver') {
-        renderSolverFeed();
-        renderSolverWorkspaces();
-        showView('solver-home');
-      } else {
-        renderGiverProgress();
-        showView('report-problem');
-      }
+      showToast(`Logged in as ${name} (${role})`);
+      renderDashboard();
+      showView('dashboard');
     }
 
-    // Role-Separated Navbar Menu Generator
-    function updateNavigationMenu() {
-      const menu = document.getElementById('nav-menu');
-      const badgeRole = document.getElementById('badge-role-type');
-      const badgeName = document.getElementById('badge-name');
-
-      badgeRole.textContent = currentUser.role === 'Solver' ? 'PB Solver' : 'PB Giver';
-      badgeName.textContent = currentUser.name;
-
-      if (currentUser.role === 'Solver') {
-        menu.innerHTML = `
-          <button onclick="showView('solver-home')" id="tab-solver-home" class="nav-tab py-5 px-1 active">Expertise Feed</button>
-          <button onclick="showView('solver-workspaces')" id="tab-solver-workspaces" class="nav-tab py-5 px-1">My Workspaces (${activeSolverWorkspaces.length})</button>
-          <button onclick="showView('qa-forum')" id="tab-qa-forum" class="nav-tab py-5 px-1">Community Q&A</button>
-        `;
-      } else {
-        menu.innerHTML = `
-          <button onclick="showView('report-problem')" id="tab-report-problem" class="nav-tab py-5 px-1 active">Report a Problem</button>
-          <button onclick="showView('giver-progress')" id="tab-giver-progress" class="nav-tab py-5 px-1">My Submissions & Progress</button>
-          <button onclick="showView('qa-forum')" id="tab-qa-forum" class="nav-tab py-5 px-1">Community Q&A</button>
-        `;
-      }
+    // Modal Workspace Creation Handler
+    function openWorkspaceModal() {
+      document.getElementById('workspace-modal').classList.remove('hidden');
+    }
+    function closeWorkspaceModal() {
+      document.getElementById('workspace-modal').classList.add('hidden');
     }
 
-    // Profile Management (No Role Switching Allowed)
-    function handleProfileSave(e) {
+    function handleWorkspaceCreation(e) {
       e.preventDefault();
-      currentUser.name = document.getElementById('prof-name').value;
-      currentUser.email = document.getElementById('prof-email').value;
-      document.getElementById('badge-name').textContent = currentUser.name;
-      showToast('Profile updated successfully!');
-    }
+      const title = document.getElementById('modal-prob-title').value.trim();
+      const budget = parseFloat(document.getElementById('modal-prob-budget').value) || 35000;
 
-    // "Other" Category Free-Text Box Toggle
-    function toggleOtherCategory(val) {
-      const box = document.getElementById('box-other-category');
-      if (val === 'Other') {
-        box.style.display = 'block';
-      } else {
-        box.style.display = 'none';
-      }
-    }
-
-    // Report Problem Handler (PB Giver Path)
-    function handleReportProblemSubmit(e) {
-      e.preventDefault();
-      const title = document.getElementById('report-title').value;
-      let category = document.getElementById('report-category').value;
-      if (category === 'Other') {
-        const otherText = document.getElementById('report-other-text').value;
-        category = 'Other: ' + (otherText || 'Custom Sector');
-      }
-      const location = document.getElementById('report-location').value;
-      const desc = document.getElementById('report-desc').value;
-
-      const newId = 'P-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-      const newProb = {
-        id: newId,
+      const newWs = {
+        id: 'ws-' + Math.floor(Math.random() * 900 + 100),
         title,
-        category,
-        location,
-        desc,
-        giver: currentUser.name,
-        status: 'Submitted',
-        solver: null,
-        progress: 0,
-        budget: 30000,
-        affordability: 'Low Cost (Est. ₹30,000)',
-        gallery: []
+        budget,
+        progress: 0, // Starts at 0%
+        partner: 'Pending Match',
+        status: 'In Progress',
+        animating: true, // Trigger pop-in + glow pulse animation
+        justCompleted: false
       };
 
-      problemsList.unshift(newProb);
-      showToast(`Problem Reported! ID: ${newId}. Matched solvers notified.`);
+      workspacesData.unshift(newWs);
+      closeWorkspaceModal();
 
-      renderGiverProgress();
-      showView('giver-progress');
+      showToast(`Workspace '${title}' created successfully! Budget fixed at ₹${budget.toLocaleString()}`);
+      renderDashboard();
+      showView('dashboard');
     }
 
-    // Giver Progress & Affordability Display
-    function renderGiverProgress() {
-      const container = document.getElementById('giver-progress-cards');
-      container.innerHTML = '';
-
-      problemsList.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4';
+    // Trigger Contained Confetti Burst Effect on Completed Workspace Card
+    function triggerConfettiBurst(cardElement) {
+      const colors = ['#6366f1', '#a855f7', '#ec4899', '#10b981', '#f59e0b'];
+      for (let i = 0; i < 25; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti-particle';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.left = '50%';
+        particle.style.top = '50%';
         
-        const galleryHTML = p.gallery.length 
-          ? p.gallery.map(g => `<span class="bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl font-bold text-xs">${g}</span>`).join(' ')
-          : '<span class="text-slate-400 text-xs italic">No photos/videos uploaded yet by solver</span>';
+        const tx = (Math.random() - 0.5) * 160 + 'px';
+        const ty = (Math.random() - 0.5) * 160 + 'px';
+        particle.style.setProperty('--tx', tx);
+        particle.style.setProperty('--ty', ty);
 
-        card.innerHTML = `
-          <div class="flex justify-between items-start">
-            <div>
-              <span class="bg-slate-100 text-slate-700 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md uppercase">${p.category}</span>
-              <h3 class="text-lg font-bold text-slate-900 mt-1">${p.title}</h3>
-              <p class="text-xs text-slate-400">${p.location} | Problem ID: <span class="font-mono text-gold-600 font-bold">${p.id}</span></p>
-            </div>
-            <span class="bg-gold-500/20 text-gold-700 px-3 py-1 rounded-xl text-xs font-bold">${p.status}</span>
-          </div>
-
-          <!-- Affordability Feature Card -->
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
-            <div>
-              <span class="text-slate-400 font-bold uppercase text-[10px] block">Project Affordability Rating</span>
-              <span class="font-black text-slate-900 text-sm">${p.affordability}</span>
-            </div>
-            <div class="text-right">
-              <span class="text-slate-400 font-bold uppercase text-[10px] block">Assigned Solver</span>
-              <span class="font-bold text-gold-600">${p.solver || 'Matching in progress...'}</span>
-            </div>
-          </div>
-
-          <!-- Progress Bar -->
-          <div class="space-y-1 text-xs">
-            <div class="flex justify-between font-bold text-slate-700">
-              <span>Solver Progress</span>
-              <span>${p.progress}%</span>
-            </div>
-            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-              <div class="bg-gold-500 h-full rounded-full" style="width: ${p.progress}%;"></div>
-            </div>
-          </div>
-
-          <!-- Photos & Videos Gallery -->
-          <div class="space-y-1">
-            <span class="text-xs font-bold text-slate-700 block">Work Photos & Videos Gallery</span>
-            <div class="flex flex-wrap gap-2">${galleryHTML}</div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+        cardElement.appendChild(particle);
+        setTimeout(() => particle.remove(), 1200);
+      }
     }
 
-    // Solver Home Feed (Expertise Matched Only)
-    function renderSolverFeed() {
-      const container = document.getElementById('solver-matched-feed');
-      container.innerHTML = '';
+    // Update Progress Percentage & Trigger Confetti on 100%
+    function updateWorkspaceNumericProgress(wsId, newPct) {
+      const ws = workspacesData.find(w => w.id === wsId);
+      if (ws) {
+        ws.progress = parseInt(newPct);
+        if (ws.progress >= 100) {
+          ws.progress = 100;
+          ws.status = 'Completed';
+          ws.justCompleted = true;
+          showToast(`🎉 Workspace '${ws.title}' achieved 100% Complete!`);
+        } else {
+          ws.status = 'In Progress';
+          ws.justCompleted = false;
+        }
+        renderDashboard();
+      }
+    }
 
-      const matched = problemsList.filter(p => currentUser.expertise.some(exp => p.category.includes(exp)));
-
-      matched.forEach(p => {
+    // Render Main Dashboard & Restructured Layout
+    function renderDashboard() {
+      // 1. Render Top 5 Site-Wide Suggestions Grid
+      const sugGrid = document.getElementById('top-5-suggestions-grid');
+      sugGrid.innerHTML = '';
+      top5Suggestions.forEach(s => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition';
+        card.className = 'bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2 hover:shadow-md transition relative group';
         card.innerHTML = `
-          <div>
-            <span class="bg-gold-500/20 text-gold-700 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md uppercase">Matched Expertise</span>
-            <h3 class="text-base font-bold text-slate-900 mt-1">${p.title}</h3>
-            <p class="text-xs text-slate-400">${p.location} | Submitted by: ${p.giver}</p>
+          <div class="flex justify-between items-center">
+            <span class="bg-indigo-600 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full">#${s.rank} MATCH</span>
+            <span class="text-xs font-black text-indigo-600">${s.score}%</span>
           </div>
-          <p class="text-xs text-slate-600">${p.desc}</p>
-          <button onclick="claimProblem('${p.id}')" class="w-full gold-btn py-2.5 rounded-xl text-xs shadow">
-            Work on this Problem (Open Workspace) →
-          </button>
+          <h4 class="font-bold text-slate-900 text-xs truncate" title="${s.problemTitle}">${s.problemTitle}</h4>
+          <span class="text-[10px] font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md inline-block">${s.partnerName} (${s.partnerType})</span>
+          <p class="text-[11px] text-slate-500 line-clamp-2">${s.rec}</p>
         `;
-        container.appendChild(card);
-      });
-    }
-
-    function claimProblem(id) {
-      if (!activeSolverWorkspaces.includes(id)) {
-        activeSolverWorkspaces.push(id);
-      }
-      selectedWorkspaceId = id;
-      const prob = problemsList.find(p => p.id === id);
-      if (prob) {
-        prob.status = 'In Progress';
-        prob.solver = currentUser.name;
-      }
-      showToast(`Initiated workspace for project ${id}`);
-      updateNavigationMenu();
-      renderSolverWorkspaces();
-      showView('solver-workspaces');
-    }
-
-    // Multiple Active Concurrent Workspaces Renderer
-    function renderSolverWorkspaces() {
-      const tabsContainer = document.getElementById('workspace-tabs-container');
-      const contentContainer = document.getElementById('active-workspace-content');
-
-      tabsContainer.innerHTML = '';
-      activeSolverWorkspaces.forEach(id => {
-        const prob = problemsList.find(p => p.id === id);
-        const isActive = id === selectedWorkspaceId;
-        const btn = document.createElement('button');
-        btn.className = isActive ? 'px-4 py-2 bg-slate-900 text-gold-400 rounded-xl font-bold shadow' : 'px-4 py-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200';
-        btn.textContent = prob ? prob.title : id;
-        btn.onclick = () => {
-          selectedWorkspaceId = id;
-          renderSolverWorkspaces();
-        };
-        tabsContainer.appendChild(btn);
+        sugGrid.appendChild(card);
       });
 
-      const activeProb = problemsList.find(p => p.id === selectedWorkspaceId);
-      if (activeProb) {
-        contentContainer.innerHTML = `
-          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
+      // Render Detailed Suggestions List
+      const detList = document.getElementById('detailed-suggestions-list');
+      detList.innerHTML = '';
+      top5Suggestions.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between hover:border-indigo-300 transition';
+        item.innerHTML = `
+          <div class="space-y-1">
+            <div class="flex items-center space-x-2">
+              <span class="bg-indigo-600 text-white text-xs font-black px-2.5 py-0.5 rounded-full">Rank ${s.rank}</span>
+              <span class="text-xs font-semibold text-slate-400">${s.location}</span>
+            </div>
+            <h3 class="font-bold text-slate-900 text-base">${s.problemTitle}</h3>
+            <p class="text-xs text-slate-600">${s.rec}</p>
+            <span class="text-xs font-bold text-indigo-600">Matched Partner: ${s.partnerName} (${s.partnerType})</span>
+          </div>
+          <div class="text-right">
+            <span class="text-3xl font-black text-indigo-600">${s.score}%</span>
+            <span class="text-[11px] text-slate-400 font-bold block">Relevance Score</span>
+          </div>
+        `;
+        detList.appendChild(item);
+      });
+
+      // 2. Render Active Workspaces Grid with Numeric Progress Percentage Indicators
+      const wsGrid = document.getElementById('dashboard-workspaces-grid');
+      const fullWsGrid = document.getElementById('full-workspaces-grid');
+      wsGrid.innerHTML = '';
+      fullWsGrid.innerHTML = '';
+
+      document.getElementById('dash-active-count').textContent = workspacesData.length;
+
+      workspacesData.forEach(ws => {
+        const isComplete = ws.progress >= 100;
+        const popAnimClass = ws.animating ? 'animate-pop-in animate-glow-pulse' : '';
+        const cardBg = isComplete ? 'bg-gradient-to-br from-emerald-50/60 to-white border-emerald-300' : 'bg-white border-slate-200/80';
+        
+        const cardHtml = `
+          <div id="ws-card-${ws.id}" class="${cardBg} rounded-3xl p-6 border shadow-sm space-y-4 hover:shadow-md transition relative ${popAnimClass}">
             <div class="flex justify-between items-start">
               <div>
-                <h3 class="text-xl font-bold text-slate-900">${activeProb.title}</h3>
-                <p class="text-xs text-slate-400">Problem ID: <span class="font-mono text-gold-600 font-bold">${activeProb.id}</span> | Giver: ${activeProb.giver}</p>
+                <span class="bg-indigo-100 text-indigo-700 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md uppercase">Workspace</span>
+                <h4 class="font-black text-slate-900 text-sm mt-1">${ws.title}</h4>
               </div>
-              <span class="bg-gold-500/20 text-gold-700 px-3 py-1 rounded-xl text-xs font-bold">${activeProb.status}</span>
+              <span class="${isComplete ? 'bg-emerald-600 text-white' : 'bg-indigo-50 text-indigo-700'} text-[11px] font-extrabold px-2.5 py-1 rounded-xl">
+                ${ws.status}
+              </span>
             </div>
 
-            <!-- Update Budget for Affordability Feature -->
-            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
-              <label class="font-bold text-slate-900 block">Set Estimated Project Budget (Translates to Giver Affordability)</label>
-              <div class="flex space-x-2">
-                <input type="number" id="budget-input" value="${activeProb.budget}" class="px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
-                <button onclick="updateProjectBudget('${activeProb.id}')" class="gold-btn px-4 py-2 rounded-xl">Update Budget</button>
-              </div>
-              <span class="text-slate-400 text-[11px] block">Current Affordability Rating: <strong>${activeProb.affordability}</strong></span>
+            <!-- Fixed Locked Budget Display -->
+            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex justify-between items-center text-xs">
+              <span class="text-slate-400 font-bold">Fixed Budget (Locked):</span>
+              <span class="font-extrabold text-slate-900">₹${ws.budget.toLocaleString()}</span>
             </div>
 
-            <!-- Task Progress Slider -->
-            <div class="space-y-2 text-xs">
-              <div class="flex justify-between font-bold text-slate-700">
-                <span>Update Development Progress</span>
-                <span id="ws-pct-val">${activeProb.progress}%</span>
+            <!-- CLEAN NUMERIC PROGRESS PERCENTAGE INDICATOR -->
+            <div class="space-y-1.5 text-xs">
+              <div class="flex justify-between items-center font-bold">
+                <span class="text-slate-600">Project Completion:</span>
+                <!-- Numeric Percentage Indicator -->
+                <span class="text-indigo-600 font-black text-sm">${ws.progress}% Complete</span>
               </div>
-              <input type="range" min="0" max="100" value="${activeProb.progress}" oninput="updateWorkspaceProgress(this.value, '${activeProb.id}')" class="w-full accent-gold-500">
+              
+              <!-- Progress Meter -->
+              <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 h-full rounded-full transition-all duration-500" style="width: ${ws.progress}%;"></div>
+              </div>
+            </div>
+
+            <!-- Interactive Progress Slider to test Numeric Indicator & Confetti FX -->
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-[11px] text-slate-400 font-medium">Update Progress:</span>
+              <input type="range" min="0" max="100" value="${ws.progress}" oninput="updateWorkspaceNumericProgress('${ws.id}', this.value)" class="w-28 accent-indigo-600 cursor-pointer">
             </div>
           </div>
         `;
-      }
-    }
 
-    function updateProjectBudget(id) {
-      const budgetVal = parseFloat(document.getElementById('budget-input').value) || 0;
-      const prob = problemsList.find(p => p.id === id);
-      if (prob) {
-        prob.budget = budgetVal;
-        if (budgetVal < 30000) prob.affordability = `Highly Affordable / Low Cost (Est. ₹${budgetVal.toLocaleString()})`;
-        else if (budgetVal < 70000) prob.affordability = `Moderate Cost (Est. ₹${budgetVal.toLocaleString()})`;
-        else prob.affordability = `Higher Investment Project (Est. ₹${budgetVal.toLocaleString()})`;
-        showToast('Project budget updated! Affordability recalculated for Giver.');
-        renderSolverWorkspaces();
-        renderGiverProgress();
-      }
-    }
+        wsGrid.innerHTML += cardHtml;
+        fullWsGrid.innerHTML += cardHtml;
+      });
 
-    function updateWorkspaceProgress(val, id) {
-      const prob = problemsList.find(p => p.id === id);
-      if (prob) {
-        prob.progress = parseInt(val);
-        document.getElementById('ws-pct-val').textContent = val + '%';
-        renderGiverProgress();
-      }
-    }
-
-    // Shared Bidirectional Q&A Forum
-    function handlePostDoubt(e) {
-      e.preventDefault();
-      const title = document.getElementById('qa-title').value;
-      const desc = document.getElementById('qa-desc').value;
-
-      const newQ = {
-        id: 'Q-' + Math.floor(Math.random() * 900 + 100),
-        author: currentUser.name,
-        role: currentUser.role === 'Solver' ? 'PB Solver' : 'PB Giver',
-        title,
-        desc,
-        answers: []
-      };
-
-      qaPosts.unshift(newQ);
-      document.getElementById('qa-title').value = '';
-      document.getElementById('qa-desc').value = '';
-      showToast('Doubt question posted to community forum!');
-      renderQAForum();
-    }
-
-    function renderQAForum() {
-      const container = document.getElementById('qa-feed-container');
-      container.innerHTML = '';
-
-      qaPosts.forEach(q => {
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 text-xs';
-        
-        const answersHTML = q.answers.map(a => `
-          <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1">
-            <div class="flex justify-between font-bold text-slate-800">
-              <span>${a.author} <span class="text-[10px] text-gold-600">(${a.role})</span></span>
-            </div>
-            <p class="text-slate-600">${a.text}</p>
-          </div>
-        `).join('');
-
-        card.innerHTML = `
-          <div class="space-y-1">
-            <div class="flex justify-between font-bold text-slate-400 text-[10px]">
-              <span>Posted by: ${q.author} (${q.role})</span>
-              <span>ID: ${q.id}</span>
-            </div>
-            <h4 class="font-bold text-slate-900 text-sm">${q.title}</h4>
-            <p class="text-slate-600">${q.desc}</p>
-          </div>
-
-          <!-- Answers List -->
-          <div class="space-y-2 border-t border-slate-100 pt-3">
-            <span class="font-bold text-slate-700 block">Answers & Solutions (${q.answers.length})</span>
-            <div class="space-y-2">${answersHTML || '<span class="text-slate-400 italic">No answers yet. Post a response below.</span>'}</div>
-          </div>
-
-          <!-- Add Answer Form -->
-          <form onsubmit="handlePostAnswer(event, '${q.id}')" class="flex space-x-2">
-            <input type="text" id="ans-input-${q.id}" required placeholder="Write a solution or answer..." class="flex-grow px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
-            <button type="submit" class="gold-btn px-4 py-2 rounded-xl">Answer</button>
-          </form>
-        `;
-        container.appendChild(card);
+      // Trigger Confetti FX on completed cards
+      workspacesData.forEach(ws => {
+        if (ws.justCompleted) {
+          setTimeout(() => {
+            const cardEl = document.getElementById(`ws-card-${ws.id}`);
+            if (cardEl) triggerConfettiBurst(cardEl);
+            ws.justCompleted = false;
+          }, 100);
+        }
       });
     }
 
-    function handlePostAnswer(e, qId) {
+    function handleProblemFormSubmit(e) {
       e.preventDefault();
-      const input = document.getElementById('ans-input-' + qId);
-      const val = input.value.trim();
-      if (!val) return;
-
-      const q = qaPosts.find(item => item.id === qId);
-      if (q) {
-        q.answers.push({
-          author: currentUser.name,
-          role: currentUser.role === 'Solver' ? 'PB Solver' : 'PB Giver',
-          text: val
-        });
-        showToast('Answer posted!');
-        renderQAForum();
-      }
+      const title = document.getElementById('prob-form-title').value;
+      showToast(`Problem '${title}' posted & backend matchmaking executed!`);
+      showView('dashboard');
     }
 
-    // Page Load Init
+    function handlePostQA(e) {
+      e.preventDefault();
+      const title = document.getElementById('qa-input-title').value;
+      const body = document.getElementById('qa-input-body').value;
+      qaData.unshift({ id: 'q-' + Date.now(), title, author: currentUser.name, body, replies: [] });
+      showToast('Question posted to Q&A community!');
+      renderQA();
+    }
+
+    function renderQA() {
+      const feed = document.getElementById('qa-posts-feed');
+      feed.innerHTML = '';
+      qaData.forEach(q => {
+        const div = document.createElement('div');
+        div.className = 'bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3 text-xs';
+        div.innerHTML = `
+          <div class="space-y-1">
+            <span class="text-[10px] text-slate-400 font-bold">Posted by: ${q.author}</span>
+            <h4 class="font-bold text-slate-900 text-sm">${q.title}</h4>
+            <p class="text-slate-600">${q.body}</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-slate-600">
+            <span class="font-bold text-indigo-600 block">Solutions & Answers:</span>
+            ${q.replies.length ? q.replies.map(r => `<p class="mt-1">${r}</p>`).join('') : '<span class="italic text-slate-400">No replies yet.</span>'}
+          </div>
+        `;
+        feed.appendChild(div);
+      });
+    }
+
+    // Page Initialization
     window.onload = function() {
-      updateNavigationMenu();
-      renderGiverProgress();
-      renderSolverFeed();
-      renderSolverWorkspaces();
-      renderQAForum();
-      showView('login');
+      renderDashboard();
+      renderQA();
+      showView('dashboard');
     };
   </script>
 </body>
