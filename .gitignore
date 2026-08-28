@@ -3,9 +3,12 @@
 !.env.example
 *.db
 
-_pycache_/
+__pycache__/
 *.py[cod]
 .venv/
 venv/
 
 .vscode/
+node_modules/
+dist/
+.DS_Store

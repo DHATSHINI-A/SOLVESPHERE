@@ -1,5 +1,6 @@
 import type { CollaborationProject, WorkspaceTask, DiscussionMessage } from '../types';
 import initialCollaborationsData from '../data/mockData/collaborations.json';
+import api from './api';
 
 const STORAGE_KEY = 'sih_collaborations_data';
 
@@ -22,12 +23,20 @@ const saveCollaborations = (data: CollaborationProject[]) => {
 
 export const collaborationService = {
   getCollaborations: async (): Promise<{ data: CollaborationProject[] }> => {
-    await new Promise((r) => setTimeout(r, 100));
     return { data: getStoredCollaborations() };
   },
 
   getCollaborationById: async (id: string): Promise<{ data: CollaborationProject | null }> => {
-    await new Promise((r) => setTimeout(r, 100));
+    // Try FastAPI Backend (Member 4)
+    try {
+      const res = await api.get(`/collaboration/${id}`);
+      if (res.data?.data) {
+        return { data: res.data.data };
+      }
+    } catch {
+      // Backend offline; use local storage
+    }
+
     const list = getStoredCollaborations();
     const item = list.find((c) => c.id === id || c.problemId === id) || list[0] || null;
     return { data: item };
@@ -75,6 +84,16 @@ export const collaborationService = {
     taskId: string,
     status: WorkspaceTask['status']
   ): Promise<{ data: CollaborationProject | null }> => {
+    // Try FastAPI Backend (Member 4)
+    try {
+      const res = await api.patch(`/collaboration/${collabId}/tasks/${taskId}`, { status });
+      if (res.data?.data) {
+        return { data: res.data.data };
+      }
+    } catch {
+      // Backend offline; fallback
+    }
+
     const list = getStoredCollaborations();
     let updatedCollab: CollaborationProject | null = null;
 
@@ -104,6 +123,17 @@ export const collaborationService = {
     collabId: string,
     task: Omit<WorkspaceTask, 'id'>
   ): Promise<{ data: WorkspaceTask }> => {
+    // Try FastAPI Backend (Member 4)
+    try {
+      const res = await api.post(`/collaboration/${collabId}/tasks`, task);
+      if (res.data?.data) {
+        const tasks = res.data.data.tasks || [];
+        return { data: tasks[tasks.length - 1] };
+      }
+    } catch {
+      // Backend offline; fallback
+    }
+
     const list = getStoredCollaborations();
     const newTask: WorkspaceTask = {
       ...task,
@@ -128,6 +158,22 @@ export const collaborationService = {
     collabId: string,
     message: Omit<DiscussionMessage, 'id' | 'timestamp'>
   ): Promise<{ data: DiscussionMessage }> => {
+    // Try FastAPI Backend (Member 4)
+    try {
+      const res = await api.post(`/collaboration/${collabId}/messages`, {
+        sender: message.sender || 'Member',
+        senderRole: message.senderRole || 'researcher',
+        avatar: message.avatar,
+        content: message.content,
+      });
+      if (res.data?.data) {
+        const msgs = res.data.data.discussions || [];
+        return { data: msgs[msgs.length - 1] };
+      }
+    } catch {
+      // Backend offline; fallback
+    }
+
     const list = getStoredCollaborations();
     const newMsg: DiscussionMessage = {
       ...message,
