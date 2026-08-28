@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOLVESPHERE - Problem-Solution Matchmaking Platform</title>
+  <title>SolveSphere — Problem-Solution Platform</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -11,27 +11,23 @@
       theme: {
         extend: {
           colors: {
+            brand: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              500: '#475569',
+              600: '#334155',
+              900: '#0f172a',
+            },
             gold: {
               300: '#f3e5ab',
               400: '#e6ca65',
               500: '#d4af37', // Champagne Gold Accent
-              600: '#b8860b', // Deep Metallic Gold
-              700: '#996515',
-            },
-            muted: {
-              bg: '#f8fafc',
-              card: '#ffffff',
-              border: '#e2e8f0',
-              text: '#0f172a',
-              subtext: '#64748b',
-              giver: '#475569',
-              solver: '#334155',
+              600: '#b8860b',
             }
           },
           animation: {
             'fade-in': 'fadeIn 0.3s ease-out forwards',
             'slide-up': 'slideUp 0.4s ease-out forwards',
-            'gold-glow': 'goldGlow 2s infinite',
           },
           keyframes: {
             fadeIn: {
@@ -41,10 +37,6 @@
             slideUp: {
               '0%': { opacity: '0', transform: 'translateY(12px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
-            },
-            goldGlow: {
-              '0%, 100%': { boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)' },
-              '50%': { boxShadow: '0 0 25px rgba(212, 175, 55, 0.6)' },
             }
           }
         }
@@ -54,50 +46,46 @@
   <style>
     .view-section { display: none; }
     .view-section.active { display: block; animation: fadeIn 0.35s ease-out forwards; }
-    .nav-tab.active { border-bottom: 2.5px solid #d4af37; color: #b8860b; font-weight: 700; }
-    .gold-gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%); }
+    .nav-tab.active { border-bottom: 2.5px solid #d4af37; color: #0f172a; font-weight: 800; }
     .gold-btn { background-color: #d4af37; color: #0f172a; font-weight: 700; transition: all 0.2s ease; }
-    .gold-btn:hover { background-color: #b8860b; color: #ffffff; transform: translateY(-1px); }
+    .gold-btn:hover { background-color: #b8860b; color: #ffffff; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col relative selection:bg-gold-500 selection:text-slate-900">
 
-  <!-- FLOATING TOAST NOTIFICATION SYSTEM -->
+  <!-- FLOATING TOAST NOTIFICATIONS -->
   <div id="toast-container" class="fixed top-20 right-6 z-50 space-y-3 pointer-events-none"></div>
 
-  <!-- TOP NAVIGATION BAR WITH DISTINCT ROLE STYLING -->
+  <!-- HEADER NAVBAR -->
   <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
-      <!-- Brand Logo -->
-      <div class="flex items-center space-x-3 cursor-pointer group" onclick="showView('landing')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-gold-600 flex items-center justify-center text-gold-400 font-extrabold text-xl shadow-md group-hover:scale-105 transition-transform border border-gold-500/30">
-          S
+      <!-- Brand Logo (Clean Emblem without "Match Making Engine" label) -->
+      <div class="flex items-center space-x-3 cursor-pointer group" onclick="navigateHome()">
+        <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-gold-400 font-black text-xl shadow-md border border-gold-500/30 group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
         </div>
-        <div>
-          <span class="font-black text-xl tracking-tight text-slate-900">SOLVESPHERE</span>
-          <span class="text-[10px] text-gold-600 font-bold block -mt-1 tracking-wider uppercase">Matchmaking Engine</span>
-        </div>
+        <span class="font-black text-xl tracking-tight text-slate-900">SolveSphere</span>
       </div>
 
-      <!-- Navigation Tabs (Role Responsive) -->
-      <nav class="hidden lg:flex space-x-6 text-xs font-semibold text-slate-600">
-        <button onclick="showView('landing')" id="tab-landing" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Home</button>
-        <button onclick="showView('giver-dashboard')" id="tab-giver-dashboard" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Giver Dashboard</button>
-        <button onclick="showView('solver-dashboard')" id="tab-solver-dashboard" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Solver Dashboard</button>
-        <button onclick="showView('submit-problem')" id="tab-submit-problem" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Submit Problem</button>
-        <button onclick="showView('matching-engine')" id="tab-matching-engine" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Matching Logic</button>
-        <button onclick="showView('shared-workspace')" id="tab-shared-workspace" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Shared Workspace</button>
+      <!-- ROLE-SEPARATED NAVIGATION TABS -->
+      <nav id="nav-menu" class="hidden md:flex space-x-6 text-xs font-semibold text-slate-600">
+        <!-- Rendered dynamically based on logged in role -->
       </nav>
 
-      <!-- Role Switcher & Auth Pill -->
+      <!-- USER PROFILE BADGE & PROFILE LINK -->
       <div class="flex items-center space-x-3">
-        <div id="user-role-pill" class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200 text-xs font-bold text-slate-800">
-          <span id="role-type-badge" class="bg-gold-500 text-slate-900 px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wider">Problem Giver</span>
-          <span id="user-name-display" class="truncate max-w-[110px]">Citizen Rakesh</span>
+        <div id="user-badge" class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200 text-xs font-bold text-slate-800">
+          <span id="badge-role-type" class="bg-gold-500 text-slate-900 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider">PB Giver</span>
+          <span id="badge-name" class="truncate max-w-[110px]">Citizen Rakesh</span>
         </div>
-        <button onclick="showView('auth')" class="bg-slate-900 hover:bg-slate-800 active:scale-95 text-gold-400 text-xs font-bold px-4 py-2 rounded-xl shadow border border-gold-500/30 transition">
-          Switch User / Role
+        <button onclick="showView('profile')" class="bg-slate-900 hover:bg-slate-800 text-gold-400 text-xs font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center space-x-1">
+          <span>👤 Profile</span>
+        </button>
+        <button onclick="showView('login')" class="text-xs text-slate-500 hover:text-slate-900 font-semibold px-2 py-1">
+          Logout
         </button>
       </div>
     </div>
@@ -106,362 +94,277 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- 1. LANDING PAGE VIEW -->
-    <section id="view-landing" class="view-section active space-y-12">
-      <!-- Premium Hero Banner -->
-      <div class="gold-gradient-bg rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-gold-500/20">
-        <div class="max-w-3xl relative z-10 space-y-6">
-          <div class="inline-flex items-center space-x-2 bg-gold-500/10 border border-gold-500/30 px-3.5 py-1.5 rounded-full text-xs font-semibold text-gold-400">
-            <span>✨ Automated Problem-Solution Matchmaking Platform</span>
-          </div>
-          <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight text-white">
-            Connecting Grassroots Challenges with Expert Problem Solvers
-          </h1>
-          <p class="text-slate-300 text-base leading-relaxed">
-            Strictly role-separated platform bridging <strong class="text-gold-400">Problem Givers</strong> (Citizens, NGOs) and <strong class="text-gold-400">Problem Solvers</strong> (Universities, Industry Cells, Colleges). Automated expertise tag matching with privacy-preserved post-match workspaces.
-          </p>
-          <div class="flex flex-wrap gap-4 pt-2">
-            <button onclick="showView('auth')" class="gold-btn px-6 py-3 rounded-xl shadow-lg flex items-center space-x-2">
-              <span>Enter Platform as Giver or Solver</span>
-              <span>→</span>
-            </button>
-            <button onclick="showView('matching-engine')" class="bg-white/10 hover:bg-white/20 text-slate-200 font-semibold px-6 py-3 rounded-xl border border-white/20 transition">
-              View Matchmaking Logic
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Dual Role Feature Overview -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Problem Givers Box -->
-        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-4">
-          <div class="w-12 h-12 rounded-2xl bg-slate-900 text-gold-400 flex items-center justify-center text-xl font-black">
-            🏢
-          </div>
-          <h3 class="text-xl font-bold text-slate-900">1. Problem Givers (Citizens & NGOs)</h3>
-          <p class="text-xs text-slate-500 leading-relaxed">
-            Submit societal challenges with category tags, location, and supporting media. Strictly isolated view — no access to solver database or internal matching algorithms.
-          </p>
-          <button onclick="switchRole('Giver', 'Citizen Rakesh')" class="gold-btn text-xs px-4 py-2 rounded-xl">
-            Access Problem Giver Portal →
-          </button>
-        </div>
-
-        <!-- Problem Solvers Box -->
-        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-4">
-          <div class="w-12 h-12 rounded-2xl bg-slate-900 text-gold-400 flex items-center justify-center text-xl font-black">
-            🎓
-          </div>
-          <h3 class="text-xl font-bold text-slate-900">2. Problem Solvers (Colleges, Industry, R&D)</h3>
-          <p class="text-xs text-slate-500 leading-relaxed">
-            Specify multi-select areas of expertise during signup. View matched open problem counts, claim challenges, and collaborate in transparent post-match workspaces.
-          </p>
-          <button onclick="switchRole('Solver', 'AquaSense Technologies')" class="bg-slate-900 hover:bg-slate-800 text-gold-400 text-xs font-bold px-4 py-2 rounded-xl transition">
-            Access Problem Solver Portal →
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. AUTHENTICATION & ROLE SIGNUP MODAL -->
-    <section id="view-auth" class="view-section max-w-md mx-auto my-6">
+    <!-- 1. LOGIN & ROLE-BASED REGISTRATION PAGE -->
+    <section id="view-login" class="view-section active max-w-md mx-auto my-6">
       <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
         <div class="text-center space-y-1">
-          <h2 class="text-2xl font-bold text-slate-900">Platform Registration</h2>
-          <p class="text-xs text-slate-500">Choose your platform role & specify permissions</p>
+          <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-900 text-gold-400 flex items-center justify-center font-black text-2xl mb-2">
+            ⚡
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Welcome to SolveSphere</h2>
+          <p class="text-xs text-slate-500">Select your account role to proceed</p>
         </div>
 
-        <!-- Role Type Selection -->
-        <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl text-xs font-bold">
-          <button id="auth-role-giver" onclick="toggleAuthRoleType('Giver')" class="py-2.5 rounded-lg bg-slate-900 text-gold-400 shadow">Problem Giver</button>
-          <button id="auth-role-solver" onclick="toggleAuthRoleType('Solver')" class="py-2.5 rounded-lg text-slate-600 hover:text-slate-900">Problem Solver</button>
+        <!-- Role Selection Tabs -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-slate-700 block">Select Role Type</label>
+          <div class="grid grid-cols-3 gap-2 text-[11px] font-bold">
+            <button id="role-btn-citizen" onclick="selectLoginRole('Citizen')" class="py-2.5 rounded-xl border border-gold-500 bg-gold-500 text-slate-900 shadow">Citizen (Giver)</button>
+            <button id="role-btn-ngo" onclick="selectLoginRole('NGO')" class="py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600">NGO (Giver)</button>
+            <button id="role-btn-solver" onclick="selectLoginRole('Solver')" class="py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600">Student/College (Solver)</button>
+          </div>
         </div>
 
-        <!-- Registration Form -->
-        <form onsubmit="handleRegistrationSubmit(event)" class="space-y-4 text-xs">
+        <!-- Auth Form -->
+        <form onsubmit="handleLoginSubmit(event)" class="space-y-4 text-xs">
           <div class="space-y-1">
-            <label class="font-semibold text-slate-700">Full Name / Organization Name</label>
-            <input type="text" id="reg-name" required value="AquaSense Technologies" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <label class="font-bold text-slate-800">Full Name</label>
+            <input type="text" id="auth-name" required value="Citizen Rakesh" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
           </div>
 
           <div class="space-y-1">
-            <label class="font-semibold text-slate-700">Email Address</label>
-            <input type="email" id="reg-email" required value="contact@aquasense.org" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <label class="font-bold text-slate-800">Email Address</label>
+            <input type="email" id="auth-email" required value="rakesh@example.com" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
           </div>
 
-          <!-- Solver Multi-Select Expertise Fields (Only shown for Solvers) -->
-          <div id="solver-expertise-box" class="space-y-2">
-            <label class="font-bold text-slate-900 block">Select Areas of Expertise (Multi-Select Required)</label>
-            <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" value="IoT Sensors" checked class="w-4 h-4 text-gold-600 rounded">
-                <span class="font-medium text-slate-700">IoT Sensors</span>
-              </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" value="Water Quality Analysis" checked class="w-4 h-4 text-gold-600 rounded">
-                <span class="font-medium text-slate-700">Water Quality</span>
-              </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" value="Embedded Systems" checked class="w-4 h-4 text-gold-600 rounded">
-                <span class="font-medium text-slate-700">Embedded Systems</span>
-              </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" value="Solar Energy" class="w-4 h-4 text-gold-600 rounded">
-                <span class="font-medium text-slate-700">Solar Energy</span>
-              </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" value="Waste Segregation" class="w-4 h-4 text-gold-600 rounded">
-                <span class="font-medium text-slate-700">Waste Management</span>
-              </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" value="Environmental Engineering" checked class="w-4 h-4 text-gold-600 rounded">
-                <span class="font-medium text-slate-700">Environmental Eng</span>
-              </label>
+          <!-- Conditional Field for NGO/Organisation Name (Giver path) -->
+          <div id="field-ngo-name" class="hidden space-y-1">
+            <label class="font-bold text-slate-800">NGO / Organisation Name (Optional)</label>
+            <input type="text" id="auth-ngo-name" placeholder="e.g. Rural Health Foundation" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+          </div>
+
+          <!-- Conditional Fields for Solvers (Multi-Select Expertise & Team Name) -->
+          <div id="field-solver-details" class="hidden space-y-3">
+            <div class="space-y-1">
+              <label class="font-bold text-slate-800">Team / Institution Name (Optional)</label>
+              <input type="text" id="auth-team-name" placeholder="e.g. AquaSense R&D Team" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            </div>
+
+            <div class="space-y-2">
+              <label class="font-bold text-slate-900 block">Select Areas of Expertise (Multi-Select)</label>
+              <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" value="Water & Sanitation" checked class="w-4 h-4 text-gold-600 rounded">
+                  <span class="font-medium text-slate-700">Water & Sanitation</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" value="Renewable Energy & Solar" checked class="w-4 h-4 text-gold-600 rounded">
+                  <span class="font-medium text-slate-700">Solar Energy</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" value="Waste Management" class="w-4 h-4 text-gold-600 rounded">
+                  <span class="font-medium text-slate-700">Waste Management</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input type="checkbox" value="Smart Cities & IoT" checked class="w-4 h-4 text-gold-600 rounded">
+                  <span class="font-medium text-slate-700">IoT & Sensors</span>
+                </label>
+              </div>
             </div>
           </div>
 
-          <button type="submit" class="w-full gold-btn py-3 rounded-xl shadow transition">
-            Complete Registration & Enter Platform →
+          <button type="submit" class="w-full gold-btn py-3.5 rounded-xl shadow transition">
+            Login & Continue →
           </button>
         </form>
       </div>
     </section>
 
-    <!-- 3. PROBLEM GIVER DASHBOARD (ISOLATED CITIZEN & NGO PORTAL) -->
-    <section id="view-giver-dashboard" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div class="inline-flex items-center space-x-2 bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-bold mb-1 border border-slate-200">
-            <span>🏢 Problem Giver Dashboard (Citizen & NGO View)</span>
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900">My Submitted Problems</h2>
-          <p class="text-xs text-slate-500">Track progress of challenges you submitted. Protected private view.</p>
-        </div>
-        <button onclick="showView('submit-problem')" class="gold-btn px-5 py-2.5 rounded-xl text-xs shadow">
-          + Submit New Problem
-        </button>
-      </div>
-
-      <!-- Giver Stat Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <span class="text-xs text-slate-400 font-bold uppercase block">My Submissions</span>
-          <span class="text-3xl font-black text-slate-900" id="giver-stat-total">3</span>
-        </div>
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <span class="text-xs text-slate-400 font-bold uppercase block">Under Review</span>
-          <span class="text-3xl font-black text-amber-600">1</span>
-        </div>
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <span class="text-xs text-slate-400 font-bold uppercase block">Matched & Active</span>
-          <span class="text-3xl font-black text-indigo-600">1</span>
-        </div>
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <span class="text-xs text-slate-400 font-bold uppercase block">Solved Problems</span>
-          <span class="text-3xl font-black text-emerald-600">1</span>
-        </div>
-      </div>
-
-      <!-- Submissions Table -->
-      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
-        <h3 class="font-bold text-slate-900 text-base">Submitted Challenge Logs</h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold">
-                <th class="py-3 px-4">Problem ID</th>
-                <th class="py-3 px-4">Title</th>
-                <th class="py-3 px-4">Category</th>
-                <th class="py-3 px-4">Location</th>
-                <th class="py-3 px-4">Status</th>
-                <th class="py-3 px-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody id="giver-table-body" class="divide-y divide-slate-100">
-              <!-- Rendered via JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. PROBLEM SOLVER DASHBOARD (MATCHED EXPERTISE PORTAL) -->
-    <section id="view-solver-dashboard" class="view-section space-y-6">
-      <div class="bg-slate-900 text-white p-6 rounded-3xl border border-gold-500/30 shadow-xl space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-4">
+    <!-- 2. PROFILE MANAGEMENT PAGE (NO ROLE SWITCHING ALLOWED) -->
+    <section id="view-profile" class="view-section max-w-xl mx-auto space-y-6">
+      <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
-            <div class="inline-flex items-center space-x-2 bg-gold-500/20 text-gold-400 px-3 py-1 rounded-full text-xs font-bold mb-1 border border-gold-500/30">
-              <span>🎓 Problem Solver Dashboard (Organizations & Colleges)</span>
+            <h2 class="text-2xl font-bold text-slate-900">User Profile Management</h2>
+            <p class="text-xs text-slate-500">Edit account details & expertise tags</p>
+          </div>
+          <span id="profile-role-badge" class="bg-gold-500 text-slate-900 px-3 py-1 rounded-full text-xs font-bold uppercase">PB Giver</span>
+        </div>
+
+        <form onsubmit="handleProfileSave(event)" class="space-y-4 text-xs">
+          <div class="space-y-1">
+            <label class="font-bold text-slate-800">Full Name</label>
+            <input type="text" id="prof-name" required value="Citizen Rakesh" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+          </div>
+
+          <div class="space-y-1">
+            <label class="font-bold text-slate-800">Email Address</label>
+            <input type="email" id="prof-email" required value="rakesh@example.com" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+          </div>
+
+          <!-- Non-editable Role Notice -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-500 space-y-1">
+            <span class="font-bold text-slate-800 block">Account Role Lock</span>
+            <p class="text-[11px]">Role cannot be changed after registration to preserve structure security & matchmaking integrity.</p>
+          </div>
+
+          <!-- Solver Expertise Tag Editor -->
+          <div id="prof-expertise-section" class="hidden space-y-2">
+            <label class="font-bold text-slate-900 block">Edit Areas of Expertise Tags</label>
+            <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Water & Sanitation" checked class="w-4 h-4 text-gold-600 rounded">
+                <span class="font-medium text-slate-700">Water & Sanitation</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Renewable Energy & Solar" checked class="w-4 h-4 text-gold-600 rounded">
+                <span class="font-medium text-slate-700">Solar Energy</span>
+              </label>
             </div>
-            <h2 class="text-2xl font-bold text-white">Expertise-Matched Challenges</h2>
-            <p class="text-xs text-slate-300">Filtered automatically based on your selected areas of expertise.</p>
           </div>
-          
-          <!-- Solver Expertise Badge Pills -->
-          <div class="flex flex-wrap gap-1.5 text-xs">
-            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ IoT Sensors</span>
-            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Water Quality</span>
-            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Environmental Eng</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Notification Banner for New Matched Problem -->
-      <div id="solver-notification" class="bg-gold-500/10 border border-gold-500/40 p-4 rounded-2xl flex items-center justify-between text-xs text-slate-900 font-semibold">
-        <div class="flex items-center space-x-2">
-          <span class="text-base">🔔</span>
-          <span><strong>New Match Alert:</strong> 1 new problem matching your expertise ("Water Quality") was submitted!</span>
-        </div>
-        <button onclick="showView('matching-engine')" class="gold-btn px-3 py-1 rounded-lg text-[11px]">View Overlap %</button>
-      </div>
-
-      <!-- Matched Problems Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="solver-problems-grid">
-        <!-- Rendered via JS -->
+          <button type="submit" class="w-full gold-btn py-3 rounded-xl shadow">
+            Save Profile Updates
+          </button>
+        </form>
       </div>
     </section>
 
-    <!-- 5. PROBLEM SUBMISSION FORM PAGE -->
-    <section id="view-submit-problem" class="view-section max-w-2xl mx-auto space-y-6">
+    <!-- 3. PB GIVER WEB STRUCTURE — MAIN PAGE: REPORT A PROBLEM -->
+    <section id="view-report-problem" class="view-section max-w-2xl mx-auto space-y-6">
       <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
         <div class="space-y-1">
-          <h2 class="text-2xl font-bold text-slate-900">Submit a Grassroots Problem Statement</h2>
-          <p class="text-xs text-slate-500">Submissions are tagged by category and matched to relevant solvers.</p>
+          <h2 class="text-2xl font-bold text-slate-900">Report a Grassroots Problem Statement</h2>
+          <p class="text-xs text-slate-500">Post a community challenge. Backend match engine automatically tags and notifies qualified solvers.</p>
         </div>
 
-        <form onsubmit="handleProblemFormSubmit(event)" class="space-y-4 text-xs">
+        <form onsubmit="handleReportProblemSubmit(event)" class="space-y-4 text-xs">
           <div class="space-y-1">
             <label class="font-bold text-slate-800">Problem Title</label>
-            <input type="text" id="form-prob-title" required value="Affordable Groundwater Monitoring System" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <input type="text" id="report-title" required value="Affordable Groundwater Monitoring System" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
           </div>
 
+          <!-- Extended Category Selector with "Other" Option -->
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1">
               <label class="font-bold text-slate-800">Category Sector</label>
-              <select id="form-prob-category" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none font-medium">
+              <select id="report-category" onchange="toggleOtherCategory(this.value)" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none font-medium">
                 <option value="Water & Sanitation">Water & Sanitation</option>
                 <option value="Agriculture">Agriculture</option>
+                <option value="Environment & Pollution">Environment & Pollution</option>
+                <option value="Healthcare & Sanitation">Healthcare & Sanitation</option>
                 <option value="Waste Management">Waste Management</option>
-                <option value="Solar Energy">Solar Energy</option>
+                <option value="Renewable Energy & Solar">Renewable Energy & Solar</option>
+                <option value="Education & Literacy">Education & Literacy</option>
+                <option value="Infrastructure & Roads">Infrastructure & Roads</option>
+                <option value="Disaster Management">Disaster Management</option>
+                <option value="Smart Cities & IoT">Smart Cities & IoT</option>
+                <option value="Other">Other (Custom Free Text Input)</option>
               </select>
             </div>
             <div class="space-y-1">
-              <label class="font-bold text-slate-800">Location</label>
-              <input type="text" id="form-prob-location" required value="Village X, Ranchi, Jharkhand" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+              <label class="font-bold text-slate-800">Target Location</label>
+              <input type="text" id="report-location" required value="Village X, Ranchi, Jharkhand" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
             </div>
+          </div>
+
+          <!-- Free-text Input Box when "Other" is selected -->
+          <div id="box-other-category" class="hidden space-y-1 bg-gold-500/10 p-3 rounded-2xl border border-gold-500/30">
+            <label class="font-bold text-slate-900 block">Custom Category Description (AI Processing Enabled)</label>
+            <input type="text" id="report-other-text" placeholder="Type your custom problem sector domain..." class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <span class="text-[10px] text-slate-500 block">AI engine will auto-extract skills and categorize free text.</span>
           </div>
 
           <div class="space-y-1">
-            <label class="font-bold text-slate-800">Detailed Description</label>
-            <textarea id="form-prob-desc" rows="4" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">Our village has contaminated groundwater and needs an affordable monitoring system to detect heavy metals and nitrate pollutants.</textarea>
-          </div>
-
-          <!-- Drag & Drop Media Uploader -->
-          <div class="space-y-2">
-            <label class="font-bold text-slate-800 block">Supporting Media & Documents</label>
-            <div id="dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)" class="border-2 border-dashed border-slate-300 hover:border-gold-500 rounded-2xl p-6 text-center space-y-2 bg-slate-50 transition cursor-pointer" onclick="document.getElementById('file-input').click()">
-              <input type="file" id="file-input" multiple accept="image/*,.pdf" class="hidden" onchange="handleFileSelect(event)">
-              <div class="text-3xl">📷</div>
-              <div class="text-slate-600">
-                <span class="font-bold text-slate-900">Click to upload</span> or drag and drop photos
-              </div>
-            </div>
-            <div id="file-previews" class="grid grid-cols-4 gap-3 pt-2"></div>
+            <label class="font-bold text-slate-800">Detailed Description of Problem</label>
+            <textarea id="report-desc" rows="4" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">Our village has contaminated groundwater and needs an affordable monitoring system to detect heavy metals and nitrate pollutants continuously.</textarea>
           </div>
 
           <button type="submit" class="w-full gold-btn py-3.5 rounded-xl shadow-lg flex items-center justify-center space-x-2">
-            <span>Submit Problem & Run Automated Matchmaker</span>
+            <span>Report Problem & Trigger Background Matchmaker</span>
             <span>⚡</span>
           </button>
         </form>
       </div>
     </section>
 
-    <!-- 6. MATCHMAKING ENGINE DB & LOGIC VIEW -->
-    <section id="view-matching-engine" class="view-section space-y-6 max-w-4xl mx-auto">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
+    <!-- 4. PB GIVER WEB STRUCTURE — MY SUBMISSIONS & PROGRESS VISIBILITY (WITH AFFORDABILITY) -->
+    <section id="view-giver-progress" class="view-section space-y-6">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center">
         <div>
-          <div class="inline-flex items-center space-x-2 bg-gold-500/20 text-gold-700 px-3 py-1 rounded-full text-xs font-bold mb-1">
-            <span>⚡ Matchmaking DB Engine</span>
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900">Automated Expertise Tag Matching</h2>
-          <p class="text-xs text-slate-500">Calculates tag overlap between Problem required skills and Solver profile tags.</p>
+          <h2 class="text-2xl font-bold text-slate-900">My Submissions & Solver Progress</h2>
+          <p class="text-xs text-slate-500">Track progress and photos/videos posted by solvers working on your problem.</p>
         </div>
-        <button onclick="showView('shared-workspace')" class="gold-btn px-5 py-2.5 rounded-xl text-xs shadow">
-          Enter Shared Workspace →
-        </button>
+        <button onclick="showView('report-problem')" class="gold-btn px-4 py-2 rounded-xl text-xs shadow">+ Report New Problem</button>
       </div>
 
-      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-        <h3 class="font-bold text-slate-900 text-base">Match Matrix Results</h3>
-        <div id="match-matrix-container" class="space-y-3 text-xs">
-          <!-- Rendered via JS -->
-        </div>
+      <!-- Problem Progress Cards List -->
+      <div class="space-y-6" id="giver-progress-cards">
+        <!-- Rendered via JS -->
       </div>
     </section>
 
-    <!-- 7. POST-MATCH SHARED WORKSPACE (PRIVACY PRESERVED) -->
-    <section id="view-shared-workspace" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+    <!-- 5. PB SOLVER WEB STRUCTURE — HOME PAGE (EXPERTISE MATCHED NOTIFICATIONS) -->
+    <section id="view-solver-home" class="view-section space-y-6">
+      <div class="bg-slate-900 text-white p-6 rounded-3xl border border-gold-500/30 shadow-xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <div class="inline-flex items-center space-x-2 bg-gold-500/20 text-gold-400 px-3 py-1 rounded-full text-xs font-bold mb-1 border border-gold-500/30">
+              <span>🔔 PB Solver Expertise Feed</span>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Identified Problems Matching Your Expertise</h2>
+            <p class="text-xs text-slate-300">Only problems matching your selected expertise tags are displayed here.</p>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 text-xs">
+            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Water & Sanitation</span>
+            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Solar Energy</span>
+            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Smart Cities & IoT</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matched Notifications Feed -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="solver-matched-feed">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 6. PB SOLVER WEB STRUCTURE — MULTIPLE DEDICATED WORKSPACES -->
+    <section id="view-solver-workspaces" class="view-section space-y-6">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center">
         <div>
-          <div class="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold mb-1">
-            <span>🔒 Post-Match Shared Workspace (Privacy Preserved)</span>
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900" id="ws-title">Smart Water Monitoring Project</h2>
-          <p class="text-xs text-slate-500">Problem ID: <span class="font-mono text-gold-600 font-bold">P-34E65C</span> | Confidential notes & financial data strictly excluded.</p>
-        </div>
-        <div class="text-right">
-          <span class="text-xs text-slate-400 font-bold block uppercase">Overall Progress</span>
-          <span class="text-2xl font-black text-gold-600" id="ws-pct-text">50%</span>
+          <h2 class="text-2xl font-bold text-slate-900">Active Concurrent Workspaces</h2>
+          <p class="text-xs text-slate-500">Manage multiple projects simultaneously. Update task progress, budget, and media.</p>
         </div>
       </div>
 
-      <!-- Transparent Progress Percentage Bar -->
-      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
-        <div class="flex justify-between text-xs font-bold text-slate-700">
-          <span>Project Execution Status</span>
-          <span class="bg-gold-500/20 text-gold-700 px-2.5 py-0.5 rounded-md">Phase: Prototype Testing</span>
-        </div>
-        <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden">
-          <div id="ws-bar" class="bg-gold-500 h-full rounded-full transition-all duration-500" style="width: 50%;"></div>
+      <!-- Workspace Switcher Tabs -->
+      <div class="flex space-x-2 border-b border-slate-200 pb-2 text-xs font-bold" id="workspace-tabs-container">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Active Workspace Content View -->
+      <div id="active-workspace-content" class="space-y-6">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 7. COMMON SHARED Q&A SECTION (BIDIRECTIONAL GIVERS & SOLVERS) -->
+    <section id="view-qa-forum" class="view-section space-y-6 max-w-4xl mx-auto">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center">
+        <div>
+          <div class="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold mb-1">
+            <span>💬 Community Q&A Section</span>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Bidirectional Doubts & Solutions Forum</h2>
+          <p class="text-xs text-slate-500">Citizens & NGOs ask doubts; Solvers & peers post clear answers.</p>
         </div>
       </div>
 
-      <!-- Field Photos & Media Gallery + Suggestions Exchange -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-        <!-- Field Gallery -->
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-          <h3 class="font-bold text-slate-900 text-base">Ongoing Field Work Photos & Videos</h3>
-          <div class="grid grid-cols-2 gap-3" id="ws-media-gallery">
-            <div class="bg-slate-100 rounded-xl h-28 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
-              📷 Prototype Circuit Board
-            </div>
-            <div class="bg-slate-100 rounded-xl h-28 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
-              🎥 Village Water Test Video
-            </div>
-          </div>
-        </div>
+      <!-- Ask New Doubt Form -->
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <h3 class="font-bold text-slate-900 text-sm">Ask a Question / Doubt</h3>
+        <form onsubmit="handlePostDoubt(event)" class="space-y-3 text-xs">
+          <input type="text" id="qa-title" required placeholder="Question Title (e.g. How often does groundwater testing need sensor calibration?)" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+          <textarea id="qa-desc" rows="2" required placeholder="Detailed question description..." class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none"></textarea>
+          <button type="submit" class="gold-btn px-5 py-2 rounded-xl text-xs shadow">Post Question</button>
+        </form>
+      </div>
 
-        <!-- Clean Feedback & Suggestions Feed -->
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-          <h3 class="font-bold text-slate-900 text-base">Concise Feedback & Suggestions</h3>
-          <div class="space-y-2 max-h-48 overflow-y-auto" id="ws-feedback-list">
-            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
-              <span class="font-bold text-slate-900 block">Citizen Rakesh (Problem Giver)</span>
-              <p class="text-slate-600">Can the sensor display test results directly on an offline LCD screen?</p>
-            </div>
-            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
-              <span class="font-bold text-gold-600 block">AquaSense Technologies (Problem Solver)</span>
-              <p class="text-slate-600">Yes! We added a low-power e-ink display for offline village use.</p>
-            </div>
-          </div>
-
-          <form onsubmit="addFeedback(event)" class="flex space-x-2">
-            <input type="text" id="feedback-input" required placeholder="Add concise feedback or suggestion..." class="flex-grow px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
-            <button type="submit" class="gold-btn px-4 py-2 rounded-xl">Post</button>
-          </form>
-        </div>
+      <!-- Q&A Feed -->
+      <div class="space-y-4" id="qa-feed-container">
+        <!-- Rendered via JS -->
       </div>
     </section>
 
@@ -470,25 +373,71 @@
   <!-- FOOTER -->
   <footer class="bg-white border-t border-slate-200 py-6 mt-12">
     <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-1">
-      <p class="font-bold text-slate-700">SOLVESPHERE — Role-Separated Problem-Solution Matchmaking Platform</p>
-      <p>Champagne Gold Accent Aesthetic | Single-File Production Implementation</p>
+      <p class="font-bold text-slate-700">SolveSphere — Role-Separated Platform</p>
+      <p>Clean Emblem Logo | Affordability Translation Engine | Shared Bidirectional Q&A</p>
     </div>
   </footer>
 
   <!-- DYNAMIC JAVASCRIPT STATE ENGINE -->
   <script>
-    let currentRoleType = 'Giver'; // 'Giver' or 'Solver'
-    let currentUserName = 'Citizen Rakesh';
-    let solverExpertise = ['IoT Sensors', 'Water Quality Analysis', 'Environmental Engineering'];
-    let uploadedFiles = [];
+    // Global User State
+    let currentUser = {
+      role: 'Citizen', // 'Citizen', 'NGO', 'Solver'
+      name: 'Citizen Rakesh',
+      email: 'rakesh@example.com',
+      expertise: ['Water & Sanitation', 'Renewable Energy & Solar', 'Smart Cities & IoT'],
+      teamName: 'AquaSense R&D'
+    };
 
-    let problemsData = [
-      { id: 'P-34E65C', title: 'Affordable Groundwater Monitoring System', desc: 'Our village has contaminated groundwater and needs an affordable monitoring system.', category: 'Water & Sanitation', location: 'Village X, Ranchi, Jharkhand', urgency: 'High', status: 'In Progress', giver: 'Citizen Rakesh', matchedSolver: 'AquaSense Technologies', score: 40.25 },
-      { id: 'P-289F10', title: 'Solar Powered Cold Storage Unit', desc: 'Perishable crops spoil quickly due to lack of electricity in rural mandis.', category: 'Solar Energy', location: 'Dhanbad, Jharkhand', urgency: 'Medium', status: 'Submitted', giver: 'NGO Rural Hope', matchedSolver: 'BuildSmart Infra', score: 29.75 },
-      { id: 'P-104A92', title: 'Automated Urban Waste Segregation Unit', desc: 'Need low-cost computer vision sorting mechanism for municipal waste bins.', category: 'Waste Management', location: 'Bokaro, Jharkhand', urgency: 'High', status: 'Solved', giver: 'Citizen Priya', matchedSolver: 'Aranya Institute', score: 38.50 }
+    // Global Data Store
+    let problemsList = [
+      {
+        id: 'P-34E65C',
+        title: 'Affordable Groundwater Monitoring System',
+        category: 'Water & Sanitation',
+        location: 'Village X, Ranchi, Jharkhand',
+        desc: 'Our village has contaminated groundwater and needs an affordable monitoring system.',
+        giver: 'Citizen Rakesh',
+        status: 'In Progress',
+        solver: 'AquaSense Technologies',
+        progress: 50,
+        budget: 25000,
+        affordability: 'Highly Affordable / Low Cost (Est. ₹25,000)',
+        gallery: ['📷 Circuit Prototype', '🎥 Village Water Test']
+      },
+      {
+        id: 'P-289F10',
+        title: 'Solar Powered Cold Storage for Farmers',
+        category: 'Renewable Energy & Solar',
+        location: 'Dhanbad, Jharkhand',
+        desc: 'Perishable crops spoil quickly due to lack of electricity in rural mandis.',
+        giver: 'NGO Rural Hope',
+        status: 'Submitted',
+        solver: null,
+        progress: 0,
+        budget: 45000,
+        affordability: 'Moderate Cost (Est. ₹45,000)',
+        gallery: []
+      }
     ];
 
-    // Notification System (No Alert Popups)
+    let activeSolverWorkspaces = ['P-34E65C'];
+    let selectedWorkspaceId = 'P-34E65C';
+
+    let qaPosts = [
+      {
+        id: 'Q-101',
+        author: 'Citizen Rakesh',
+        role: 'PB Giver',
+        title: 'How often do groundwater sensors need maintenance?',
+        desc: 'We want to make sure village youth can maintain the sensors easily without complex lab tools.',
+        answers: [
+          { author: 'AquaSense Solvers', role: 'PB Solver', text: 'Our sensors use solid-state ion electrodes requiring calibration only once every 6 months using standard saline water.' }
+        ]
+      }
+    ];
+
+    // Notification Toast System
     function showToast(msg) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -502,7 +451,7 @@
       }, 3200);
     }
 
-    // View Navigation Controller
+    // Navigation & View Controller
     function showView(viewId) {
       document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('view-' + viewId);
@@ -515,180 +464,392 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Role Switching Controller
-    function switchRole(roleType, name) {
-      currentRoleType = roleType;
-      currentUserName = name;
-
-      const badge = document.getElementById('role-type-badge');
-      const nameDisp = document.getElementById('user-name-display');
-
-      badge.textContent = roleType === 'Giver' ? 'Problem Giver' : 'Problem Solver';
-      nameDisp.textContent = name;
-
-      if (roleType === 'Giver') {
-        badge.className = 'bg-gold-500 text-slate-900 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider';
-        showToast(`Switched to Problem Giver view (${name})`);
-        renderGiverTable();
-        showView('giver-dashboard');
+    function navigateHome() {
+      if (currentUser.role === 'Solver') {
+        showView('solver-home');
       } else {
-        badge.className = 'bg-slate-900 text-gold-400 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider border border-gold-500/30';
-        showToast(`Switched to Problem Solver view (${name})`);
-        renderSolverGrid();
-        showView('solver-dashboard');
+        showView('report-problem');
       }
     }
 
-    function toggleAuthRoleType(type) {
-      const isGiver = type === 'Giver';
-      document.getElementById('auth-role-giver').className = isGiver ? 'py-2.5 rounded-lg bg-slate-900 text-gold-400 shadow font-bold' : 'py-2.5 rounded-lg text-slate-600';
-      document.getElementById('auth-role-solver').className = !isGiver ? 'py-2.5 rounded-lg bg-slate-900 text-gold-400 shadow font-bold' : 'py-2.5 rounded-lg text-slate-600';
-      document.getElementById('solver-expertise-box').style.display = isGiver ? 'none' : 'block';
+    // Login & Role Selection Controller
+    let pendingRole = 'Citizen';
+    function selectLoginRole(role) {
+      pendingRole = role;
+      document.getElementById('role-btn-citizen').className = role === 'Citizen' ? 'py-2.5 rounded-xl border border-gold-500 bg-gold-500 text-slate-900 shadow' : 'py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600';
+      document.getElementById('role-btn-ngo').className = role === 'NGO' ? 'py-2.5 rounded-xl border border-gold-500 bg-gold-500 text-slate-900 shadow' : 'py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600';
+      document.getElementById('role-btn-solver').className = role === 'Solver' ? 'py-2.5 rounded-xl border border-gold-500 bg-gold-500 text-slate-900 shadow' : 'py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-600';
+
+      document.getElementById('field-ngo-name').style.display = role === 'NGO' ? 'block' : 'none';
+      document.getElementById('field-solver-details').style.display = role === 'Solver' ? 'block' : 'none';
     }
 
-    function handleRegistrationSubmit(e) {
+    function handleLoginSubmit(e) {
       e.preventDefault();
-      const name = document.getElementById('reg-name').value;
-      switchRole(currentRoleType, name);
+      const name = document.getElementById('auth-name').value;
+      const email = document.getElementById('auth-email').value;
+
+      currentUser.role = pendingRole;
+      currentUser.name = name;
+      currentUser.email = email;
+
+      updateNavigationMenu();
+
+      showToast(`Logged in as ${name} (${pendingRole})`);
+
+      if (pendingRole === 'Solver') {
+        renderSolverFeed();
+        renderSolverWorkspaces();
+        showView('solver-home');
+      } else {
+        renderGiverProgress();
+        showView('report-problem');
+      }
     }
 
-    // Giver Dashboard Table Renderer
-    function renderGiverTable() {
-      const tbody = document.getElementById('giver-table-body');
-      tbody.innerHTML = '';
-      const myProbs = problemsData.filter(p => p.giver === currentUserName || currentRoleType === 'Giver');
-      
-      myProbs.forEach(p => {
-        const badgeCol = p.status === 'Solved' ? 'bg-emerald-100 text-emerald-800' : (p.status === 'In Progress' ? 'bg-gold-500/20 text-gold-700' : 'bg-amber-100 text-amber-800');
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 transition';
-        tr.innerHTML = `
-          <td class="py-3 px-4 font-mono font-bold text-slate-900">${p.id}</td>
-          <td class="py-3 px-4 font-bold text-slate-800">${p.title}</td>
-          <td class="py-3 px-4 text-slate-600">${p.category}</td>
-          <td class="py-3 px-4 text-slate-500">${p.location}</td>
-          <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-lg text-[11px] font-bold ${badgeCol}">${p.status}</span></td>
-          <td class="py-3 px-4 text-right">
-            <button onclick="showView('shared-workspace')" class="text-gold-600 font-bold hover:underline">View Workspace →</button>
-          </td>
+    // Role-Separated Navbar Menu Generator
+    function updateNavigationMenu() {
+      const menu = document.getElementById('nav-menu');
+      const badgeRole = document.getElementById('badge-role-type');
+      const badgeName = document.getElementById('badge-name');
+
+      badgeRole.textContent = currentUser.role === 'Solver' ? 'PB Solver' : 'PB Giver';
+      badgeName.textContent = currentUser.name;
+
+      if (currentUser.role === 'Solver') {
+        menu.innerHTML = `
+          <button onclick="showView('solver-home')" id="tab-solver-home" class="nav-tab py-5 px-1 active">Expertise Feed</button>
+          <button onclick="showView('solver-workspaces')" id="tab-solver-workspaces" class="nav-tab py-5 px-1">My Workspaces (${activeSolverWorkspaces.length})</button>
+          <button onclick="showView('qa-forum')" id="tab-qa-forum" class="nav-tab py-5 px-1">Community Q&A</button>
         `;
-        tbody.appendChild(tr);
-      });
-      document.getElementById('giver-stat-total').textContent = myProbs.length;
+      } else {
+        menu.innerHTML = `
+          <button onclick="showView('report-problem')" id="tab-report-problem" class="nav-tab py-5 px-1 active">Report a Problem</button>
+          <button onclick="showView('giver-progress')" id="tab-giver-progress" class="nav-tab py-5 px-1">My Submissions & Progress</button>
+          <button onclick="showView('qa-forum')" id="tab-qa-forum" class="nav-tab py-5 px-1">Community Q&A</button>
+        `;
+      }
     }
 
-    // Solver Dashboard Grid Renderer (Filtered by Expertise Tags)
-    function renderSolverGrid() {
-      const container = document.getElementById('solver-problems-grid');
+    // Profile Management (No Role Switching Allowed)
+    function handleProfileSave(e) {
+      e.preventDefault();
+      currentUser.name = document.getElementById('prof-name').value;
+      currentUser.email = document.getElementById('prof-email').value;
+      document.getElementById('badge-name').textContent = currentUser.name;
+      showToast('Profile updated successfully!');
+    }
+
+    // "Other" Category Free-Text Box Toggle
+    function toggleOtherCategory(val) {
+      const box = document.getElementById('box-other-category');
+      if (val === 'Other') {
+        box.style.display = 'block';
+      } else {
+        box.style.display = 'none';
+      }
+    }
+
+    // Report Problem Handler (PB Giver Path)
+    function handleReportProblemSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById('report-title').value;
+      let category = document.getElementById('report-category').value;
+      if (category === 'Other') {
+        const otherText = document.getElementById('report-other-text').value;
+        category = 'Other: ' + (otherText || 'Custom Sector');
+      }
+      const location = document.getElementById('report-location').value;
+      const desc = document.getElementById('report-desc').value;
+
+      const newId = 'P-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      const newProb = {
+        id: newId,
+        title,
+        category,
+        location,
+        desc,
+        giver: currentUser.name,
+        status: 'Submitted',
+        solver: null,
+        progress: 0,
+        budget: 30000,
+        affordability: 'Low Cost (Est. ₹30,000)',
+        gallery: []
+      };
+
+      problemsList.unshift(newProb);
+      showToast(`Problem Reported! ID: ${newId}. Matched solvers notified.`);
+
+      renderGiverProgress();
+      showView('giver-progress');
+    }
+
+    // Giver Progress & Affordability Display
+    function renderGiverProgress() {
+      const container = document.getElementById('giver-progress-cards');
       container.innerHTML = '';
 
-      problemsData.forEach(p => {
+      problemsList.forEach(p => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition relative';
+        card.className = 'bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4';
+        
+        const galleryHTML = p.gallery.length 
+          ? p.gallery.map(g => `<span class="bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl font-bold text-xs">${g}</span>`).join(' ')
+          : '<span class="text-slate-400 text-xs italic">No photos/videos uploaded yet by solver</span>';
+
         card.innerHTML = `
           <div class="flex justify-between items-start">
             <div>
               <span class="bg-slate-100 text-slate-700 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md uppercase">${p.category}</span>
-              <h3 class="text-base font-bold text-slate-900 mt-1">${p.title}</h3>
-              <p class="text-xs text-slate-400">${p.location}</p>
+              <h3 class="text-lg font-bold text-slate-900 mt-1">${p.title}</h3>
+              <p class="text-xs text-slate-400">${p.location} | Problem ID: <span class="font-mono text-gold-600 font-bold">${p.id}</span></p>
+            </div>
+            <span class="bg-gold-500/20 text-gold-700 px-3 py-1 rounded-xl text-xs font-bold">${p.status}</span>
+          </div>
+
+          <!-- Affordability Feature Card -->
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center text-xs">
+            <div>
+              <span class="text-slate-400 font-bold uppercase text-[10px] block">Project Affordability Rating</span>
+              <span class="font-black text-slate-900 text-sm">${p.affordability}</span>
             </div>
             <div class="text-right">
-              <span class="text-2xl font-black text-gold-600">${p.score}%</span>
-              <span class="text-[10px] text-slate-400 block font-bold">Match Score</span>
+              <span class="text-slate-400 font-bold uppercase text-[10px] block">Assigned Solver</span>
+              <span class="font-bold text-gold-600">${p.solver || 'Matching in progress...'}</span>
             </div>
           </div>
-          <p class="text-xs text-slate-600">${p.desc}</p>
-          <div class="flex justify-between items-center pt-2">
-            <span class="text-xs font-bold text-slate-500">Submitted by: ${p.giver}</span>
-            <button onclick="acceptProblem('${p.id}')" class="gold-btn px-4 py-2 rounded-xl text-xs shadow">Accept Challenge & Open Workspace →</button>
+
+          <!-- Progress Bar -->
+          <div class="space-y-1 text-xs">
+            <div class="flex justify-between font-bold text-slate-700">
+              <span>Solver Progress</span>
+              <span>${p.progress}%</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-gold-500 h-full rounded-full" style="width: ${p.progress}%;"></div>
+            </div>
+          </div>
+
+          <!-- Photos & Videos Gallery -->
+          <div class="space-y-1">
+            <span class="text-xs font-bold text-slate-700 block">Work Photos & Videos Gallery</span>
+            <div class="flex flex-wrap gap-2">${galleryHTML}</div>
           </div>
         `;
         container.appendChild(card);
       });
-      renderMatchMatrix();
     }
 
-    function acceptProblem(id) {
-      showToast(`Challenge ${id} accepted! Initiating shared workspace...`);
-      showView('shared-workspace');
-    }
-
-    function renderMatchMatrix() {
-      const container = document.getElementById('match-matrix-container');
+    // Solver Home Feed (Expertise Matched Only)
+    function renderSolverFeed() {
+      const container = document.getElementById('solver-matched-feed');
       container.innerHTML = '';
-      problemsData.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center';
-        div.innerHTML = `
+
+      const matched = problemsList.filter(p => currentUser.expertise.some(exp => p.category.includes(exp)));
+
+      matched.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition';
+        card.innerHTML = `
           <div>
-            <span class="font-mono font-bold text-slate-900">${p.id}</span> — <strong class="text-slate-800">${p.title}</strong>
-            <div class="text-[11px] text-slate-500 mt-0.5">Matched with Solver: <span class="text-gold-600 font-bold">${p.matchedSolver}</span></div>
+            <span class="bg-gold-500/20 text-gold-700 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md uppercase">Matched Expertise</span>
+            <h3 class="text-base font-bold text-slate-900 mt-1">${p.title}</h3>
+            <p class="text-xs text-slate-400">${p.location} | Submitted by: ${p.giver}</p>
           </div>
-          <span class="text-lg font-black text-gold-600 bg-white px-3 py-1 rounded-xl border border-slate-200">${p.score}% Match</span>
+          <p class="text-xs text-slate-600">${p.desc}</p>
+          <button onclick="claimProblem('${p.id}')" class="w-full gold-btn py-2.5 rounded-xl text-xs shadow">
+            Work on this Problem (Open Workspace) →
+          </button>
         `;
-        container.appendChild(div);
+        container.appendChild(card);
       });
     }
 
-    // Problem Submission Handler
-    function handleProblemFormSubmit(e) {
-      e.preventDefault();
-      const title = document.getElementById('form-prob-title').value;
-      const category = document.getElementById('form-prob-category').value;
-      const location = document.getElementById('form-prob-location').value;
-      const desc = document.getElementById('form-prob-desc').value;
-
-      const newId = 'P-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-      const newProb = { id: newId, title, desc, category, location, urgency: 'High', status: 'Submitted', giver: currentUserName, matchedSolver: 'AquaSense Technologies', score: 42.50 };
-
-      problemsData.unshift(newProb);
-      showToast(`Problem Submitted! ID: ${newId}. Automated matching triggered.`);
-      
-      renderGiverTable();
-      showView('giver-dashboard');
+    function claimProblem(id) {
+      if (!activeSolverWorkspaces.includes(id)) {
+        activeSolverWorkspaces.push(id);
+      }
+      selectedWorkspaceId = id;
+      const prob = problemsList.find(p => p.id === id);
+      if (prob) {
+        prob.status = 'In Progress';
+        prob.solver = currentUser.name;
+      }
+      showToast(`Initiated workspace for project ${id}`);
+      updateNavigationMenu();
+      renderSolverWorkspaces();
+      showView('solver-workspaces');
     }
 
-    // Media Drag & Drop Handler
-    function handleDragOver(e) { e.preventDefault(); }
-    function handleDragLeave(e) { e.preventDefault(); }
-    function handleDrop(e) {
-      e.preventDefault();
-      if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files);
-    }
-    function handleFileSelect(e) {
-      if (e.target.files.length) processFiles(e.target.files);
-    }
-    function processFiles(files) {
-      Array.from(files).forEach(f => {
-        uploadedFiles.push(f.name);
+    // Multiple Active Concurrent Workspaces Renderer
+    function renderSolverWorkspaces() {
+      const tabsContainer = document.getElementById('workspace-tabs-container');
+      const contentContainer = document.getElementById('active-workspace-content');
+
+      tabsContainer.innerHTML = '';
+      activeSolverWorkspaces.forEach(id => {
+        const prob = problemsList.find(p => p.id === id);
+        const isActive = id === selectedWorkspaceId;
+        const btn = document.createElement('button');
+        btn.className = isActive ? 'px-4 py-2 bg-slate-900 text-gold-400 rounded-xl font-bold shadow' : 'px-4 py-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200';
+        btn.textContent = prob ? prob.title : id;
+        btn.onclick = () => {
+          selectedWorkspaceId = id;
+          renderSolverWorkspaces();
+        };
+        tabsContainer.appendChild(btn);
       });
-      showToast(`Uploaded ${files.length} file(s)`);
+
+      const activeProb = problemsList.find(p => p.id === selectedWorkspaceId);
+      if (activeProb) {
+        contentContainer.innerHTML = `
+          <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="text-xl font-bold text-slate-900">${activeProb.title}</h3>
+                <p class="text-xs text-slate-400">Problem ID: <span class="font-mono text-gold-600 font-bold">${activeProb.id}</span> | Giver: ${activeProb.giver}</p>
+              </div>
+              <span class="bg-gold-500/20 text-gold-700 px-3 py-1 rounded-xl text-xs font-bold">${activeProb.status}</span>
+            </div>
+
+            <!-- Update Budget for Affordability Feature -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+              <label class="font-bold text-slate-900 block">Set Estimated Project Budget (Translates to Giver Affordability)</label>
+              <div class="flex space-x-2">
+                <input type="number" id="budget-input" value="${activeProb.budget}" class="px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+                <button onclick="updateProjectBudget('${activeProb.id}')" class="gold-btn px-4 py-2 rounded-xl">Update Budget</button>
+              </div>
+              <span class="text-slate-400 text-[11px] block">Current Affordability Rating: <strong>${activeProb.affordability}</strong></span>
+            </div>
+
+            <!-- Task Progress Slider -->
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between font-bold text-slate-700">
+                <span>Update Development Progress</span>
+                <span id="ws-pct-val">${activeProb.progress}%</span>
+              </div>
+              <input type="range" min="0" max="100" value="${activeProb.progress}" oninput="updateWorkspaceProgress(this.value, '${activeProb.id}')" class="w-full accent-gold-500">
+            </div>
+          </div>
+        `;
+      }
     }
 
-    // Shared Workspace Suggestions Handler
-    function addFeedback(e) {
+    function updateProjectBudget(id) {
+      const budgetVal = parseFloat(document.getElementById('budget-input').value) || 0;
+      const prob = problemsList.find(p => p.id === id);
+      if (prob) {
+        prob.budget = budgetVal;
+        if (budgetVal < 30000) prob.affordability = `Highly Affordable / Low Cost (Est. ₹${budgetVal.toLocaleString()})`;
+        else if (budgetVal < 70000) prob.affordability = `Moderate Cost (Est. ₹${budgetVal.toLocaleString()})`;
+        else prob.affordability = `Higher Investment Project (Est. ₹${budgetVal.toLocaleString()})`;
+        showToast('Project budget updated! Affordability recalculated for Giver.');
+        renderSolverWorkspaces();
+        renderGiverProgress();
+      }
+    }
+
+    function updateWorkspaceProgress(val, id) {
+      const prob = problemsList.find(p => p.id === id);
+      if (prob) {
+        prob.progress = parseInt(val);
+        document.getElementById('ws-pct-val').textContent = val + '%';
+        renderGiverProgress();
+      }
+    }
+
+    // Shared Bidirectional Q&A Forum
+    function handlePostDoubt(e) {
       e.preventDefault();
-      const input = document.getElementById('feedback-input');
+      const title = document.getElementById('qa-title').value;
+      const desc = document.getElementById('qa-desc').value;
+
+      const newQ = {
+        id: 'Q-' + Math.floor(Math.random() * 900 + 100),
+        author: currentUser.name,
+        role: currentUser.role === 'Solver' ? 'PB Solver' : 'PB Giver',
+        title,
+        desc,
+        answers: []
+      };
+
+      qaPosts.unshift(newQ);
+      document.getElementById('qa-title').value = '';
+      document.getElementById('qa-desc').value = '';
+      showToast('Doubt question posted to community forum!');
+      renderQAForum();
+    }
+
+    function renderQAForum() {
+      const container = document.getElementById('qa-feed-container');
+      container.innerHTML = '';
+
+      qaPosts.forEach(q => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 text-xs';
+        
+        const answersHTML = q.answers.map(a => `
+          <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1">
+            <div class="flex justify-between font-bold text-slate-800">
+              <span>${a.author} <span class="text-[10px] text-gold-600">(${a.role})</span></span>
+            </div>
+            <p class="text-slate-600">${a.text}</p>
+          </div>
+        `).join('');
+
+        card.innerHTML = `
+          <div class="space-y-1">
+            <div class="flex justify-between font-bold text-slate-400 text-[10px]">
+              <span>Posted by: ${q.author} (${q.role})</span>
+              <span>ID: ${q.id}</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm">${q.title}</h4>
+            <p class="text-slate-600">${q.desc}</p>
+          </div>
+
+          <!-- Answers List -->
+          <div class="space-y-2 border-t border-slate-100 pt-3">
+            <span class="font-bold text-slate-700 block">Answers & Solutions (${q.answers.length})</span>
+            <div class="space-y-2">${answersHTML || '<span class="text-slate-400 italic">No answers yet. Post a response below.</span>'}</div>
+          </div>
+
+          <!-- Add Answer Form -->
+          <form onsubmit="handlePostAnswer(event, '${q.id}')" class="flex space-x-2">
+            <input type="text" id="ans-input-${q.id}" required placeholder="Write a solution or answer..." class="flex-grow px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <button type="submit" class="gold-btn px-4 py-2 rounded-xl">Answer</button>
+          </form>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function handlePostAnswer(e, qId) {
+      e.preventDefault();
+      const input = document.getElementById('ans-input-' + qId);
       const val = input.value.trim();
       if (!val) return;
 
-      const list = document.getElementById('ws-feedback-list');
-      const div = document.createElement('div');
-      div.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 animate-fadeIn';
-      div.innerHTML = `
-        <span class="font-bold text-slate-900 block">${currentUserName} (${currentRoleType})</span>
-        <p class="text-slate-600">${val}</p>
-      `;
-      list.appendChild(div);
-      input.value = '';
-      showToast('Concise feedback posted to workspace');
+      const q = qaPosts.find(item => item.id === qId);
+      if (q) {
+        q.answers.push({
+          author: currentUser.name,
+          role: currentUser.role === 'Solver' ? 'PB Solver' : 'PB Giver',
+          text: val
+        });
+        showToast('Answer posted!');
+        renderQAForum();
+      }
     }
 
     // Page Load Init
     window.onload = function() {
-      renderGiverTable();
-      renderSolverGrid();
-      showView('landing');
+      updateNavigationMenu();
+      renderGiverProgress();
+      renderSolverFeed();
+      renderSolverWorkspaces();
+      renderQAForum();
+      showView('login');
     };
   </script>
 </body>
