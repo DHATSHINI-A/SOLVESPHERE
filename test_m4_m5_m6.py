@@ -156,3 +156,4 @@ print("=" * 80)
 if passed == total:
     print("[SUCCESS] Member 4, Member 5, and Member 6 are seamlessly integrated!")
 print("=" * 80)
+
