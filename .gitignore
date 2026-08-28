@@ -1,14 +1,41 @@
+# Environment & Secrets
 .env
 .env.*
 !.env.example
 *.db
 
+# Python & Caching
 __pycache__/
+_pycache_/
 *.py[cod]
 .venv/
 venv/
+ENV/
+env.bak/
+venv.bak/
 
-.vscode/
+# Node & Build artifacts
 node_modules/
 dist/
-.DS_Store
+.DS_Store
+
+# IDEs & Tools
+.vscode/
+.spyderproject
+.spyproject
+.ropeproject
+/site
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+.abstra/
+tempCodeRunnerFile.py
+.ruff_cache/
+.pypirc
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+.streamlit/secrets.toml

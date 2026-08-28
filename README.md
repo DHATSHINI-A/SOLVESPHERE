@@ -43,7 +43,7 @@ flowchart LR
 
 ## 🛠️ How to Run & Test
 
-1. **Install Dependencies:**
+1. **Install Python Dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
@@ -54,14 +54,23 @@ flowchart LR
    GEMINI_API_KEY=your_gemini_api_key_here
    ```
 
-3. **Start the Unified Server:**
+3. **Start the Unified Server (FastAPI):**
    ```bash
    python app.py
    ```
+   * Or run individual workspace router: `py -m uvicorn workspace:app --reload --port 8000`
    * Interactive Swagger UI: `http://127.0.0.1:8000/docs`
    * Redoc Documentation: `http://127.0.0.1:8000/redoc`
 
-4. **Run Cross-Module Integration Tests:**
+4. **Start the Frontend Dashboard (React + Vite):**
    ```bash
+   npm.cmd run dev
+   ```
+   * Open: `http://localhost:5173`
+
+5. **Run Verification Test Suites:**
+   ```bash
+   python test_m4_m5_m6.py
    python test_llm.py
    ```
+
