@@ -1,0 +1,139 @@
+[
+  {
+    "id": "p1",
+    "title": "Groundwater Contamination in Coastal Village",
+    "category": "Water",
+    "description": "High salinity and industrial chemical runoff severely affecting drinking water wells across 3 coastal villages. Existing reverse osmosis units break down constantly due to particulate fouling.",
+    "status": "Matched",
+    "location": "Tiruvottiyur, TN",
+    "submittedBy": "u1",
+    "submitterName": "Ravi Kumar",
+    "date": "2026-06-12",
+    "upvotes": 214,
+    "urgency": "critical",
+    "requiredExpertise": ["Environmental Engineering", "Water Quality Sensors", "IoT", "Membrane Filtration"],
+    "targetBeneficiaries": "18,500 coastal residents",
+    "estimatedBudgetReq": 4500000,
+    "sdgGoal": 6,
+    "aiAnalysis": {
+      "summary": "This problem requires Environmental Engineering and IoT sensor expertise due to severe salinity gradients and industrial contaminant traces. Nanofiltration with smart telemetry recommended.",
+      "expertiseTags": [
+        { "name": "Environmental Engineering", "confidence": 96 },
+        { "name": "Water Quality Sensors", "confidence": 94 },
+        { "name": "IoT Telemetry", "confidence": 89 },
+        { "name": "Membrane Separation", "confidence": 88 }
+      ],
+      "feasibilityScore": 92,
+      "duplicateScore": 6
+    }
+  },
+  {
+    "id": "p2",
+    "title": "Municipal Waste Segregation Failure & Landfill Spills",
+    "category": "Waste Management",
+    "description": "Urban solid waste collection lacks source-level automated classification. Organic and hazardous plastics mix, overwhelming secondary recycling centers and causing spontaneous landfill fires.",
+    "status": "Verified",
+    "location": "Chennai, TN",
+    "submittedBy": "u1",
+    "submitterName": "Ravi Kumar",
+    "date": "2026-07-02",
+    "upvotes": 98,
+    "urgency": "high",
+    "requiredExpertise": ["IoT", "Smart Bins", "Logistics", "Computer Vision"],
+    "targetBeneficiaries": "320,000 urban citizens",
+    "estimatedBudgetReq": 3800000,
+    "sdgGoal": 11,
+    "aiAnalysis": {
+      "summary": "Requires computer-vision enabled smart bins and edge classification nodes at transfer stations to enforce dynamic sorting and optimize truck dispatch logistics.",
+      "expertiseTags": [
+        { "name": "Computer Vision", "confidence": 95 },
+        { "name": "IoT & Smart Bins", "confidence": 92 },
+        { "name": "Logistics Optimization", "confidence": 86 },
+        { "name": "Urban Robotics", "confidence": 81 }
+      ],
+      "feasibilityScore": 88,
+      "duplicateScore": 9
+    }
+  },
+  {
+    "id": "p3",
+    "title": "Hyper-Local Crop Pest Outbreak Early Warning System",
+    "category": "Agriculture",
+    "description": "Pink bollworm and fall armyworm outbreaks destroy up to 40% of cotton and maize yields in Vidarbha. Farmers receive pest alerts days too late after physical crop damage is already visible.",
+    "status": "In Collaboration",
+    "location": "Akola, MH",
+    "submittedBy": "u1",
+    "submitterName": "Kisan Welfare Sangathan",
+    "date": "2026-07-15",
+    "upvotes": 345,
+    "urgency": "high",
+    "requiredExpertise": ["Agri-Tech", "Acoustic / Optical Sensors", "Edge AI", "LoRaWAN"],
+    "targetBeneficiaries": "65,000 smallholder farmers",
+    "estimatedBudgetReq": 3200000,
+    "sdgGoal": 2,
+    "aiAnalysis": {
+      "summary": "Requires ultra-low-power LoRaWAN sensor nodes with micro-acoustic insect frequency detection and edge-inference models to alert farmers within 2 hours of swarm arrival.",
+      "expertiseTags": [
+        { "name": "Edge AI", "confidence": 97 },
+        { "name": "Agri-Tech Sensors", "confidence": 93 },
+        { "name": "LoRaWAN Mesh", "confidence": 90 }
+      ],
+      "feasibilityScore": 94,
+      "duplicateScore": 4
+    }
+  },
+  {
+    "id": "p4",
+    "title": "Solar-Powered Cold Storage Micro-Hubs for Coastal Fisherfolk",
+    "category": "Clean Energy",
+    "description": "Small-scale artisanal fishermen lose 30% of their daily catch value due to extreme harbor temperatures and lack of immediate ice refrigeration at landing piers.",
+    "status": "Deployed",
+    "location": "Kasimedu, Chennai, TN",
+    "submittedBy": "u1",
+    "submitterName": "Meenavar Sangam",
+    "date": "2026-05-10",
+    "upvotes": 412,
+    "urgency": "critical",
+    "requiredExpertise": ["Thermal Energy Storage", "Solar PV Systems", "Refrigeration Engg", "IoT Remote Monitoring"],
+    "targetBeneficiaries": "14,200 fishermen families",
+    "estimatedBudgetReq": 6000000,
+    "sdgGoal": 7,
+    "aiAnalysis": {
+      "summary": "Phase-change material (PCM) battery-less thermal cooling unit powered directly by rooftop solar panels. Deployed and monitored via continuous cloud telemetry.",
+      "expertiseTags": [
+        { "name": "Thermal Energy Storage", "confidence": 98 },
+        { "name": "Solar PV Microgrids", "confidence": 94 },
+        { "name": "Industrial IoT", "confidence": 91 }
+      ],
+      "feasibilityScore": 98,
+      "duplicateScore": 2
+    }
+  },
+  {
+    "id": "p5",
+    "title": "Low-Cost Point-of-Care Ultrasound Diagnostic Scanner for Tribal PHCs",
+    "category": "Health",
+    "description": "Primary Health Centers in remote hilly tribal hamlets lack trained radiologists and ultrasound facilities, leading to delayed diagnoses of high-risk maternal pregnancies.",
+    "status": "New",
+    "location": "East Khasi Hills, ML",
+    "submittedBy": "u1",
+    "submitterName": "Community Health Initiative",
+    "date": "2026-08-01",
+    "upvotes": 178,
+    "urgency": "critical",
+    "requiredExpertise": ["Biomedical Engineering", "Mobile Ultrasound Transducers", "Edge AI Image Segmentation"],
+    "targetBeneficiaries": "42,000 tribal residents",
+    "estimatedBudgetReq": 5200000,
+    "sdgGoal": 3,
+    "aiAnalysis": {
+      "summary": "Handheld sub-$400 piezoelectric probe connected via USB-C to standard tablets, running guided fetal biometric measurement algorithms for community nurses.",
+      "expertiseTags": [
+        { "name": "Biomedical Instrumentation", "confidence": 96 },
+        { "name": "Computer Vision / Ultrasound AI", "confidence": 95 },
+        { "name": "Embedded Systems", "confidence": 87 }
+      ],
+      "feasibilityScore": 91,
+      "duplicateScore": 5
+    }
+  }
+]

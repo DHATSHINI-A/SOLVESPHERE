@@ -1,0 +1,41 @@
+[
+  {
+    "id": "u1",
+    "name": "Ravi Kumar",
+    "email": "ravi.kumar@citizen.org",
+    "role": "citizen",
+    "location": "Tiruvottiyur, TN",
+    "organization": "Gram Panchayat Welfare Forum",
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
+    "reputationPoints": 480
+  },
+  {
+    "id": "u2",
+    "name": "Dr. Anitha Rao",
+    "email": "anitha.rao@iitm.ac.in",
+    "role": "university",
+    "org": "IIT Madras - Env. Engg Lab",
+    "department": "Department of Environmental & Water Resources Engineering",
+    "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250",
+    "reputationPoints": 1420
+  },
+  {
+    "id": "u3",
+    "name": "GreenTech Solutions",
+    "email": "contact@greentechsolutions.io",
+    "role": "industry",
+    "sector": "Water Technology & CleanTech",
+    "companyName": "GreenTech Solutions Ltd.",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=250",
+    "reputationPoints": 2250
+  },
+  {
+    "id": "u4",
+    "name": "Admin Officer (Governance)",
+    "email": "admin@solutionhub.gov.in",
+    "role": "admin",
+    "department": "National Innovation & Technology Mission",
+    "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=250",
+    "reputationPoints": 5000
+  }
+]
