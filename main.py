@@ -158,6 +158,8 @@ def get_matching_partners(problem_id: str):
             detail=f"Matching calculation failed: {str(e)}"
         )
 
+from dashboard import router as dashboard_router
+
 # Mount Member 1 Auth & Problem routes
 app.include_router(auth_problems_router)
 
@@ -166,6 +168,9 @@ app.include_router(collaboration_router)
 
 # Mount Deployment Router
 app.include_router(deployment_router)
+
+# Mount Dashboard Router
+app.include_router(dashboard_router)
 
 # Mount Member 2 AI Engine Router
 app.mount("/", ai_app)

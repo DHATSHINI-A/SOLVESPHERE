@@ -107,6 +107,72 @@ def _recalculate_progress(project_id: str):
     done_count = len([t for t in tasks if t["status"] == "Done"])
     WORKSPACE_DATA[project_id]["progress"] = int((done_count / len(tasks)) * 100)
 
+class ProjectCreateFromMatch(BaseModel):
+    problemId: str
+    title: str
+    selectedPartners: List[dict] = []
+
+@router.get("/")
+def list_collaborations():
+    return {"data": list(WORKSPACE_DATA.values())}
+
+@router.post("/create-from-match")
+def create_project_from_match(payload: ProjectCreateFromMatch):
+    project_id = f"c-{payload.problemId}"
+    
+    # Map selected partners to workspace member models
+    members = []
+    for idx, p in enumerate(payload.selectedPartners, start=1):
+        members.append({
+            "userId": f"u-partner-{idx}",
+            "name": p.get("partner_name", p.get("name", "Partner Organization")),
+            "role": p.get("organization_type", "Partner Organization"),
+            "org": p.get("partner_name", "Partner Organization"),
+            "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=250"
+        })
+    
+    # Default initial project structure
+    WORKSPACE_DATA[project_id] = {
+        "id": project_id,
+        "problemId": payload.problemId,
+        "title": payload.title,
+        "trlLevel": 4,
+        "pipelineStep": "design",
+        "progress": 0,
+        "budget": 500000,
+        "members": members,
+        "tasks": [
+            {
+                "id": "t1",
+                "title": "Initial Kickoff & Requirements Review",
+                "status": "In Progress",
+                "priority": "high",
+                "assignee": members[0]["name"] if members else "Project Lead",
+                "dueDate": datetime.now().strftime("%Y-%m-%d")
+            }
+        ],
+        "discussions": [
+            {
+                "id": "m1",
+                "sender": members[0]["name"] if members else "Project Lead",
+                "senderRole": "Lead",
+                "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=250",
+                "timestamp": datetime.now().strftime("%I:%M %p"),
+                "content": f"Project '{payload.title}' initiated with matched partner team."
+            }
+        ],
+        "files": []
+    }
+    
+    # Try updating problem status to 'In Progress' in DB
+    try:
+        from auth_problems import update_problem_status_in_db
+        update_problem_status_in_db(payload.problemId, "In Progress")
+    except Exception as e:
+        print(f"[WARN] Failed to update problem status on project creation: {e}")
+
+    return {"success": True, "data": WORKSPACE_DATA[project_id]}
+
 @router.get("/{project_id}")
 def get_collaboration(project_id: str):
     pid = _get_valid_project(project_id)

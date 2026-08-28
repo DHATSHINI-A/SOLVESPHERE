@@ -116,6 +116,12 @@ def update_deployment_status(project_id: str, update: DeploymentStatusUpdate):
     if update.status not in allowed_status:
         raise HTTPException(status_code=400, detail="Invalid deployment status")
     deployment["status"] = update.status
+    if update.status in ["Deployed", "Completed"] and "problemId" in deployment:
+        try:
+            from auth_problems import update_problem_status_in_db
+            update_problem_status_in_db(deployment["problemId"], "Solved")
+        except Exception as e:
+            print(f"[WARN] Failed to update problem status to Solved: {e}")
     return {"success": True, "data": deployment}
 
 @router.post("/{project_id}/metrics")
