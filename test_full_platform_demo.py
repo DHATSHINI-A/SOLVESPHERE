@@ -156,3 +156,4 @@ def test_full_platform_scenario():
 
 if __name__ == "__main__":
     test_full_platform_scenario()
+

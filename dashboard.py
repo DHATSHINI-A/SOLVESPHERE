@@ -54,3 +54,4 @@ def get_dashboard_stats():
             "successRate": success_rate
         }
     }
+
