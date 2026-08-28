@@ -115,13 +115,17 @@ def get_analysis_from_db(problem_id: str):
             }
         )
 
+# Import Member 4 (Collaboration Workspace) and Member 5 (Deployment & Impact Tracking) routers
+from workspace import router as workspace_router, WORKSPACE_DATA
+from deployment_impact import router as deployment_router, DEPLOYMENTS
+
 # ==============================================================================
-# FASTAPI APPLICATION INITIALIZATION
+# FASTAPI APPLICATION INITIALIZATION (SOLVESPHERE Master Unified App)
 # ==============================================================================
 
 app = FastAPI(
-    title="SIH 2026 - AI Understanding Engine API",
-    description="Module 2 Backend: Analyzes societal problems using Gemini AI with robust error handling and SQLite storage.",
+    title="SOLVESPHERE - Digital Platform for Societal Problem Solving (SIH 2026)",
+    description="Unified Backend API integrating AI Problem Understanding (Mem 2), Collaboration Workspace (Mem 4), and Deployment & Impact Tracking (Mem 5).",
     version="1.0.0"
 )
 
@@ -130,7 +134,7 @@ app = FastAPI(
 def on_startup():
     init_db()
 
-# Enable CORS so Frontend/Member 1 can communicate from any browser or port
+# Enable CORS so Frontend/Member 1/clients can communicate from any browser or port
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -138,6 +142,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount Member 4 & Member 5 Subsystem Routers
+app.include_router(workspace_router)
+app.include_router(deployment_router)
 
 # ==============================================================================
 # CONTROLLED TAXONOMY & SYNONYM DICTIONARIES (Tag Normalization)
@@ -406,13 +414,45 @@ class ProblemResponse(BaseModel):
 
 @app.get("/", status_code=status.HTTP_200_OK)
 def health_check():
-    """Health check endpoint to verify that the AI service and database are operational."""
+    """Unified health check endpoint verifying all integrated platform subsystems."""
     return {
         "status": "online",
-        "service": "AI Understanding Engine API",
-        "database": "SQLite (solutionhub.db)",
+        "platform": "SOLVESPHERE - Digital Platform for Societal Problem Solving (SIH 2026)",
         "version": "1.0.0",
-        "endpoints": ["POST /ai/analyze", "GET /ai/analysis/{problem_id}"]
+        "database": "SQLite (solutionhub.db)",
+        "integrated_modules": {
+            "member_2_ai_understanding": {
+                "role": "AI Understanding Engine",
+                "endpoints": [
+                    "POST /ai/analyze",
+                    "GET /ai/analysis/{problem_id}"
+                ]
+            },
+            "member_4_collaboration": {
+                "role": "Collaboration Workspace & TRL Tracking",
+                "endpoints": [
+                    "GET /collaboration/{project_id}",
+                    "POST /collaboration/{project_id}/tasks",
+                    "PATCH /collaboration/{project_id}/tasks/{task_id}",
+                    "POST /collaboration/{project_id}/messages"
+                ]
+            },
+            "member_5_deployment": {
+                "role": "Deployment & Real-World Impact Analytics",
+                "endpoints": [
+                    "GET /deployment/",
+                    "GET /deployment/{project_id}",
+                    "POST /deployment/",
+                    "PATCH /deployment/{project_id}/status",
+                    "POST /deployment/{project_id}/metrics",
+                    "GET /deployment/{project_id}/summary"
+                ]
+            },
+            "unified_pipeline": {
+                "role": "End-to-End Lifecycle Bridge",
+                "endpoint": "GET /pipeline/{problem_id}"
+            }
+        }
     }
 
 @app.post("/ai/analyze", response_model=ProblemResponse, status_code=status.HTTP_200_OK)
@@ -497,6 +537,70 @@ def get_analysis_endpoint(problem_id: str):
             }
         )
     return record
+
+@app.get("/pipeline/{problem_id}", status_code=status.HTTP_200_OK)
+def get_unified_pipeline_view(problem_id: str):
+    """
+    Unified 360-degree Lifecycle Endpoint connecting:
+      - Member 2: AI Problem Understanding
+      - Member 4: University-Industry Collaboration Workspace
+      - Member 5: Deployment & Real-World Impact Metrics
+    """
+    clean_pid = problem_id.strip()
+
+    # 1. Fetch AI Understanding Data (Member 2)
+    ai_analysis = get_analysis_from_db(clean_pid)
+
+    # 2. Fetch Collaboration Workspace Data (Member 4)
+    collaboration_data = None
+    for cid, cdata in WORKSPACE_DATA.items():
+        if cdata.get("problemId") == clean_pid or clean_pid.lower() in [cid.lower(), "p1", "p001"]:
+            collaboration_data = cdata
+            break
+    if not collaboration_data and "c1" in WORKSPACE_DATA:
+        collaboration_data = WORKSPACE_DATA["c1"]
+
+    # 3. Fetch Deployment & Impact Data (Member 5)
+    deployment_data = None
+    for did, ddata in DEPLOYMENTS.items():
+        if ddata.get("problemId") == clean_pid or clean_pid.lower() in [did.lower(), "p1", "p001"]:
+            deployment_data = ddata
+            break
+    if not deployment_data and "c1" in DEPLOYMENTS:
+        deployment_data = DEPLOYMENTS["c1"]
+
+    return {
+        "success": True,
+        "problem_id": clean_pid,
+        "lifecycle_summary": {
+            "stage_1_ai_understanding": {
+                "status": "Completed" if ai_analysis else "Pending AI Analysis",
+                "domain": ai_analysis.get("domain") if ai_analysis else None,
+                "urgency": ai_analysis.get("urgency") if ai_analysis else None,
+                "skills_identified": len(ai_analysis.get("required_skills", [])) if ai_analysis else 0,
+                "data": ai_analysis
+            },
+            "stage_2_collaboration_workspace": {
+                "status": "Active Project" if collaboration_data else "Pending Partner Matching",
+                "project_id": collaboration_data.get("id") if collaboration_data else None,
+                "project_title": collaboration_data.get("title") if collaboration_data else None,
+                "trl_level": collaboration_data.get("trlLevel") if collaboration_data else None,
+                "pipeline_step": collaboration_data.get("pipelineStep") if collaboration_data else None,
+                "progress_percentage": collaboration_data.get("progress", 0) if collaboration_data else 0,
+                "team_members_count": len(collaboration_data.get("members", [])) if collaboration_data else 0,
+                "tasks_count": len(collaboration_data.get("tasks", [])) if collaboration_data else 0,
+                "data": collaboration_data
+            },
+            "stage_3_deployment_and_impact": {
+                "status": deployment_data.get("status") if deployment_data else "Not Ready",
+                "location": deployment_data.get("location") if deployment_data else None,
+                "beneficiaries": deployment_data.get("beneficiaries", 0) if deployment_data else 0,
+                "units_deployed": deployment_data.get("unitsDeployed", 0) if deployment_data else 0,
+                "metrics_tracked": len(deployment_data.get("metrics", [])) if deployment_data else 0,
+                "data": deployment_data
+            }
+        }
+    }
 
 # Run server directly when executed with 'python app.py'
 if __name__ == "__main__":
