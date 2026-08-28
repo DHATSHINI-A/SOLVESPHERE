@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOLVESPHERE - AI-Powered Innovation Platform</title>
+  <title>SOLVESPHERE - Problem-Solution Matchmaking Platform</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -11,32 +11,40 @@
       theme: {
         extend: {
           colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              900: '#312e81',
+            gold: {
+              300: '#f3e5ab',
+              400: '#e6ca65',
+              500: '#d4af37', // Champagne Gold Accent
+              600: '#b8860b', // Deep Metallic Gold
+              700: '#996515',
+            },
+            muted: {
+              bg: '#f8fafc',
+              card: '#ffffff',
+              border: '#e2e8f0',
+              text: '#0f172a',
+              subtext: '#64748b',
+              giver: '#475569',
+              solver: '#334155',
             }
           },
           animation: {
             'fade-in': 'fadeIn 0.3s ease-out forwards',
             'slide-up': 'slideUp 0.4s ease-out forwards',
-            'pulse-subtle': 'pulseSubtle 2s infinite',
+            'gold-glow': 'goldGlow 2s infinite',
           },
           keyframes: {
             fadeIn: {
-              '0%': { opacity: '0', transform: 'translateY(6px)' },
+              '0%': { opacity: '0', transform: 'translateY(4px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
             },
             slideUp: {
-              '0%': { opacity: '0', transform: 'translateY(16px)' },
+              '0%': { opacity: '0', transform: 'translateY(12px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
             },
-            pulseSubtle: {
-              '0%, 100%': { opacity: '1' },
-              '50%': { opacity: '0.8' },
+            goldGlow: {
+              '0%, 100%': { boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)' },
+              '50%': { boxShadow: '0 0 25px rgba(212, 175, 55, 0.6)' },
             }
           }
         }
@@ -46,789 +54,456 @@
   <style>
     .view-section { display: none; }
     .view-section.active { display: block; animation: fadeIn 0.35s ease-out forwards; }
-    .nav-tab.active { border-bottom: 2px solid #6366f1; color: #4f46e5; font-weight: 700; }
-    .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+    .nav-tab.active { border-bottom: 2.5px solid #d4af37; color: #b8860b; font-weight: 700; }
+    .gold-gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%); }
+    .gold-btn { background-color: #d4af37; color: #0f172a; font-weight: 700; transition: all 0.2s ease; }
+    .gold-btn:hover { background-color: #b8860b; color: #ffffff; transform: translateY(-1px); }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col relative selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col relative selection:bg-gold-500 selection:text-slate-900">
 
-  <!-- ========================================================================= -->
-  <!-- FLOATING TOAST NOTIFICATION SYSTEM (NO POPUPS) -->
-  <!-- ========================================================================= -->
+  <!-- FLOATING TOAST NOTIFICATION SYSTEM -->
   <div id="toast-container" class="fixed top-20 right-6 z-50 space-y-3 pointer-events-none"></div>
 
-  <!-- ========================================================================= -->
-  <!-- TOP NAVIGATION BAR -->
-  <!-- ========================================================================= -->
-  <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 shadow-sm transition-all duration-200">
+  <!-- TOP NAVIGATION BAR WITH DISTINCT ROLE STYLING -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
       <!-- Brand Logo -->
       <div class="flex items-center space-x-3 cursor-pointer group" onclick="showView('landing')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-gold-600 flex items-center justify-center text-gold-400 font-extrabold text-xl shadow-md group-hover:scale-105 transition-transform border border-gold-500/30">
           S
         </div>
         <div>
-          <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">SOLVESPHERE</span>
-          <span class="text-xs text-slate-400 block -mt-1 font-medium">SIH 2026 Innovation Engine</span>
+          <span class="font-black text-xl tracking-tight text-slate-900">SOLVESPHERE</span>
+          <span class="text-[10px] text-gold-600 font-bold block -mt-1 tracking-wider uppercase">Matchmaking Engine</span>
         </div>
       </div>
 
-      <!-- Main Navigation Tabs -->
-      <nav class="hidden lg:flex space-x-5 text-xs font-semibold text-slate-600">
-        <button onclick="showView('landing')" id="tab-landing" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Home</button>
-        <button onclick="showView('dashboard')" id="tab-dashboard" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Dashboard</button>
-        <button onclick="showView('submit')" id="tab-submit" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Post Problem</button>
-        <button onclick="showView('ai')" id="tab-ai" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">AI Engine</button>
-        <button onclick="showView('matching')" id="tab-matching" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Matching</button>
-        <button onclick="showView('workspace')" id="tab-workspace" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Workspace</button>
-        <button onclick="showView('deployment')" id="tab-deployment" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Deployment</button>
-        <button onclick="showView('impact')" id="tab-impact" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Impact</button>
-        <button onclick="showView('final')" id="tab-final" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Platform Summary</button>
+      <!-- Navigation Tabs (Role Responsive) -->
+      <nav class="hidden lg:flex space-x-6 text-xs font-semibold text-slate-600">
+        <button onclick="showView('landing')" id="tab-landing" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Home</button>
+        <button onclick="showView('giver-dashboard')" id="tab-giver-dashboard" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Giver Dashboard</button>
+        <button onclick="showView('solver-dashboard')" id="tab-solver-dashboard" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Solver Dashboard</button>
+        <button onclick="showView('submit-problem')" id="tab-submit-problem" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Submit Problem</button>
+        <button onclick="showView('matching-engine')" id="tab-matching-engine" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Matching Logic</button>
+        <button onclick="showView('shared-workspace')" id="tab-shared-workspace" class="nav-tab py-5 px-1 hover:text-gold-600 transition">Shared Workspace</button>
       </nav>
 
-      <!-- User Auth Pill & Navigation -->
+      <!-- Role Switcher & Auth Pill -->
       <div class="flex items-center space-x-3">
-        <div id="user-pill" class="flex items-center space-x-2 bg-indigo-50/80 px-3 py-1.5 rounded-full border border-indigo-100 text-xs font-semibold text-indigo-700 shadow-sm">
-          <span id="user-role-badge" class="bg-indigo-600 text-white px-2 py-0.5 rounded-md text-[10px] font-bold">Citizen</span>
-          <span id="user-name-display" class="truncate max-w-[100px]">Alex Doe</span>
+        <div id="user-role-pill" class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200 text-xs font-bold text-slate-800">
+          <span id="role-type-badge" class="bg-gold-500 text-slate-900 px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wider">Problem Giver</span>
+          <span id="user-name-display" class="truncate max-w-[110px]">Citizen Rakesh</span>
         </div>
-        <button onclick="showView('auth')" id="auth-nav-btn" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition">
+        <button onclick="showView('auth')" class="bg-slate-900 hover:bg-slate-800 active:scale-95 text-gold-400 text-xs font-bold px-4 py-2 rounded-xl shadow border border-gold-500/30 transition">
           Switch User / Role
         </button>
       </div>
     </div>
   </header>
 
-  <!-- ========================================================================= -->
   <!-- MAIN CONTENT CONTAINER -->
-  <!-- ========================================================================= -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     <!-- 1. LANDING PAGE VIEW -->
     <section id="view-landing" class="view-section active space-y-12">
-      <!-- Hero Banner -->
-      <div class="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
-        <div class="absolute -right-16 -top-16 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      <!-- Premium Hero Banner -->
+      <div class="gold-gradient-bg rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-gold-500/20">
         <div class="max-w-3xl relative z-10 space-y-6">
-          <div class="inline-flex items-center space-x-2 bg-indigo-500/20 border border-indigo-400/30 px-3.5 py-1.5 rounded-full text-xs font-semibold text-indigo-300">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span>SIH 2026 Production Platform Ready</span>
+          <div class="inline-flex items-center space-x-2 bg-gold-500/10 border border-gold-500/30 px-3.5 py-1.5 rounded-full text-xs font-semibold text-gold-400">
+            <span>✨ Automated Problem-Solution Matchmaking Platform</span>
           </div>
-          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-            Connecting Societal Challenges with University & Industry R&D Cells
+          <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight text-white">
+            Connecting Grassroots Challenges with Expert Problem Solvers
           </h1>
-          <p class="text-slate-300 text-base md:text-lg leading-relaxed">
-            SOLVESPHERE bridges the gap between citizens, researchers, and enterprises. Submit grassroots problems, automatically extract requirements via Gemini AI, match with expert R&D partners, collaborate in shared workspaces, and track real-world impact.
+          <p class="text-slate-300 text-base leading-relaxed">
+            Strictly role-separated platform bridging <strong class="text-gold-400">Problem Givers</strong> (Citizens, NGOs) and <strong class="text-gold-400">Problem Solvers</strong> (Universities, Industry Cells, Colleges). Automated expertise tag matching with privacy-preserved post-match workspaces.
           </p>
           <div class="flex flex-wrap gap-4 pt-2">
-            <button onclick="showView('submit')" class="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-indigo-500/25 transition flex items-center space-x-2">
-              <span>Post a Problem Statement</span>
+            <button onclick="showView('auth')" class="gold-btn px-6 py-3 rounded-xl shadow-lg flex items-center space-x-2">
+              <span>Enter Platform as Giver or Solver</span>
               <span>→</span>
             </button>
-            <button onclick="showView('dashboard')" class="bg-white/10 hover:bg-white/20 active:scale-95 text-white font-semibold px-6 py-3 rounded-xl border border-white/20 transition">
-              Explore Live Dashboard
+            <button onclick="showView('matching-engine')" class="bg-white/10 hover:bg-white/20 text-slate-200 font-semibold px-6 py-3 rounded-xl border border-white/20 transition">
+              View Matchmaking Logic
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Innovation Pipeline Overview -->
-      <div class="space-y-6">
-        <div class="text-center space-y-1">
-          <h2 class="text-2xl font-bold text-slate-900">End-to-End Innovation Pipeline</h2>
-          <p class="text-xs text-slate-500">How SOLVESPHERE transforms grassroots problems into deployed field solutions</p>
+      <!-- Dual Role Feature Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Problem Givers Box -->
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-4">
+          <div class="w-12 h-12 rounded-2xl bg-slate-900 text-gold-400 flex items-center justify-center text-xl font-black">
+            🏢
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">1. Problem Givers (Citizens & NGOs)</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Submit societal challenges with category tags, location, and supporting media. Strictly isolated view — no access to solver database or internal matching algorithms.
+          </p>
+          <button onclick="switchRole('Giver', 'Citizen Rakesh')" class="gold-btn text-xs px-4 py-2 rounded-xl">
+            Access Problem Giver Portal →
+          </button>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div onclick="showView('submit')" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-300 cursor-pointer transition text-center space-y-2 group">
-            <div class="w-10 h-10 mx-auto rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold group-hover:scale-110 transition">1</div>
-            <h3 class="font-bold text-sm text-slate-800">Problem Submission</h3>
-            <p class="text-xs text-slate-500">Citizens post challenges with location & urgency</p>
+        <!-- Problem Solvers Box -->
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-4">
+          <div class="w-12 h-12 rounded-2xl bg-slate-900 text-gold-400 flex items-center justify-center text-xl font-black">
+            🎓
           </div>
-          <div onclick="showView('ai')" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-300 cursor-pointer transition text-center space-y-2 group">
-            <div class="w-10 h-10 mx-auto rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold group-hover:scale-110 transition">2</div>
-            <h3 class="font-bold text-sm text-slate-800">AI Understanding</h3>
-            <p class="text-xs text-slate-500">Gemini extracts domain, skills & search keywords</p>
-          </div>
-          <div onclick="showView('matching')" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-300 cursor-pointer transition text-center space-y-2 group">
-            <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold group-hover:scale-110 transition">3</div>
-            <h3 class="font-bold text-sm text-slate-800">Partner Matching</h3>
-            <p class="text-xs text-slate-500">6-Factor weighted algorithm ranks top partners</p>
-          </div>
-          <div onclick="showView('workspace')" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-300 cursor-pointer transition text-center space-y-2 group">
-            <div class="w-10 h-10 mx-auto rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold group-hover:scale-110 transition">4</div>
-            <h3 class="font-bold text-sm text-slate-800">Collaboration</h3>
-            <p class="text-xs text-slate-500">Kanban tasks, discussions & milestone tracking</p>
-          </div>
-          <div onclick="showView('deployment')" class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-300 cursor-pointer transition text-center space-y-2 group">
-            <div class="w-10 h-10 mx-auto rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold group-hover:scale-110 transition">5</div>
-            <h3 class="font-bold text-sm text-slate-800">Deployment & Impact</h3>
-            <p class="text-xs text-slate-500">Field deployments & before/after metric tracking</p>
-          </div>
+          <h3 class="text-xl font-bold text-slate-900">2. Problem Solvers (Colleges, Industry, R&D)</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Specify multi-select areas of expertise during signup. View matched open problem counts, claim challenges, and collaborate in transparent post-match workspaces.
+          </p>
+          <button onclick="switchRole('Solver', 'AquaSense Technologies')" class="bg-slate-900 hover:bg-slate-800 text-gold-400 text-xs font-bold px-4 py-2 rounded-xl transition">
+            Access Problem Solver Portal →
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- 2. LOGIN / REGISTER VIEW -->
-    <section id="view-auth" class="view-section max-w-md mx-auto my-8">
-      <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6">
-        <div class="text-center space-y-2">
-          <h2 class="text-2xl font-bold text-slate-900">Sign In to SOLVESPHERE</h2>
-          <p class="text-xs text-slate-500">Select your role to access customized dashboards & features</p>
+    <!-- 2. AUTHENTICATION & ROLE SIGNUP MODAL -->
+    <section id="view-auth" class="view-section max-w-md mx-auto my-6">
+      <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+        <div class="text-center space-y-1">
+          <h2 class="text-2xl font-bold text-slate-900">Platform Registration</h2>
+          <p class="text-xs text-slate-500">Choose your platform role & specify permissions</p>
         </div>
 
-        <!-- Auth Tabs -->
-        <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
-          <button id="auth-tab-login" onclick="switchAuthTab('login')" class="py-2 rounded-lg bg-white shadow text-indigo-600 font-bold transition">Login</button>
-          <button id="auth-tab-register" onclick="switchAuthTab('register')" class="py-2 rounded-lg text-slate-500 hover:text-slate-900 transition">Register</button>
+        <!-- Role Type Selection -->
+        <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+          <button id="auth-role-giver" onclick="toggleAuthRoleType('Giver')" class="py-2.5 rounded-lg bg-slate-900 text-gold-400 shadow">Problem Giver</button>
+          <button id="auth-role-solver" onclick="toggleAuthRoleType('Solver')" class="py-2.5 rounded-lg text-slate-600 hover:text-slate-900">Problem Solver</button>
         </div>
 
-        <!-- Auth Form -->
-        <form onsubmit="handleAuthSubmit(event)" class="space-y-4 text-xs">
-          <div id="auth-field-name" class="hidden space-y-1">
-            <label class="font-semibold text-slate-700">Full Name</label>
-            <input type="text" id="auth-name" placeholder="Alex Doe" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        <!-- Registration Form -->
+        <form onsubmit="handleRegistrationSubmit(event)" class="space-y-4 text-xs">
+          <div class="space-y-1">
+            <label class="font-semibold text-slate-700">Full Name / Organization Name</label>
+            <input type="text" id="reg-name" required value="AquaSense Technologies" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
           </div>
-          
+
           <div class="space-y-1">
             <label class="font-semibold text-slate-700">Email Address</label>
-            <input type="email" id="auth-email" required value="alex.citizen@example.com" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <input type="email" id="reg-email" required value="contact@aquasense.org" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
           </div>
 
-          <div class="space-y-1">
-            <label class="font-semibold text-slate-700">Password</label>
-            <input type="password" id="auth-password" required value="password123" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <!-- Solver Multi-Select Expertise Fields (Only shown for Solvers) -->
+          <div id="solver-expertise-box" class="space-y-2">
+            <label class="font-bold text-slate-900 block">Select Areas of Expertise (Multi-Select Required)</label>
+            <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="IoT Sensors" checked class="w-4 h-4 text-gold-600 rounded">
+                <span class="font-medium text-slate-700">IoT Sensors</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Water Quality Analysis" checked class="w-4 h-4 text-gold-600 rounded">
+                <span class="font-medium text-slate-700">Water Quality</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Embedded Systems" checked class="w-4 h-4 text-gold-600 rounded">
+                <span class="font-medium text-slate-700">Embedded Systems</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Solar Energy" class="w-4 h-4 text-gold-600 rounded">
+                <span class="font-medium text-slate-700">Solar Energy</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Waste Segregation" class="w-4 h-4 text-gold-600 rounded">
+                <span class="font-medium text-slate-700">Waste Management</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Environmental Engineering" checked class="w-4 h-4 text-gold-600 rounded">
+                <span class="font-medium text-slate-700">Environmental Eng</span>
+              </label>
+            </div>
           </div>
 
-          <div class="space-y-1">
-            <label class="font-semibold text-slate-700">Select Stakeholder Role</label>
-            <select id="auth-role" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
-              <option value="Citizen">Citizen / Community Leader</option>
-              <option value="NGO/Government">NGO / Local Government</option>
-              <option value="University">University R&D Cell</option>
-              <option value="Industry">Industry / Corporate Sponsor</option>
-              <option value="Admin">System Administrator</option>
-            </select>
-          </div>
-
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
-            <span>Continue to Platform</span>
-            <span>→</span>
+          <button type="submit" class="w-full gold-btn py-3 rounded-xl shadow transition">
+            Complete Registration & Enter Platform →
           </button>
         </form>
       </div>
     </section>
 
-    <!-- 3. ROLE-BASED MAIN DASHBOARD -->
-    <section id="view-dashboard" class="view-section space-y-8">
-      <!-- Role Header & Live Controls -->
-      <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-4">
+    <!-- 3. PROBLEM GIVER DASHBOARD (ISOLATED CITIZEN & NGO PORTAL) -->
+    <section id="view-giver-dashboard" class="view-section space-y-6">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h2 class="text-xl font-bold text-slate-900">Platform Command Center</h2>
-          <p class="text-xs text-slate-500">Live operational metrics & crowdsourced problem repository</p>
-        </div>
-        <div class="flex items-center space-x-2 text-xs font-semibold">
-          <span class="text-slate-400">View As:</span>
-          <button onclick="setDashboardRole('Citizen')" class="role-btn bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-200 transition">Citizen</button>
-          <button onclick="setDashboardRole('NGO/Government')" class="role-btn bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200 transition">NGO/Gov</button>
-          <button onclick="setDashboardRole('University')" class="role-btn bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200 transition">University</button>
-          <button onclick="setDashboardRole('Industry')" class="role-btn bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200 transition">Industry</button>
-          <button onclick="setDashboardRole('Admin')" class="role-btn bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200 transition">Admin</button>
-        </div>
-      </div>
-
-      <!-- Stat Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-xs text-slate-400 font-semibold uppercase block">Total Problems</span>
-          <span class="text-2xl font-extrabold text-slate-900" id="dash-stat-total">150</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-xs text-slate-400 font-semibold uppercase block">Verified</span>
-          <span class="text-2xl font-extrabold text-blue-600">126</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-xs text-slate-400 font-semibold uppercase block">Active Projects</span>
-          <span class="text-2xl font-extrabold text-purple-600">26</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-xs text-slate-400 font-semibold uppercase block">Solutions Dev</span>
-          <span class="text-2xl font-extrabold text-amber-600">20</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-xs text-slate-400 font-semibold uppercase block">Deployed</span>
-          <span class="text-2xl font-extrabold text-emerald-600">14</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-xs text-slate-400 font-semibold uppercase block">Impacted</span>
-          <span class="text-2xl font-extrabold text-indigo-600">155,000</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-xs text-slate-400 font-semibold uppercase block">Success Rate</span>
-          <span class="text-2xl font-extrabold text-teal-600">84%</span>
-        </div>
-      </div>
-
-      <!-- Problem Submissions Table with Live Search & Filters -->
-      <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden space-y-4 p-6">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <h3 class="font-bold text-slate-900 text-lg">Grassroots Problem Statements</h3>
-          
-          <div class="flex items-center space-x-3 text-xs">
-            <!-- Search Input -->
-            <div class="relative">
-              <input type="text" id="table-search" oninput="filterProblemsTable()" placeholder="Search title or location..." class="pl-8 pr-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none w-48">
-              <span class="absolute left-2.5 top-2.5 text-slate-400">🔍</span>
-            </div>
-
-            <!-- Category Filter -->
-            <select id="table-cat-filter" onchange="filterProblemsTable()" class="px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
-              <option value="All">All Sectors</option>
-              <option value="Water & Sanitation">Water & Sanitation</option>
-              <option value="Agriculture">Agriculture</option>
-              <option value="Waste Management">Waste Management</option>
-              <option value="Environment">Environment</option>
-            </select>
-
-            <button onclick="showView('submit')" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold px-4 py-2 rounded-xl transition shadow">
-              + Post Problem
-            </button>
+          <div class="inline-flex items-center space-x-2 bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-bold mb-1 border border-slate-200">
+            <span>🏢 Problem Giver Dashboard (Citizen & NGO View)</span>
           </div>
+          <h2 class="text-2xl font-bold text-slate-900">My Submitted Problems</h2>
+          <p class="text-xs text-slate-500">Track progress of challenges you submitted. Protected private view.</p>
         </div>
+        <button onclick="showView('submit-problem')" class="gold-btn px-5 py-2.5 rounded-xl text-xs shadow">
+          + Submit New Problem
+        </button>
+      </div>
 
+      <!-- Giver Stat Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <span class="text-xs text-slate-400 font-bold uppercase block">My Submissions</span>
+          <span class="text-3xl font-black text-slate-900" id="giver-stat-total">3</span>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <span class="text-xs text-slate-400 font-bold uppercase block">Under Review</span>
+          <span class="text-3xl font-black text-amber-600">1</span>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <span class="text-xs text-slate-400 font-bold uppercase block">Matched & Active</span>
+          <span class="text-3xl font-black text-indigo-600">1</span>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+          <span class="text-xs text-slate-400 font-bold uppercase block">Solved Problems</span>
+          <span class="text-3xl font-black text-emerald-600">1</span>
+        </div>
+      </div>
+
+      <!-- Submissions Table -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+        <h3 class="font-bold text-slate-900 text-base">Submitted Challenge Logs</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
-              <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold">
                 <th class="py-3 px-4">Problem ID</th>
-                <th class="py-3 px-4">Title & Details</th>
+                <th class="py-3 px-4">Title</th>
                 <th class="py-3 px-4">Category</th>
                 <th class="py-3 px-4">Location</th>
-                <th class="py-3 px-4">Urgency</th>
                 <th class="py-3 px-4">Status</th>
                 <th class="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody id="problems-table-body" class="divide-y divide-slate-100">
-              <!-- Dynamically rendered rows -->
+            <tbody id="giver-table-body" class="divide-y divide-slate-100">
+              <!-- Rendered via JS -->
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 4. PROBLEM SUBMISSION PAGE WITH FUNCTIONAL FILE UPLOAD -->
-    <section id="view-submit" class="view-section max-w-2xl mx-auto space-y-6">
-      <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6">
+    <!-- 4. PROBLEM SOLVER DASHBOARD (MATCHED EXPERTISE PORTAL) -->
+    <section id="view-solver-dashboard" class="view-section space-y-6">
+      <div class="bg-slate-900 text-white p-6 rounded-3xl border border-gold-500/30 shadow-xl space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center space-x-2 bg-gold-500/20 text-gold-400 px-3 py-1 rounded-full text-xs font-bold mb-1 border border-gold-500/30">
+              <span>🎓 Problem Solver Dashboard (Organizations & Colleges)</span>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Expertise-Matched Challenges</h2>
+            <p class="text-xs text-slate-300">Filtered automatically based on your selected areas of expertise.</p>
+          </div>
+          
+          <!-- Solver Expertise Badge Pills -->
+          <div class="flex flex-wrap gap-1.5 text-xs">
+            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ IoT Sensors</span>
+            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Water Quality</span>
+            <span class="bg-gold-500/20 text-gold-300 border border-gold-500/40 px-3 py-1 rounded-full font-bold">✓ Environmental Eng</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Banner for New Matched Problem -->
+      <div id="solver-notification" class="bg-gold-500/10 border border-gold-500/40 p-4 rounded-2xl flex items-center justify-between text-xs text-slate-900 font-semibold">
+        <div class="flex items-center space-x-2">
+          <span class="text-base">🔔</span>
+          <span><strong>New Match Alert:</strong> 1 new problem matching your expertise ("Water Quality") was submitted!</span>
+        </div>
+        <button onclick="showView('matching-engine')" class="gold-btn px-3 py-1 rounded-lg text-[11px]">View Overlap %</button>
+      </div>
+
+      <!-- Matched Problems Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="solver-problems-grid">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- 5. PROBLEM SUBMISSION FORM PAGE -->
+    <section id="view-submit-problem" class="view-section max-w-2xl mx-auto space-y-6">
+      <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
         <div class="space-y-1">
-          <h2 class="text-2xl font-bold text-slate-900">Post a Societal Problem Statement</h2>
-          <p class="text-xs text-slate-500">Submit a real-world challenge to trigger Gemini AI analysis & partner matching</p>
+          <h2 class="text-2xl font-bold text-slate-900">Submit a Grassroots Problem Statement</h2>
+          <p class="text-xs text-slate-500">Submissions are tagged by category and matched to relevant solvers.</p>
         </div>
 
-        <form onsubmit="handleProblemSubmit(event)" class="space-y-4 text-xs">
+        <form onsubmit="handleProblemFormSubmit(event)" class="space-y-4 text-xs">
           <div class="space-y-1">
-            <label class="font-semibold text-slate-700">Problem Title</label>
-            <input type="text" id="prob-title" required value="Affordable Groundwater Monitoring System" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
+            <label class="font-bold text-slate-800">Problem Title</label>
+            <input type="text" id="form-prob-title" required value="Affordable Groundwater Monitoring System" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
           </div>
 
-          <div class="grid grid-cols-3 gap-4">
+          <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1">
-              <label class="font-semibold text-slate-700">Category Sector</label>
-              <select id="prob-category" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <label class="font-bold text-slate-800">Category Sector</label>
+              <select id="form-prob-category" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none font-medium">
                 <option value="Water & Sanitation">Water & Sanitation</option>
-                <option value="Environment">Environment</option>
-                <option value="Healthcare">Healthcare</option>
                 <option value="Agriculture">Agriculture</option>
                 <option value="Waste Management">Waste Management</option>
+                <option value="Solar Energy">Solar Energy</option>
               </select>
             </div>
             <div class="space-y-1">
-              <label class="font-semibold text-slate-700">Target Location</label>
-              <input type="text" id="prob-location" required value="Village X, Ranchi, Jharkhand" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            <div class="space-y-1">
-              <label class="font-semibold text-slate-700">Community Urgency</label>
-              <select id="prob-urgency" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-semibold text-amber-600">
-                <option value="High">High Urgency</option>
-                <option value="Critical">Critical Emergency</option>
-                <option value="Medium">Medium Priority</option>
-                <option value="Low">Low Priority</option>
-              </select>
+              <label class="font-bold text-slate-800">Location</label>
+              <input type="text" id="form-prob-location" required value="Village X, Ranchi, Jharkhand" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
             </div>
           </div>
 
           <div class="space-y-1">
-            <label class="font-semibold text-slate-700">Detailed Description of Challenge</label>
-            <textarea id="prob-description" rows="4" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">Our village has contaminated groundwater and needs an affordable monitoring system to continuously detect heavy metals and nitrate pollutants.</textarea>
+            <label class="font-bold text-slate-800">Detailed Description</label>
+            <textarea id="form-prob-desc" rows="4" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">Our village has contaminated groundwater and needs an affordable monitoring system to detect heavy metals and nitrate pollutants.</textarea>
           </div>
 
-          <!-- FUNCTIONAL FILE & IMAGE UPLOAD DROPZONE -->
+          <!-- Drag & Drop Media Uploader -->
           <div class="space-y-2">
-            <label class="font-semibold text-slate-700 block">Upload Field Photos & Supporting Documents</label>
-            <div id="dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-2xl p-6 text-center space-y-3 bg-slate-50 transition cursor-pointer" onclick="document.getElementById('prob-file-input').click()">
-              <input type="file" id="prob-file-input" multiple accept="image/*,.pdf" class="hidden" onchange="handleFileSelect(event)">
+            <label class="font-bold text-slate-800 block">Supporting Media & Documents</label>
+            <div id="dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)" class="border-2 border-dashed border-slate-300 hover:border-gold-500 rounded-2xl p-6 text-center space-y-2 bg-slate-50 transition cursor-pointer" onclick="document.getElementById('file-input').click()">
+              <input type="file" id="file-input" multiple accept="image/*,.pdf" class="hidden" onchange="handleFileSelect(event)">
               <div class="text-3xl">📷</div>
-              <div>
-                <span class="font-bold text-slate-700">Click to upload</span> or drag and drop field images
-                <p class="text-slate-400 text-[11px]">Supports PNG, JPG, WEBP, PDF up to 10MB</p>
+              <div class="text-slate-600">
+                <span class="font-bold text-slate-900">Click to upload</span> or drag and drop photos
               </div>
             </div>
-
-            <!-- Image Previews Container -->
             <div id="file-previews" class="grid grid-cols-4 gap-3 pt-2"></div>
           </div>
 
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-indigo-500/25 transition flex items-center justify-center space-x-2">
-            <span>Submit Problem Statement & Run AI Engine</span>
+          <button type="submit" class="w-full gold-btn py-3.5 rounded-xl shadow-lg flex items-center justify-center space-x-2">
+            <span>Submit Problem & Run Automated Matchmaker</span>
             <span>⚡</span>
           </button>
         </form>
       </div>
     </section>
 
-    <!-- 5. AI ANALYSIS PAGE -->
-    <section id="view-ai" class="view-section max-w-3xl mx-auto space-y-6">
-      <!-- Inline Success Alert Banner -->
-      <div id="ai-success-banner" class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-center justify-between text-emerald-800 text-xs font-medium">
-        <div class="flex items-center space-x-2">
-          <span class="text-base">✓</span>
-          <span>Problem statement successfully recorded in database & analyzed by Gemini AI.</span>
-        </div>
-        <button onclick="document.getElementById('ai-success-banner').style.display='none'" class="text-emerald-500 font-bold hover:text-emerald-700">✕</button>
-      </div>
-
-      <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div>
-            <div class="inline-flex items-center space-x-2 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold mb-1">
-              <span>🤖 Gemini AI Understanding Engine</span>
-            </div>
-            <h2 class="text-2xl font-bold text-slate-900" id="ai-prob-title">Affordable Groundwater Monitoring System</h2>
-            <p class="text-xs text-slate-400">Problem ID: <span id="ai-prob-id" class="font-mono text-indigo-600 font-bold">P-34E65C</span> | Status: <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-semibold">Analyzed</span></p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 text-xs">
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
-            <span class="text-slate-400 font-semibold block uppercase">Extracted Sector Domain</span>
-            <span class="text-lg font-extrabold text-indigo-600" id="ai-domain">Water & Sanitation</span>
-          </div>
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-1">
-            <span class="text-slate-400 font-semibold block uppercase">Solution Classification</span>
-            <span class="text-lg font-extrabold text-slate-800" id="ai-type">Environmental Monitoring</span>
-          </div>
-        </div>
-
-        <!-- Technical Skills -->
-        <div class="space-y-2">
-          <label class="font-bold text-slate-800 text-xs block uppercase">AI-Extracted Technical Skills Required</label>
-          <div id="ai-skills-container" class="flex flex-wrap gap-2">
-            <span class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-1.5 rounded-xl text-xs font-semibold">IoT Sensors</span>
-            <span class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-1.5 rounded-xl text-xs font-semibold">Water Quality Analysis</span>
-            <span class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-1.5 rounded-xl text-xs font-semibold">Embedded Systems</span>
-            <span class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-1.5 rounded-xl text-xs font-semibold">Low-Power Electronics</span>
-          </div>
-        </div>
-
-        <!-- Search Keywords -->
-        <div class="space-y-2">
-          <label class="font-bold text-slate-800 text-xs block uppercase">Search & Matching Keywords</label>
-          <div id="ai-keywords-container" class="flex flex-wrap gap-2">
-            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-xs font-mono">#groundwater</span>
-            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-xs font-mono">#contamination</span>
-            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-xs font-mono">#sensors</span>
-            <span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-xs font-mono">#affordable</span>
-          </div>
-        </div>
-
-        <button onclick="showView('matching')" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
-          <span>Proceed to Partner Matching Engine (Member 3)</span>
-          <span>→</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- 6. PARTNER MATCHING PAGE -->
-    <section id="view-matching" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+    <!-- 6. MATCHMAKING ENGINE DB & LOGIC VIEW -->
+    <section id="view-matching-engine" class="view-section space-y-6 max-w-4xl mx-auto">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center justify-between">
         <div>
-          <div class="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold mb-1">
-            <span>🎯 Member 3 - 6-Factor Partner Matchmaker</span>
+          <div class="inline-flex items-center space-x-2 bg-gold-500/20 text-gold-700 px-3 py-1 rounded-full text-xs font-bold mb-1">
+            <span>⚡ Matchmaking DB Engine</span>
           </div>
-          <h2 class="text-2xl font-bold text-slate-900">Ranked R&D Partner Recommendations</h2>
-          <p class="text-xs text-slate-500">6 Weighted Factors: Skills 30%, Expertise 20%, Projects 20%, Resources 15%, Location 10%, Availability 5%</p>
+          <h2 class="text-2xl font-bold text-slate-900">Automated Expertise Tag Matching</h2>
+          <p class="text-xs text-slate-500">Calculates tag overlap between Problem required skills and Solver profile tags.</p>
         </div>
-        <button onclick="showView('workspace')" class="bg-indigo-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow hover:bg-indigo-700 transition">
-          Create Collaboration Project →
+        <button onclick="showView('shared-workspace')" class="gold-btn px-5 py-2.5 rounded-xl text-xs shadow">
+          Enter Shared Workspace →
         </button>
       </div>
 
-      <!-- Partner Recommendation Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <!-- Partner 1 -->
-        <div class="bg-white rounded-3xl p-6 border-2 border-indigo-500 shadow-lg relative space-y-4 hover:shadow-xl transition">
-          <div class="absolute -top-3 right-6 bg-indigo-600 text-white text-xs font-extrabold px-3 py-1 rounded-full shadow">
-            RANK #1 MATCH
-          </div>
-          <div class="flex justify-between items-start">
-            <div>
-              <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-0.5 rounded-md">Industry Partner</span>
-              <h3 class="text-lg font-bold text-slate-900 mt-1">AquaSense Technologies</h3>
-              <p class="text-xs text-slate-400">Ranchi, Jharkhand (Same City)</p>
-            </div>
-            <div class="text-right">
-              <span class="text-3xl font-black text-indigo-600">40.25%</span>
-              <span class="text-xs text-slate-400 block font-medium">Match Score</span>
-            </div>
-          </div>
-
-          <div class="space-y-2 text-xs">
-            <span class="font-semibold text-slate-700 block">Matched Technical Skills:</span>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-md font-semibold">✓ IoT</span>
-              <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-md font-semibold">✓ Embedded Systems</span>
-            </div>
-          </div>
-
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs text-slate-600 space-y-1">
-            <span class="font-bold text-slate-800">Why Recommended:</span>
-            <p>AquaSense Technologies received a 40.25% match score due to strong technical core capabilities, physical hardware labs, and immediate team availability.</p>
-          </div>
-
-          <button onclick="selectPartner('AquaSense Technologies')" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-2.5 rounded-xl border border-indigo-200 transition text-xs">
-            Select Partner for Project
-          </button>
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <h3 class="font-bold text-slate-900 text-base">Match Matrix Results</h3>
+        <div id="match-matrix-container" class="space-y-3 text-xs">
+          <!-- Rendered via JS -->
         </div>
-
-        <!-- Partner 2 -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4 hover:shadow-md transition">
-          <div class="flex justify-between items-start">
-            <div>
-              <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-0.5 rounded-md">University Cell</span>
-              <h3 class="text-lg font-bold text-slate-900 mt-1">Aranya Institute of Technology</h3>
-              <p class="text-xs text-slate-400">Ranchi, Jharkhand (Same City)</p>
-            </div>
-            <div class="text-right">
-              <span class="text-3xl font-black text-slate-700">32.50%</span>
-              <span class="text-xs text-slate-400 block font-medium">Match Score</span>
-            </div>
-          </div>
-
-          <div class="space-y-2 text-xs">
-            <span class="font-semibold text-slate-700 block">Matched Technical Skills:</span>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-md font-semibold">✓ Water Quality Analysis</span>
-            </div>
-          </div>
-
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs text-slate-600 space-y-1">
-            <span class="font-bold text-slate-800">Why Recommended:</span>
-            <p>Aranya Institute provides certified water quality testing lab facilities and student field deployment teams.</p>
-          </div>
-
-          <button onclick="selectPartner('Aranya Institute')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition text-xs">
-            Select Partner for Project
-          </button>
-        </div>
-
       </div>
     </section>
 
-    <!-- 7. COLLABORATION WORKSPACE PAGE (WITH INTERACTIVE TASKS & DISCUSSION FEED) -->
-    <section id="view-workspace" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-wrap items-center justify-between gap-4">
+    <!-- 7. POST-MATCH SHARED WORKSPACE (PRIVACY PRESERVED) -->
+    <section id="view-shared-workspace" class="view-section space-y-6">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div class="inline-flex items-center space-x-2 bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-bold mb-1">
-            <span>🤝 Member 4 - Collaboration Workspace</span>
+          <div class="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold mb-1">
+            <span>🔒 Post-Match Shared Workspace (Privacy Preserved)</span>
           </div>
-          <h2 class="text-2xl font-bold text-slate-900" id="ws-proj-title">Smart Water Monitoring Project</h2>
-          <p class="text-xs text-slate-500">Problem ID: <span class="font-mono text-indigo-600 font-bold">P-34E65C</span> | Project ID: <span class="font-mono text-purple-600 font-bold">c-P-34E65C</span></p>
+          <h2 class="text-2xl font-bold text-slate-900" id="ws-title">Smart Water Monitoring Project</h2>
+          <p class="text-xs text-slate-500">Problem ID: <span class="font-mono text-gold-600 font-bold">P-34E65C</span> | Confidential notes & financial data strictly excluded.</p>
         </div>
-        <div class="flex items-center space-x-3">
-          <div class="text-right">
-            <span class="text-xs text-slate-400 font-semibold block uppercase">Project Progress</span>
-            <span class="text-xl font-black text-indigo-600" id="ws-progress-text">50%</span>
-          </div>
-          <button onclick="showView('deployment')" class="bg-indigo-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow hover:bg-indigo-700 transition">
-            Proceed to Deployment →
-          </button>
+        <div class="text-right">
+          <span class="text-xs text-slate-400 font-bold block uppercase">Overall Progress</span>
+          <span class="text-2xl font-black text-gold-600" id="ws-pct-text">50%</span>
         </div>
       </div>
 
-      <!-- Dynamic Progress Bar -->
-      <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
+      <!-- Transparent Progress Percentage Bar -->
+      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-2">
         <div class="flex justify-between text-xs font-bold text-slate-700">
-          <span>Development Lifecycle</span>
-          <span id="ws-status-badge" class="bg-purple-100 text-purple-700 px-2.5 py-0.5 rounded-md">Status: Prototype</span>
+          <span>Project Execution Status</span>
+          <span class="bg-gold-500/20 text-gold-700 px-2.5 py-0.5 rounded-md">Phase: Prototype Testing</span>
         </div>
-        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-          <div id="ws-progress-bar" class="bg-indigo-600 h-full rounded-full transition-all duration-500" style="width: 50%;"></div>
+        <div class="w-full bg-slate-100 h-3.5 rounded-full overflow-hidden">
+          <div id="ws-bar" class="bg-gold-500 h-full rounded-full transition-all duration-500" style="width: 50%;"></div>
         </div>
       </div>
 
-      <!-- Kanban Tasks & Interactive Add Task Form -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="md:col-span-2 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="font-bold text-slate-900 text-base">Project Milestone Tasks</h3>
-            <span class="text-xs text-slate-400">Check tasks to update progress %</span>
+      <!-- Field Photos & Media Gallery + Suggestions Exchange -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+        <!-- Field Gallery -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-900 text-base">Ongoing Field Work Photos & Videos</h3>
+          <div class="grid grid-cols-2 gap-3" id="ws-media-gallery">
+            <div class="bg-slate-100 rounded-xl h-28 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
+              📷 Prototype Circuit Board
+            </div>
+            <div class="bg-slate-100 rounded-xl h-28 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
+              🎥 Village Water Test Video
+            </div>
+          </div>
+        </div>
+
+        <!-- Clean Feedback & Suggestions Feed -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-slate-900 text-base">Concise Feedback & Suggestions</h3>
+          <div class="space-y-2 max-h-48 overflow-y-auto" id="ws-feedback-list">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
+              <span class="font-bold text-slate-900 block">Citizen Rakesh (Problem Giver)</span>
+              <p class="text-slate-600">Can the sensor display test results directly on an offline LCD screen?</p>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
+              <span class="font-bold text-gold-600 block">AquaSense Technologies (Problem Solver)</span>
+              <p class="text-slate-600">Yes! We added a low-power e-ink display for offline village use.</p>
+            </div>
           </div>
 
-          <!-- Add Task Form -->
-          <form onsubmit="addNewTask(event)" class="flex space-x-2 text-xs">
-            <input type="text" id="new-task-title" required placeholder="Add a new milestone task..." class="flex-grow px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <button type="submit" class="bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl hover:bg-indigo-700 transition">+ Add Task</button>
+          <form onsubmit="addFeedback(event)" class="flex space-x-2">
+            <input type="text" id="feedback-input" required placeholder="Add concise feedback or suggestion..." class="flex-grow px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gold-500 focus:outline-none">
+            <button type="submit" class="gold-btn px-4 py-2 rounded-xl">Post</button>
           </form>
-
-          <div class="space-y-2.5 text-xs" id="task-list-container">
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-              <label class="flex items-center space-x-3 cursor-pointer">
-                <input type="checkbox" checked onchange="toggleTask(this)" class="w-4 h-4 text-indigo-600 rounded">
-                <span class="font-semibold text-slate-700">Select & calibrate water quality sensors</span>
-              </label>
-              <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs font-bold">Done</span>
-            </div>
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-              <label class="flex items-center space-x-3 cursor-pointer">
-                <input type="checkbox" checked onchange="toggleTask(this)" class="w-4 h-4 text-indigo-600 rounded">
-                <span class="font-semibold text-slate-700">Design IoT monitoring circuit board</span>
-              </label>
-              <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs font-bold">Done</span>
-            </div>
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-              <label class="flex items-center space-x-3 cursor-pointer">
-                <input type="checkbox" onchange="toggleTask(this)" class="w-4 h-4 text-indigo-600 rounded">
-                <span class="font-semibold text-slate-700">Build waterproof prototype chassis</span>
-              </label>
-              <span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-xs font-bold">In Progress</span>
-            </div>
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
-              <label class="flex items-center space-x-3 cursor-pointer">
-                <input type="checkbox" onchange="toggleTask(this)" class="w-4 h-4 text-indigo-600 rounded">
-                <span class="font-semibold text-slate-700">Test prototype in laboratory environment</span>
-              </label>
-              <span class="bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-xs font-bold">To Do</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Team & Live Discussion Feed -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4 text-xs">
-          <h3 class="font-bold text-slate-900 text-base">Discussion Feed</h3>
-          
-          <div id="comments-container" class="space-y-3 max-h-48 overflow-y-auto pr-1">
-            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 space-y-1">
-              <div class="flex justify-between font-bold text-slate-800">
-                <span>AquaSense Lead</span>
-                <span class="text-[10px] text-slate-400">10:30 AM</span>
-              </div>
-              <p class="text-slate-600">Hardware sensor modules delivered to Ranchi lab today!</p>
-            </div>
-          </div>
-
-          <!-- Add Comment Form -->
-          <form onsubmit="addComment(event)" class="space-y-2">
-            <input type="text" id="comment-input" required placeholder="Type a message..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <button type="submit" class="w-full bg-slate-800 text-white font-bold py-2 rounded-xl hover:bg-slate-900 transition">Send Message</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- 8. DEPLOYMENT PAGE -->
-    <section id="view-deployment" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-        <div>
-          <div class="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold mb-1">
-            <span>🚀 Member 5 - Field Deployment Tracker</span>
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900">Project Deployment Lifecycle</h2>
-          <p class="text-xs text-slate-500">Deployment Record ID: <span class="font-mono text-indigo-600 font-bold">dep-c-P-34E65C</span></p>
-        </div>
-        <button onclick="showView('impact')" class="bg-indigo-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow hover:bg-indigo-700 transition">
-          View Impact Dashboard →
-        </button>
-      </div>
-
-      <!-- Deployment Details Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
-          <span class="text-slate-400 font-semibold block uppercase">Target Location</span>
-          <span class="text-base font-bold text-slate-900" id="dep-loc-display">Village X, Jharkhand</span>
-        </div>
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
-          <span class="text-slate-400 font-semibold block uppercase">Lead Organization</span>
-          <span class="text-base font-bold text-indigo-600" id="dep-org-display">AquaSense Technologies</span>
-        </div>
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
-          <span class="text-slate-400 font-semibold block uppercase">Direct Beneficiaries</span>
-          <span class="text-base font-bold text-emerald-600">12,500 People</span>
-        </div>
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
-          <span class="text-slate-400 font-semibold block uppercase">Deployment Phase</span>
-          <span id="dep-status-display" class="inline-block bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-lg">Deployed</span>
-        </div>
-      </div>
-
-      <!-- Interactive Phase Controls -->
-      <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-slate-900 text-sm">Update Deployment Phase Inline</h3>
-        <div class="flex flex-wrap gap-3 text-xs">
-          <button onclick="setDeploymentStatus('Not Ready')" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-semibold text-slate-700 transition">Not Ready</button>
-          <button onclick="setDeploymentStatus('Pilot Stage')" class="px-4 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 font-semibold text-amber-800 transition">Pilot Stage</button>
-          <button onclick="setDeploymentStatus('Deployed')" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold shadow hover:bg-emerald-700 transition">Deployed in Field</button>
-          <button onclick="setDeploymentStatus('Fully Completed')" class="px-4 py-2 rounded-xl bg-purple-100 hover:bg-purple-200 font-semibold text-purple-800 transition">Fully Completed</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 9. IMPACT TRACKING DASHBOARD WITH DYNAMIC CALCULATOR -->
-    <section id="view-impact" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-        <div>
-          <div class="inline-flex items-center space-x-2 bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold mb-1">
-            <span>📊 Member 5 - Environmental Impact Dashboard</span>
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900">Calculated Impact & Improvement Metrics</h2>
-          <p class="text-xs text-slate-500">Real-time before vs. after quantitative measurement engine</p>
-        </div>
-        <button onclick="showView('final')" class="bg-indigo-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow hover:bg-indigo-700 transition">
-          View Platform Summary →
-        </button>
-      </div>
-
-      <!-- Before vs After Metric Card & Dynamic Inputs -->
-      <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-lg space-y-6">
-        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
-          <div>
-            <h3 class="text-lg font-bold text-slate-900">Water Contamination Level</h3>
-            <span class="text-xs text-slate-400">Target Unit: kg/day pollutant</span>
-          </div>
-          <div id="impact-pct-badge" class="bg-emerald-100 text-emerald-800 text-lg font-black px-4 py-1.5 rounded-2xl">
-            -30.0% Reduction
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-          <div class="bg-red-50 p-5 rounded-2xl border border-red-100 space-y-2">
-            <span class="text-xs font-bold text-red-500 uppercase block">Before Deployment</span>
-            <input type="number" id="impact-before-input" value="1000" oninput="recalculateImpact()" class="w-full text-center text-2xl font-extrabold text-red-700 bg-white border border-red-200 rounded-xl py-1">
-            <span class="text-xs text-red-400 block font-medium">kg/day pollutant</span>
-          </div>
-
-          <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 space-y-2">
-            <span class="text-xs font-bold text-emerald-500 uppercase block">After Deployment</span>
-            <input type="number" id="impact-after-input" value="700" oninput="recalculateImpact()" class="w-full text-center text-2xl font-extrabold text-emerald-700 bg-white border border-emerald-200 rounded-xl py-1">
-            <span class="text-xs text-emerald-400 block font-medium">kg/day pollutant</span>
-          </div>
-
-          <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100 space-y-2">
-            <span class="text-xs font-bold text-indigo-500 uppercase block">Direct Beneficiaries</span>
-            <span class="text-3xl font-extrabold text-indigo-700 block py-1">12,500</span>
-            <span class="text-xs text-indigo-400 block font-medium">Village X Residents</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 10. FINAL PLATFORM SUMMARY DASHBOARD -->
-    <section id="view-final" class="view-section space-y-8">
-      <div class="bg-gradient-to-r from-indigo-950 to-slate-900 rounded-3xl p-8 text-white shadow-xl space-y-4">
-        <div class="inline-flex items-center space-x-2 bg-emerald-400/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-bold">
-          <span>🏆 SIH 2026 Integrated Platform</span>
-        </div>
-        <h2 class="text-3xl font-extrabold">SOLVESPHERE Unified Platform Summary</h2>
-        <p class="text-slate-300 text-xs md:text-sm max-w-2xl">
-          All six member modules (Auth, AI Understanding, Partner Matching, Collaboration Workspace, Field Deployment, and Impact Tracking) operate in single unbroken data flow.
-        </p>
-      </div>
-
-      <!-- Integrated Summary Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
-        <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">M1</div>
-          <h3 class="font-bold text-slate-900 text-sm">Auth & Problem Submission</h3>
-          <p class="text-slate-500">Citizen submitted problem <span id="final-prob-id" class="font-mono text-indigo-600 font-bold">P-34E65C</span> for Village X.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold">M2</div>
-          <h3 class="font-bold text-slate-900 text-sm">AI Understanding Engine</h3>
-          <p class="text-slate-500">Extracted <span class="font-semibold text-slate-700" id="final-domain">Water & Sanitation</span> domain & 4 technical skills.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">M3</div>
-          <h3 class="font-bold text-slate-900 text-sm">6-Factor Partner Matcher</h3>
-          <p class="text-slate-500">Ranked AquaSense Technologies (#1) with 40.25% weighted match score.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold">M4</div>
-          <h3 class="font-bold text-slate-900 text-sm">Collaboration Workspace</h3>
-          <p class="text-slate-500">Created project <span class="font-mono text-purple-600 font-bold">c-P-34E65C</span>, milestone tasks active.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">M5</div>
-          <h3 class="font-bold text-slate-900 text-sm">Deployment & Impact</h3>
-          <p class="text-slate-500">Status set to Deployed, 12,500 beneficiaries, -30% pollutant reduction.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-3">
-          <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center font-bold">M6</div>
-          <h3 class="font-bold text-slate-900 text-sm">Unified Lifecycle Status</h3>
-          <p class="text-slate-500">Problem status transitioned to <span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">SOLVED</span>.</p>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ========================================================================= -->
   <!-- FOOTER -->
-  <!-- ========================================================================= -->
   <footer class="bg-white border-t border-slate-200 py-6 mt-12">
     <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-1">
-      <p class="font-semibold text-slate-600">SOLVESPHERE — Integrated Innovation Platform</p>
-      <p>SIH 2026 Standalone Production-Ready Web Application</p>
+      <p class="font-bold text-slate-700">SOLVESPHERE — Role-Separated Problem-Solution Matchmaking Platform</p>
+      <p>Champagne Gold Accent Aesthetic | Single-File Production Implementation</p>
     </div>
   </footer>
 
-  <!-- ========================================================================= -->
-  <!-- DYNAMIC JAVASCRIPT STATE ENGINE (NO POPUPS) -->
-  <!-- ========================================================================= -->
+  <!-- DYNAMIC JAVASCRIPT STATE ENGINE -->
   <script>
-    // State Repository
-    let currentView = 'landing';
-    let currentUser = { name: 'Alex Doe', role: 'Citizen' };
+    let currentRoleType = 'Giver'; // 'Giver' or 'Solver'
+    let currentUserName = 'Citizen Rakesh';
+    let solverExpertise = ['IoT Sensors', 'Water Quality Analysis', 'Environmental Engineering'];
     let uploadedFiles = [];
-    let problemsList = [
-      { id: 'P-34E65C', title: 'Affordable Groundwater Monitoring System', desc: 'Our village has contaminated groundwater and needs an affordable monitoring system.', category: 'Water & Sanitation', location: 'Village X, Ranchi, Jharkhand', urgency: 'High', status: 'Solved' },
-      { id: 'P-289F10', title: 'Solar Powered Cold Storage for Farmers', desc: 'Perishable crops spoil quickly due to lack of electricity in rural mandis.', category: 'Agriculture', location: 'Dhanbad, Jharkhand', urgency: 'Medium', status: 'Matched' },
-      { id: 'P-104A92', title: 'Automated Urban Waste Segregation Unit', desc: 'Need low-cost computer vision sorting mechanism for solid waste bins.', category: 'Waste Management', location: 'Bokaro, Jharkhand', urgency: 'High', status: 'Submitted' }
+
+    let problemsData = [
+      { id: 'P-34E65C', title: 'Affordable Groundwater Monitoring System', desc: 'Our village has contaminated groundwater and needs an affordable monitoring system.', category: 'Water & Sanitation', location: 'Village X, Ranchi, Jharkhand', urgency: 'High', status: 'In Progress', giver: 'Citizen Rakesh', matchedSolver: 'AquaSense Technologies', score: 40.25 },
+      { id: 'P-289F10', title: 'Solar Powered Cold Storage Unit', desc: 'Perishable crops spoil quickly due to lack of electricity in rural mandis.', category: 'Solar Energy', location: 'Dhanbad, Jharkhand', urgency: 'Medium', status: 'Submitted', giver: 'NGO Rural Hope', matchedSolver: 'BuildSmart Infra', score: 29.75 },
+      { id: 'P-104A92', title: 'Automated Urban Waste Segregation Unit', desc: 'Need low-cost computer vision sorting mechanism for municipal waste bins.', category: 'Waste Management', location: 'Bokaro, Jharkhand', urgency: 'High', status: 'Solved', giver: 'Citizen Priya', matchedSolver: 'Aranya Institute', score: 38.50 }
     ];
 
-    // Notification Toast System (No alert popups)
-    function showToast(msg, type = 'success') {
+    // Notification System (No Alert Popups)
+    function showToast(msg) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      const bg = type === 'success' ? 'bg-emerald-600' : 'bg-indigo-600';
-      toast.className = `${bg} text-white px-4 py-3 rounded-2xl shadow-xl text-xs font-bold flex items-center space-x-2 animate-slide-up pointer-events-auto`;
-      toast.innerHTML = `<span>✓</span><span>${msg}</span>`;
+      toast.className = 'bg-slate-900 text-gold-400 border border-gold-500/40 px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center space-x-2 animate-slide-up pointer-events-auto';
+      toast.innerHTML = `<span>⚡</span><span>${msg}</span>`;
       container.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transition = 'opacity 0.3s ease';
         setTimeout(() => toast.remove(), 300);
-      }, 3000);
+      }, 3200);
     }
 
-    // View Navigation
+    // View Navigation Controller
     function showView(viewId) {
-      currentView = viewId;
       document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('view-' + viewId);
       if (target) target.classList.add('active');
@@ -840,275 +515,179 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Auth Switcher
-    function switchAuthTab(tab) {
-      const isLogin = tab === 'login';
-      document.getElementById('auth-tab-login').className = isLogin ? 'py-2 rounded-lg bg-white shadow text-indigo-600 font-bold transition' : 'py-2 rounded-lg text-slate-500 hover:text-slate-900 transition';
-      document.getElementById('auth-tab-register').className = !isLogin ? 'py-2 rounded-lg bg-white shadow text-indigo-600 font-bold transition' : 'py-2 rounded-lg text-slate-500 hover:text-slate-900 transition';
-      document.getElementById('auth-field-name').style.display = isLogin ? 'none' : 'block';
-    }
+    // Role Switching Controller
+    function switchRole(roleType, name) {
+      currentRoleType = roleType;
+      currentUserName = name;
 
-    function handleAuthSubmit(e) {
-      e.preventDefault();
-      const role = document.getElementById('auth-role').value;
-      const name = document.getElementById('auth-name').value || 'Alex Citizen';
-      currentUser = { name, role };
+      const badge = document.getElementById('role-type-badge');
+      const nameDisp = document.getElementById('user-name-display');
 
-      document.getElementById('user-role-badge').textContent = role;
-      document.getElementById('user-name-display').textContent = name;
+      badge.textContent = roleType === 'Giver' ? 'Problem Giver' : 'Problem Solver';
+      nameDisp.textContent = name;
 
-      showToast(`Signed in as ${name} (${role})`);
-      setDashboardRole(role);
-      showView('dashboard');
-    }
-
-    function setDashboardRole(role) {
-      document.querySelectorAll('.role-btn').forEach(btn => {
-        if (btn.textContent.includes(role)) {
-          btn.className = 'role-btn bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-200 font-bold transition';
-        } else {
-          btn.className = 'role-btn bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200 font-medium transition';
-        }
-      });
-    }
-
-    // Functional File & Image Drag & Drop Uploader
-    function handleDragOver(e) {
-      e.preventDefault();
-      document.getElementById('dropzone').classList.add('border-indigo-500', 'bg-indigo-50/50');
-    }
-
-    function handleDragLeave(e) {
-      e.preventDefault();
-      document.getElementById('dropzone').classList.remove('border-indigo-500', 'bg-indigo-50/50');
-    }
-
-    function handleDrop(e) {
-      e.preventDefault();
-      handleDragLeave(e);
-      if (e.dataTransfer.files.length) {
-        processFiles(e.dataTransfer.files);
+      if (roleType === 'Giver') {
+        badge.className = 'bg-gold-500 text-slate-900 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider';
+        showToast(`Switched to Problem Giver view (${name})`);
+        renderGiverTable();
+        showView('giver-dashboard');
+      } else {
+        badge.className = 'bg-slate-900 text-gold-400 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wider border border-gold-500/30';
+        showToast(`Switched to Problem Solver view (${name})`);
+        renderSolverGrid();
+        showView('solver-dashboard');
       }
     }
 
-    function handleFileSelect(e) {
-      if (e.target.files.length) {
-        processFiles(e.target.files);
-      }
+    function toggleAuthRoleType(type) {
+      const isGiver = type === 'Giver';
+      document.getElementById('auth-role-giver').className = isGiver ? 'py-2.5 rounded-lg bg-slate-900 text-gold-400 shadow font-bold' : 'py-2.5 rounded-lg text-slate-600';
+      document.getElementById('auth-role-solver').className = !isGiver ? 'py-2.5 rounded-lg bg-slate-900 text-gold-400 shadow font-bold' : 'py-2.5 rounded-lg text-slate-600';
+      document.getElementById('solver-expertise-box').style.display = isGiver ? 'none' : 'block';
     }
 
-    function processFiles(files) {
-      Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (evt) => {
-            uploadedFiles.push({ name: file.name, url: evt.target.result });
-            renderFilePreviews();
-          };
-          reader.readAsDataURL(file);
-        } else {
-          uploadedFiles.push({ name: file.name, url: null });
-          renderFilePreviews();
-        }
-      });
-      showToast(`Uploaded ${files.length} file(s)`);
+    function handleRegistrationSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      switchRole(currentRoleType, name);
     }
 
-    function renderFilePreviews() {
-      const container = document.getElementById('file-previews');
-      container.innerHTML = '';
-      uploadedFiles.forEach((f, idx) => {
-        const div = document.createElement('div');
-        div.className = 'relative group border border-slate-200 rounded-xl p-1 bg-slate-50 text-center overflow-hidden';
-        if (f.url) {
-          div.innerHTML = `
-            <img src="${f.url}" class="w-full h-16 object-cover rounded-lg">
-            <span class="text-[10px] font-medium text-slate-600 block truncate px-1 mt-1">${f.name}</span>
-            <button type="button" onclick="removeFile(${idx})" class="absolute top-1 right-1 bg-slate-900/80 text-white w-4 h-4 rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
-          `;
-        } else {
-          div.innerHTML = `
-            <div class="w-full h-16 flex items-center justify-center text-xl bg-slate-200 rounded-lg">📄</div>
-            <span class="text-[10px] font-medium text-slate-600 block truncate px-1 mt-1">${f.name}</span>
-            <button type="button" onclick="removeFile(${idx})" class="absolute top-1 right-1 bg-slate-900/80 text-white w-4 h-4 rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition">✕</button>
-          `;
-        }
-        container.appendChild(div);
-      });
-    }
-
-    function removeFile(idx) {
-      uploadedFiles.splice(idx, 1);
-      renderFilePreviews();
-    }
-
-    // Render Problems Table with Filter & Search
-    function renderProblemsTable(data = problemsList) {
-      const tbody = document.getElementById('problems-table-body');
+    // Giver Dashboard Table Renderer
+    function renderGiverTable() {
+      const tbody = document.getElementById('giver-table-body');
       tbody.innerHTML = '';
-      data.forEach(p => {
-        const badgeColor = p.status === 'Solved' ? 'bg-emerald-100 text-emerald-700' : (p.status === 'Matched' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700');
+      const myProbs = problemsData.filter(p => p.giver === currentUserName || currentRoleType === 'Giver');
+      
+      myProbs.forEach(p => {
+        const badgeCol = p.status === 'Solved' ? 'bg-emerald-100 text-emerald-800' : (p.status === 'In Progress' ? 'bg-gold-500/20 text-gold-700' : 'bg-amber-100 text-amber-800');
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-50 transition';
         tr.innerHTML = `
-          <td class="py-3 px-4 font-mono font-bold text-indigo-600">${p.id}</td>
-          <td class="py-3 px-4">
-            <div class="font-bold text-slate-800">${p.title}</div>
-            <div class="text-slate-400 text-xs truncate max-w-xs">${p.desc}</div>
-          </td>
-          <td class="py-3 px-4 font-medium text-slate-600">${p.category}</td>
+          <td class="py-3 px-4 font-mono font-bold text-slate-900">${p.id}</td>
+          <td class="py-3 px-4 font-bold text-slate-800">${p.title}</td>
+          <td class="py-3 px-4 text-slate-600">${p.category}</td>
           <td class="py-3 px-4 text-slate-500">${p.location}</td>
-          <td class="py-3 px-4 font-bold text-amber-600">${p.urgency}</td>
-          <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-xs font-bold ${badgeColor}">${p.status}</span></td>
+          <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-lg text-[11px] font-bold ${badgeCol}">${p.status}</span></td>
           <td class="py-3 px-4 text-right">
-            <button onclick="showView('ai')" class="text-indigo-600 font-bold hover:underline">View AI Insights →</button>
+            <button onclick="showView('shared-workspace')" class="text-gold-600 font-bold hover:underline">View Workspace →</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
-      document.getElementById('dash-stat-total').textContent = problemsList.length;
+      document.getElementById('giver-stat-total').textContent = myProbs.length;
     }
 
-    function filterProblemsTable() {
-      const q = document.getElementById('table-search').value.toLowerCase();
-      const cat = document.getElementById('table-cat-filter').value;
-      const filtered = problemsList.filter(p => {
-        const matchesQ = p.title.toLowerCase().includes(q) || p.location.toLowerCase().includes(q) || p.id.toLowerCase().includes(q);
-        const matchesCat = cat === 'All' || p.category === cat;
-        return matchesQ && matchesCat;
+    // Solver Dashboard Grid Renderer (Filtered by Expertise Tags)
+    function renderSolverGrid() {
+      const container = document.getElementById('solver-problems-grid');
+      container.innerHTML = '';
+
+      problemsData.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover:shadow-md transition relative';
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="bg-slate-100 text-slate-700 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md uppercase">${p.category}</span>
+              <h3 class="text-base font-bold text-slate-900 mt-1">${p.title}</h3>
+              <p class="text-xs text-slate-400">${p.location}</p>
+            </div>
+            <div class="text-right">
+              <span class="text-2xl font-black text-gold-600">${p.score}%</span>
+              <span class="text-[10px] text-slate-400 block font-bold">Match Score</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-600">${p.desc}</p>
+          <div class="flex justify-between items-center pt-2">
+            <span class="text-xs font-bold text-slate-500">Submitted by: ${p.giver}</span>
+            <button onclick="acceptProblem('${p.id}')" class="gold-btn px-4 py-2 rounded-xl text-xs shadow">Accept Challenge & Open Workspace →</button>
+          </div>
+        `;
+        container.appendChild(card);
       });
-      renderProblemsTable(filtered);
+      renderMatchMatrix();
     }
 
-    // Problem Submission Handler (No Popups)
-    function handleProblemSubmit(e) {
+    function acceptProblem(id) {
+      showToast(`Challenge ${id} accepted! Initiating shared workspace...`);
+      showView('shared-workspace');
+    }
+
+    function renderMatchMatrix() {
+      const container = document.getElementById('match-matrix-container');
+      container.innerHTML = '';
+      problemsData.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center';
+        div.innerHTML = `
+          <div>
+            <span class="font-mono font-bold text-slate-900">${p.id}</span> — <strong class="text-slate-800">${p.title}</strong>
+            <div class="text-[11px] text-slate-500 mt-0.5">Matched with Solver: <span class="text-gold-600 font-bold">${p.matchedSolver}</span></div>
+          </div>
+          <span class="text-lg font-black text-gold-600 bg-white px-3 py-1 rounded-xl border border-slate-200">${p.score}% Match</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Problem Submission Handler
+    function handleProblemFormSubmit(e) {
       e.preventDefault();
-      const title = document.getElementById('prob-title').value;
-      const category = document.getElementById('prob-category').value;
-      const location = document.getElementById('prob-location').value;
-      const urgency = document.getElementById('prob-urgency').value;
-      const desc = document.getElementById('prob-description').value;
+      const title = document.getElementById('form-prob-title').value;
+      const category = document.getElementById('form-prob-category').value;
+      const location = document.getElementById('form-prob-location').value;
+      const desc = document.getElementById('form-prob-desc').value;
 
       const newId = 'P-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-      const newProb = { id: newId, title, desc, category, location, urgency, status: 'Submitted' };
+      const newProb = { id: newId, title, desc, category, location, urgency: 'High', status: 'Submitted', giver: currentUserName, matchedSolver: 'AquaSense Technologies', score: 42.50 };
+
+      problemsData.unshift(newProb);
+      showToast(`Problem Submitted! ID: ${newId}. Automated matching triggered.`);
       
-      problemsList.unshift(newProb);
-      renderProblemsTable();
-
-      // Dynamic UI State Binding
-      document.getElementById('ai-prob-title').textContent = title;
-      document.getElementById('ai-prob-id').textContent = newId;
-      document.getElementById('ai-domain').textContent = category;
-      document.getElementById('ws-proj-title').textContent = title + ' Project';
-      document.getElementById('dep-loc-display').textContent = location;
-      document.getElementById('final-prob-id').textContent = newId;
-      document.getElementById('final-domain').textContent = category;
-
-      document.getElementById('ai-success-banner').style.display = 'flex';
-      showToast(`Problem Submitted! ID: ${newId}`);
-      showView('ai');
+      renderGiverTable();
+      showView('giver-dashboard');
     }
 
-    // Partner Selection (No Popups)
-    function selectPartner(name) {
-      document.getElementById('dep-org-display').textContent = name;
-      showToast(`Partner '${name}' selected! Workspace project created.`);
-      showView('workspace');
-    }
-
-    // Interactive Task Checklist & Progress %
-    function toggleTask() {
-      const container = document.getElementById('task-list-container');
-      const total = container.querySelectorAll('input[type="checkbox"]').length;
-      const checked = container.querySelectorAll('input[type="checkbox"]:checked').length;
-      const pct = Math.round((checked / total) * 100);
-
-      document.getElementById('ws-progress-text').textContent = pct + '%';
-      document.getElementById('ws-progress-bar').style.width = pct + '%';
-      
-      const badge = document.getElementById('ws-status-badge');
-      if (pct >= 75) badge.textContent = 'Status: Pilot Stage';
-      else if (pct >= 40) badge.textContent = 'Status: Prototype';
-      else badge.textContent = 'Status: Idea / Design';
-    }
-
-    function addNewTask(e) {
+    // Media Drag & Drop Handler
+    function handleDragOver(e) { e.preventDefault(); }
+    function handleDragLeave(e) { e.preventDefault(); }
+    function handleDrop(e) {
       e.preventDefault();
-      const input = document.getElementById('new-task-title');
+      if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files);
+    }
+    function handleFileSelect(e) {
+      if (e.target.files.length) processFiles(e.target.files);
+    }
+    function processFiles(files) {
+      Array.from(files).forEach(f => {
+        uploadedFiles.push(f.name);
+      });
+      showToast(`Uploaded ${files.length} file(s)`);
+    }
+
+    // Shared Workspace Suggestions Handler
+    function addFeedback(e) {
+      e.preventDefault();
+      const input = document.getElementById('feedback-input');
       const val = input.value.trim();
       if (!val) return;
 
-      const container = document.getElementById('task-list-container');
+      const list = document.getElementById('ws-feedback-list');
       const div = document.createElement('div');
-      div.className = 'flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 animate-fadeIn';
+      div.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 animate-fadeIn';
       div.innerHTML = `
-        <label class="flex items-center space-x-3 cursor-pointer">
-          <input type="checkbox" onchange="toggleTask(this)" class="w-4 h-4 text-indigo-600 rounded">
-          <span class="font-semibold text-slate-700">${val}</span>
-        </label>
-        <span class="bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-xs font-bold">To Do</span>
+        <span class="font-bold text-slate-900 block">${currentUserName} (${currentRoleType})</span>
+        <p class="text-slate-600">${val}</p>
       `;
-      container.appendChild(div);
+      list.appendChild(div);
       input.value = '';
-      toggleTask();
-      showToast('New milestone task added');
-    }
-
-    // Interactive Discussion Comments
-    function addComment(e) {
-      e.preventDefault();
-      const input = document.getElementById('comment-input');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const container = document.getElementById('comments-container');
-      const div = document.createElement('div');
-      div.className = 'bg-slate-50 p-2.5 rounded-xl border border-slate-200 space-y-1 animate-fadeIn';
-      div.innerHTML = `
-        <div class="flex justify-between font-bold text-slate-800">
-          <span>${currentUser.name} (${currentUser.role})</span>
-          <span class="text-[10px] text-slate-400">Just now</span>
-        </div>
-        <p class="text-slate-600">${text}</p>
-      `;
-      container.appendChild(div);
-      input.value = '';
-      container.scrollTop = container.scrollHeight;
-    }
-
-    // Deployment Status Updater (No Popups)
-    function setDeploymentStatus(st) {
-      document.getElementById('dep-status-display').textContent = st;
-      showToast(`Deployment phase set to '${st}'`);
-      if (st === 'Deployed' || st === 'Fully Completed') {
-        problemsList[0].status = 'Solved';
-        renderProblemsTable();
-      }
-    }
-
-    // Dynamic Impact Calculator
-    function recalculateImpact() {
-      const before = parseFloat(document.getElementById('impact-before-input').value) || 0;
-      const after = parseFloat(document.getElementById('impact-after-input').value) || 0;
-      
-      let pct = 0;
-      if (before > 0) {
-        pct = ((after - before) / Math.abs(before)) * 100;
-      }
-      
-      const badge = document.getElementById('impact-pct-badge');
-      if (pct < 0) {
-        badge.textContent = `${pct.toFixed(1)}% Reduction`;
-        badge.className = 'bg-emerald-100 text-emerald-800 text-lg font-black px-4 py-1.5 rounded-2xl';
-      } else {
-        badge.textContent = `+${pct.toFixed(1)}% Change`;
-        badge.className = 'bg-amber-100 text-amber-800 text-lg font-black px-4 py-1.5 rounded-2xl';
-      }
+      showToast('Concise feedback posted to workspace');
     }
 
     // Page Load Init
     window.onload = function() {
-      renderProblemsTable();
+      renderGiverTable();
+      renderSolverGrid();
       showView('landing');
     };
   </script>
