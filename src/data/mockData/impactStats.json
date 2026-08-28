@@ -1,0 +1,67 @@
+{
+  "totalProblems": 328,
+  "verifiedProblems": 241,
+  "activeCollaborations": 47,
+  "solutionsDeveloped": 63,
+  "solutionsDeployed": 29,
+  "peopleImpacted": 186500,
+  "successRate": 12.0,
+  "pipelineFunnel": [
+    { "stage": "Submitted", "count": 328, "color": "#1E2A5E" },
+    { "stage": "Verified", "count": 241, "color": "#3E5C9A" },
+    { "stage": "AI Matched", "count": 178, "color": "#6366F1" },
+    { "stage": "Collaborating", "count": 47, "color": "#FF6B4A" },
+    { "stage": "Deployed", "count": 29, "color": "#1F9D55" }
+  ],
+  "growthByMonth": [
+    { "month": "Mar", "problems": 40, "solutions": 4 },
+    { "month": "Apr", "problems": 58, "solutions": 7 },
+    { "month": "May", "problems": 71, "solutions": 9 },
+    { "month": "Jun", "problems": 95, "solutions": 15 },
+    { "month": "Jul", "problems": 132, "solutions": 22 },
+    { "month": "Aug", "problems": 165, "solutions": 29 }
+  ],
+  "categoryBreakdown": [
+    { "category": "Water", "count": 88, "color": "#3E5C9A" },
+    { "category": "Waste Management", "count": 64, "color": "#E8A93B" },
+    { "category": "Health", "count": 52, "color": "#EF4444" },
+    { "category": "Education", "count": 41, "color": "#8B5CF6" },
+    { "category": "Clean Energy", "count": 46, "color": "#1F9D55" },
+    { "category": "Agriculture", "count": 37, "color": "#10B981" }
+  ],
+  "solutionsByRegion": [
+    { "region": "South India", "deployed": 12, "collaborations": 18 },
+    { "region": "West India", "deployed": 8, "collaborations": 14 },
+    { "region": "North India", "deployed": 5, "collaborations": 9 },
+    { "region": "East India", "deployed": 4, "collaborations": 6 }
+  ],
+  "successStories": [
+    {
+      "id": "ss-1",
+      "title": "Solar Cold Storage Saves 14,000 Coastal Fisherfolk in Chennai",
+      "partner": "IIT Madras + GreenTech Solutions",
+      "category": "Clean Energy",
+      "impact": "14,200 beneficiaries · 98.4% catch preservation",
+      "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&q=80&w=600",
+      "quote": "Our fish landings no longer rot during humid summer afternoons. Income has surged by 35%."
+    },
+    {
+      "id": "ss-2",
+      "title": "Arsenic-Free Water Kiosks for 84,000 Villagers in Nadia",
+      "partner": "Jadavpur University + CleanWater CSR",
+      "category": "Water",
+      "impact": "84,000 residents · < 0.002 mg/L safe drinking water",
+      "image": "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&q=80&w=600",
+      "quote": "Generations had skeletal aches from ground arsenic. Now our children drink certified pure water daily."
+    },
+    {
+      "id": "ss-3",
+      "title": "Bio-Acoustic Early Pest Detection in Vidarbha Cotton Fields",
+      "partner": "VNMKV + Mahindra Agri-Tech",
+      "category": "Agriculture",
+      "impact": "69,800 farmers · 40% crop yield preserved",
+      "image": "https://images.unsplash.com/photo-1592417817098-8f3d6ef231d6?auto=format&fit=crop&q=80&w=600",
+      "quote": "We receive smartphone alerts before bollworms lay eggs. Pest control expenses plummeted."
+    }
+  ]
+}

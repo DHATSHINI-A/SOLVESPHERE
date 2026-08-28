@@ -1,0 +1,78 @@
+[
+  {
+    "id": "c1",
+    "problemId": "p1",
+    "title": "Groundwater De-Salinization & Nanofiltration Unit",
+    "members": [
+      { "userId": "u2", "name": "Dr. Anitha Rao", "role": "Lead Researcher (University)", "org": "IIT Madras", "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250" },
+      { "userId": "u3", "name": "R. Sundaram", "role": "Chief Technology Sponsor (Industry)", "org": "GreenTech Solutions Ltd.", "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=250" },
+      { "userId": "u10", "name": "Kavitha M. (Scholar)", "role": "IoT Sensor Dev", "org": "IIT Madras", "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250" }
+    ],
+    "stage": "Prototype Development",
+    "pipelineStep": "Build",
+    "trlLevel": 6,
+    "progress": 68,
+    "budget": 5000000,
+    "tasks": [
+      { "id": "t1", "title": "Design sensor array for real-time TDS and salinity monitoring", "status": "Done", "priority": "high", "assignee": "Kavitha M. (Scholar)", "dueDate": "2026-07-20" },
+      { "id": "t2", "title": "Field test water samples in coastal wells (Tiruvottiyur)", "status": "In Progress", "priority": "high", "assignee": "Dr. Anitha Rao", "dueDate": "2026-08-30" },
+      { "id": "t3", "title": "Manufacture pilot unit anti-fouling membrane housing", "status": "To Do", "priority": "medium", "assignee": "R. Sundaram", "dueDate": "2026-09-15" },
+      { "id": "t4", "title": "Setup GSM / LoRa telemetry uplink for live community dashboard", "status": "To Do", "priority": "low", "assignee": "Kavitha M. (Scholar)", "dueDate": "2026-09-28" }
+    ],
+    "files": [
+      { "id": "f1", "name": "proposal_v1.pdf", "size": "2.4 MB", "uploadedBy": "Dr. Anitha Rao", "date": "2026-07-05" },
+      { "id": "f2", "name": "sensor_cad_design.png", "size": "4.8 MB", "uploadedBy": "R. Sundaram", "date": "2026-07-18" },
+      { "id": "f3", "name": "water_test_spectrometry_report.pdf", "size": "1.2 MB", "uploadedBy": "Kavitha M.", "date": "2026-08-10" }
+    ],
+    "discussions": [
+      {
+        "id": "disc-1",
+        "sender": "Dr. Anitha Rao",
+        "senderRole": "university",
+        "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250",
+        "content": "We completed the initial lab membrane flux calibration. Permeate recovery is steady at 85% with 99.1% salt rejection.",
+        "timestamp": "Yesterday at 14:30"
+      },
+      {
+        "id": "disc-2",
+        "sender": "R. Sundaram (GreenTech)",
+        "senderRole": "industry",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=250",
+        "content": "Excellent! The CNC fabrication plant in Coimbatore has begun stamping the stainless steel 316L pressure vessels for the pilot kiosk.",
+        "timestamp": "Today at 10:15"
+      }
+    ]
+  },
+  {
+    "id": "c2",
+    "problemId": "p3",
+    "title": "Bio-Acoustic Agri-Pest Early Warning Grid",
+    "members": [
+      { "userId": "u8", "name": "Dr. V. Patil", "role": "Lead Agronomist", "org": "VNMKV", "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=250" },
+      { "userId": "u9", "name": "Pooja Deshmukh", "role": "VP CSR Projects", "org": "KisanVikas", "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250" }
+    ],
+    "stage": "Pilot Testing",
+    "pipelineStep": "Collaborate",
+    "trlLevel": 7,
+    "progress": 82,
+    "budget": 3500000,
+    "tasks": [
+      { "id": "t201", "title": "Deploy 20 ultrasonic node prototypes across Akola cotton farms", "status": "Done", "priority": "high", "assignee": "Dr. V. Patil", "dueDate": "2026-08-01" },
+      { "id": "t202", "title": "Validate false-positive filtering algorithm against wind noise", "status": "Done", "priority": "high", "assignee": "Dr. V. Patil", "dueDate": "2026-08-14" },
+      { "id": "t203", "title": "Integrate automated SMS broadcast gateway for farmer unions", "status": "In Progress", "priority": "medium", "assignee": "Pooja Deshmukh", "dueDate": "2026-08-29" }
+    ],
+    "files": [
+      { "id": "f201", "name": "pest_acoustic_signature_db.csv", "size": "8.1 MB", "uploadedBy": "Dr. V. Patil", "date": "2026-07-22" }
+    ],
+    "discussions": [
+      {
+        "id": "disc-201",
+        "sender": "Dr. V. Patil",
+        "senderRole": "university",
+        "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=250",
+        "content": "Sensors logged the first pink bollworm swarm signature 48 hours before visible oviposition. The local agriculture extension office was notified successfully!",
+        "timestamp": "2 days ago"
+      }
+    ]
+  }
+]

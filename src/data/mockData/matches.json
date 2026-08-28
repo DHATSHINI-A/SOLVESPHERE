@@ -1,0 +1,111 @@
+[
+  {
+    "problemId": "p1",
+    "matchScore": 94,
+    "matchingSummary": "High alignment between IIT Madras water membrane laboratory patents and GreenTech's manufacturing facility.",
+    "partners": [
+      {
+        "id": "m1-p1",
+        "orgId": "u2",
+        "type": "university",
+        "name": "IIT Madras - Env. Engg Lab",
+        "matchScore": 96,
+        "matchedExpertise": ["Water Quality", "Environmental Engineering", "Membrane Separation"],
+        "pastProjectCount": 14,
+        "location": "Chennai, Tamil Nadu",
+        "labLead": "Dr. Anitha Rao",
+        "trlLevel": 6,
+        "availableEquipment": "High-Pressure Membrane Pilot Rig, ICP-MS Spectrometer"
+      },
+      {
+        "id": "m1-p2",
+        "orgId": "u3",
+        "type": "industry",
+        "name": "GreenTech Solutions Ltd.",
+        "matchScore": 92,
+        "matchedExpertise": ["Water Filtration Tech", "Precision Manufacturing", "Field Deployment"],
+        "pastProjectCount": 8,
+        "location": "Coimbatore, Tamil Nadu",
+        "csrBudget": 5000000,
+        "offerType": "Co-funding & Hardware Fabrication"
+      },
+      {
+        "id": "m1-p3",
+        "orgId": "u5",
+        "type": "university",
+        "name": "Anna University Water Institute",
+        "matchScore": 86,
+        "matchedExpertise": ["Hydrogeology", "Field Sampling", "Desalination"],
+        "pastProjectCount": 11,
+        "location": "Chennai, Tamil Nadu",
+        "labLead": "Prof. S. Murali",
+        "trlLevel": 5,
+        "availableEquipment": "Mobile Water Lab, GIS Mapping Rig"
+      }
+    ]
+  },
+  {
+    "problemId": "p2",
+    "matchScore": 89,
+    "matchingSummary": "AI computer vision labs paired with urban sanitation hardware robotics companies.",
+    "partners": [
+      {
+        "id": "m2-p1",
+        "orgId": "u6",
+        "type": "university",
+        "name": "IISc Robotics & AI Lab",
+        "matchScore": 94,
+        "matchedExpertise": ["Edge Computer Vision", "Waste Classification Algorithms", "Smart Bin Actuators"],
+        "pastProjectCount": 19,
+        "location": "Bengaluru, Karnataka",
+        "labLead": "Dr. K. Narayanan",
+        "trlLevel": 7,
+        "availableEquipment": "NVIDIA Jetson Robotics Lab, Optical Sorting Line"
+      },
+      {
+        "id": "m2-p2",
+        "orgId": "u7",
+        "type": "industry",
+        "name": "CleanCity Urban Automation",
+        "matchScore": 88,
+        "matchedExpertise": ["Waste Bin Logistics", "Fleet Telemetry", "Municipal Integration"],
+        "pastProjectCount": 6,
+        "location": "Hyderabad, Telangana",
+        "csrBudget": 4000000,
+        "offerType": "Fleet Deployment & Enclosure Manufacturing"
+      }
+    ]
+  },
+  {
+    "problemId": "p3",
+    "matchScore": 93,
+    "matchingSummary": "Agri-tech edge sensory lab paired with national agricultural machinery sponsor.",
+    "partners": [
+      {
+        "id": "m3-p1",
+        "orgId": "u8",
+        "type": "university",
+        "name": "VNMKV Precision Agri-AI Lab",
+        "matchScore": 95,
+        "matchedExpertise": ["Pest Acoustic Analysis", "LoRaWAN Micro-Nodes", "Agronomy"],
+        "pastProjectCount": 9,
+        "location": "Parbhani, Maharashtra",
+        "labLead": "Dr. V. Patil",
+        "trlLevel": 6,
+        "availableEquipment": "Crop Pathology Chamber, Bio-Acoustic Sensor Bench"
+      },
+      {
+        "id": "m3-p2",
+        "orgId": "u9",
+        "type": "industry",
+        "name": "KisanVikas Agri-Tech Innovations",
+        "matchScore": 91,
+        "matchedExpertise": ["Farmer Distribution Channels", "Solar Sensor Housings", "IoT Cloud"],
+        "pastProjectCount": 12,
+        "location": "Pune, Maharashtra",
+        "csrBudget": 4500000,
+        "offerType": "Mass Scale Field Testing"
+      }
+    ]
+  }
+]

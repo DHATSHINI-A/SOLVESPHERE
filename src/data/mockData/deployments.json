@@ -1,0 +1,82 @@
+[
+  {
+    "id": "d1",
+    "problemId": "p4",
+    "title": "Solar PCM Micro Cold Storage Hub",
+    "status": "Live",
+    "deployedBy": "GreenTech Solutions & Anna University",
+    "partnerOrg": "GreenTech Solutions Ltd.",
+    "location": "Kasimedu Fishing Pier, Chennai, TN",
+    "region": "South India",
+    "unitsDeployed": 12,
+    "dateDeployed": "2026-06-01",
+    "peopleImpacted": 14200,
+    "metrics": {
+      "spoilagePreventionRate": "98.4%",
+      "co2ReductionTons": 210,
+      "costSavedINR": 4200000,
+      "internalTemperature": "-4.2 °C",
+      "solarUptime": "99.8%"
+    }
+  },
+  {
+    "id": "d2",
+    "problemId": "p1",
+    "title": "Smart Solar Fluoride Decontamination Kiosk",
+    "status": "Live",
+    "deployedBy": "Tata CleanTech & IIT Bombay",
+    "partnerOrg": "Tata CleanTech Innovations",
+    "location": "3 Coastal Villages, Tiruvottiyur, TN",
+    "region": "South India",
+    "unitsDeployed": 6,
+    "dateDeployed": "2026-08-01",
+    "peopleImpacted": 18500,
+    "metrics": {
+      "waterOutputDaily": "35,000 Liters",
+      "fluorideReduction": "99.2%",
+      "co2ReductionTons": 95,
+      "costSavedINR": 1800000,
+      "telemetryStatus": "Online"
+    }
+  },
+  {
+    "id": "d3",
+    "problemId": "p99",
+    "title": "Arsenic-Free Hydro Filtration Network",
+    "status": "Live",
+    "deployedBy": "Bengal CleanWater Foundation & Jadavpur Univ",
+    "partnerOrg": "Jadavpur Water Technology Lab",
+    "location": "Nadia District, West Bengal",
+    "region": "East India",
+    "unitsDeployed": 18,
+    "dateDeployed": "2026-04-15",
+    "peopleImpacted": 84000,
+    "metrics": {
+      "waterOutputDaily": "60,000 Liters",
+      "arsenicLevel": "< 0.002 mg/L",
+      "co2ReductionTons": 340,
+      "costSavedINR": 7500000,
+      "telemetryStatus": "Online"
+    }
+  },
+  {
+    "id": "d4",
+    "problemId": "p100",
+    "title": "Autonomous Agro-Drone Pest Sprayer Units",
+    "status": "Live",
+    "deployedBy": "Mahindra Agri-Tech & VNMKV",
+    "partnerOrg": "Mahindra Agri Solutions",
+    "location": "Yavatmal District, Maharashtra",
+    "region": "West India",
+    "unitsDeployed": 8,
+    "dateDeployed": "2026-07-10",
+    "peopleImpacted": 69800,
+    "metrics": {
+      "pesticideReduction": "65%",
+      "acreageProtected": "14,500 Acres",
+      "co2ReductionTons": 145,
+      "costSavedINR": 6200000,
+      "telemetryStatus": "Online"
+    }
+  }
+]

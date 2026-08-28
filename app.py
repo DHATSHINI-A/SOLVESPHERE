@@ -24,7 +24,7 @@ DB_FILENAME = "solutionhub.db"
 def init_db():
     """Initializes the SQLite database and creates the problem_analyses table if not exists."""
     try:
-        conn = sqlite3.connect(DB_FILENAME)
+        conn = sqlite3.connect(DB_FILENAME, timeout=30.0)
         cursor = conn.cursor()
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS problem_analyses (
@@ -45,8 +45,9 @@ def init_db():
 
 def save_analysis_to_db(problem_id: str, problem_description: str, analysis: dict):
     """Saves or updates a structured AI analysis in the SQLite database with error handling."""
+    conn = None
     try:
-        conn = sqlite3.connect(DB_FILENAME)
+        conn = sqlite3.connect(DB_FILENAME, timeout=30.0)
         cursor = conn.cursor()
         cursor.execute("""
             INSERT OR REPLACE INTO problem_analyses (
@@ -62,7 +63,6 @@ def save_analysis_to_db(problem_id: str, problem_description: str, analysis: dic
             json.dumps(analysis["keywords"])
         ))
         conn.commit()
-        conn.close()
     except sqlite3.Error as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -71,18 +71,22 @@ def save_analysis_to_db(problem_id: str, problem_description: str, analysis: dic
                 "message": f"AI analysis was generated successfully, but could not be stored in the database: {str(e)}"
             }
         )
+    finally:
+        if conn:
+            conn.close()
 
 def get_analysis_from_db(problem_id: str):
     """Retrieves a stored AI analysis from the database by problem_id with error handling."""
+    conn = None
+    row = None
     try:
-        conn = sqlite3.connect(DB_FILENAME)
+        conn = sqlite3.connect(DB_FILENAME, timeout=30.0)
         cursor = conn.cursor()
         cursor.execute("""
             SELECT problem_id, problem_description, domain, required_skills, urgency, problem_type, keywords, created_at
-            FROM problem_analyses WHERE problem_id = ?
-        """, (problem_id,))
+            FROM problem_analyses WHERE problem_id = ? OR problem_id = ? OR problem_id = ?
+        """, (problem_id, f"SIH{problem_id}", problem_id.replace("SIH", "")))
         row = cursor.fetchone()
-        conn.close()
     except sqlite3.Error as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -91,6 +95,9 @@ def get_analysis_from_db(problem_id: str):
                 "message": f"Failed to retrieve analysis for '{problem_id}' from the database: {str(e)}"
             }
         )
+    finally:
+        if conn:
+            conn.close()
 
     if not row:
         return None
@@ -462,6 +469,65 @@ def analyze_problem_endpoint(request: ProblemRequest):
     return {
         "problem_id": pid,
         "problem_description": clean_desc,
+        "domain": standardized_json["domain"],
+        "required_skills": standardized_json["required_skills"],
+        "urgency": standardized_json["urgency"],
+        "problem_type": standardized_json["problem_type"],
+        "keywords": standardized_json["keywords"],
+        "stored_in_db": True
+    }
+
+@app.post("/ai/analyze/{problem_id}", response_model=ProblemResponse, status_code=status.HTTP_200_OK)
+def analyze_problem_by_id_endpoint(problem_id: str):
+    """
+    Triggers AI analysis for a problem already stored in the database by problem_id.
+    """
+    clean_pid = problem_id.strip()
+    if not clean_pid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Problem ID cannot be empty."
+        )
+
+    # 1. Try to find the problem in DB
+    from auth_problems import get_problem_from_db, update_problem_status_in_db
+    prob = get_problem_from_db(clean_pid)
+    
+    desc = ""
+    if prob:
+        desc = prob["description"]
+    else:
+        # Check static database fallback
+        from problems import get_problem_by_id
+        static_p = get_problem_by_id(clean_pid)
+        if static_p:
+            desc = static_p.get("problem", "")
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Problem with ID '{clean_pid}' not found in database."
+            )
+
+    if not desc or len(desc) < 10:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Problem description must be at least 10 non-whitespace characters."
+        )
+
+    # 2. Run Gemini AI
+    raw_ai_json = analyze_problem_with_gemini(desc)
+    standardized_json = normalize_ai_analysis(raw_ai_json)
+
+    # 3. Save to DB
+    save_analysis_to_db(clean_pid, desc, standardized_json)
+    
+    # 4. Update status to Under Review
+    if prob:
+        update_problem_status_in_db(clean_pid, "Under Review")
+
+    return {
+        "problem_id": clean_pid,
+        "problem_description": desc,
         "domain": standardized_json["domain"],
         "required_skills": standardized_json["required_skills"],
         "urgency": standardized_json["urgency"],
