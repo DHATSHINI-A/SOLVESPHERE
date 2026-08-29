@@ -3,45 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SolveSphere — AI Innovation & Matchmaking Platform</title>
+  <title>Solution Hub — Emerald & Gold AI Innovation Platform</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
           colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              900: '#312e81',
+            emerald: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            gold: {
+              100: '#fef9c3',
+              300: '#fde047',
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+              700: '#a16207',
             }
           },
           animation: {
-            'fade-in': 'fadeIn 0.3s ease-out forwards',
-            'slide-up': 'slideUp 0.4s ease-out forwards',
+            'fade-in': 'fadeIn 0.4s ease-out forwards',
+            'slide-up': 'slideUp 0.45s ease-out forwards',
             'glow-pulse': 'glowPulse 2s infinite',
             'pop-in': 'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+            'float-slow': 'floatSlow 6s ease-in-out infinite',
+            'float-reverse': 'floatReverse 7s ease-in-out infinite',
+            'gold-shimmer': 'goldShimmer 3s ease-in-out infinite',
           },
           keyframes: {
             fadeIn: {
-              '0%': { opacity: '0', transform: 'translateY(4px)' },
+              '0%': { opacity: '0', transform: 'translateY(8px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
             },
             slideUp: {
-              '0%': { opacity: '0', transform: 'translateY(12px)' },
+              '0%': { opacity: '0', transform: 'translateY(18px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
             },
             popIn: {
-              '0%': { opacity: '0', transform: 'scale(0.9)' },
+              '0%': { opacity: '0', transform: 'scale(0.92)' },
               '100%': { opacity: '1', transform: 'scale(1)' },
             },
             glowPulse: {
-              '0%, 100%': { boxShadow: '0 0 15px rgba(99, 102, 241, 0.3)' },
-              '50%': { boxShadow: '0 0 25px rgba(99, 102, 241, 0.6)' },
+              '0%, 100%': { boxShadow: '0 0 15px rgba(16, 185, 129, 0.25)' },
+              '50%': { boxShadow: '0 0 30px rgba(245, 158, 11, 0.45)' },
+            },
+            floatSlow: {
+              '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+              '50%': { transform: 'translate(15px, -20px) scale(1.05)' }
+            },
+            floatReverse: {
+              '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+              '50%': { transform: 'translate(-20px, 15px) scale(0.95)' }
+            },
+            goldShimmer: {
+              '0%, 100%': { opacity: '0.8', filter: 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.4))' },
+              '50%': { opacity: '1', filter: 'drop-shadow(0 0 18px rgba(245, 158, 11, 0.8))' }
             }
           }
         }
@@ -49,299 +81,594 @@
     };
   </script>
   <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .view-section { display: none; }
-    .view-section.active { display: block; animation: fadeIn 0.35s ease-out forwards; }
-    .nav-tab.active { border-bottom: 2.5px solid #6366f1; color: #4f46e5; font-weight: 700; }
+    .view-section.active { display: block; animation: fadeIn 0.4s ease-out forwards; }
+    .nav-tab.active { border-bottom: 3px solid #d97706; color: #047857; font-weight: 800; }
     
     /* Contained Confetti Burst FX */
     .confetti-particle {
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 2px;
       animation: confettiFall 1.2s ease-out forwards;
       pointer-events: none;
+      z-index: 60;
     }
     @keyframes confettiFall {
       0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
       100% { opacity: 0; transform: translate(var(--tx), var(--ty)) rotate(360deg); }
     }
+
+    /* Geometric Triangle Golden Lines */
+    .triangle-connector {
+      stroke-dasharray: 6;
+      animation: dash 20s linear infinite;
+    }
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -100;
+      }
+    }
+
+    /* SPLIT-SCREEN CURTAIN OPENING TRANSITION CSS */
+    .curtain-panel {
+      transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .curtain-open-left {
+      transform: translateX(-100%) !important;
+    }
+    .curtain-open-right {
+      transform: translateX(100%) !important;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col relative selection:bg-indigo-500 selection:text-white">
+<body class="bg-[#f0f7f4] text-slate-800 font-sans min-h-screen flex flex-col relative selection:bg-emerald-600 selection:text-white overflow-x-hidden">
+
+  <!-- DRAMATIC SPLIT-SCREEN CURTAIN LOGIN ANIMATION OVERLAY -->
+  <div id="login-split-curtain" class="fixed inset-0 z-50 pointer-events-none hidden flex overflow-hidden">
+    <!-- Left Curtain Panel -->
+    <div id="curtain-left" class="curtain-panel w-1/2 h-full bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-950 border-r-4 border-amber-400 shadow-2xl flex items-center justify-end pr-8">
+      <div id="curtain-left-emblem" class="text-right space-y-1 transition-opacity duration-300">
+        <span class="text-4xl block">✨</span>
+        <span class="text-xs font-black text-amber-400 tracking-widest uppercase">Solution Hub</span>
+      </div>
+    </div>
+    <!-- Right Curtain Panel -->
+    <div id="curtain-right" class="curtain-panel w-1/2 h-full bg-gradient-to-bl from-emerald-950 via-emerald-900 to-slate-950 border-l-4 border-amber-400 shadow-2xl flex items-center justify-start pl-8">
+      <div id="curtain-right-emblem" class="text-left space-y-1 transition-opacity duration-300">
+        <span class="text-4xl block">⚡</span>
+        <span class="text-xs font-black text-emerald-300 tracking-widest uppercase">Opening Portal</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DYNAMIC BACKGROUND AMBIENT GLOW BLOBS (EMERALD & GOLD) -->
+  <div class="fixed top-10 left-10 w-96 h-96 bg-emerald-200/40 rounded-full blur-3xl pointer-events-none animate-float-slow z-0"></div>
+  <div class="fixed bottom-10 right-10 w-96 h-96 bg-amber-200/40 rounded-full blur-3xl pointer-events-none animate-float-reverse z-0"></div>
 
   <!-- FLOATING TOAST NOTIFICATIONS -->
   <div id="toast-container" class="fixed top-20 right-6 z-50 space-y-3 pointer-events-none"></div>
 
   <!-- HEADER NAVBAR -->
-  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+  <header class="bg-white/90 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative z-10">
       
-      <!-- Brand Logo with Uploaded Solution Hub Image -->
-      <div class="flex items-center space-x-3 cursor-pointer group" onclick="showView('dashboard')">
-        <img src="solution_hub_logo.jpg" alt="Solution Hub Logo" class="w-10 h-10 object-contain rounded-xl shadow-sm border border-slate-200 group-hover:scale-105 transition-transform" onError="this.src='public/solution_hub_logo.jpg'">
+      <!-- Brand Logo with Solution Hub Image & Gold Trim -->
+      <div class="flex items-center space-x-3 cursor-pointer group" onclick="navigateHome()">
+        <img src="solution_hub_logo.jpg" alt="Solution Hub Logo" class="w-10 h-10 object-contain rounded-xl shadow-md border-2 border-amber-400 group-hover:scale-105 transition-transform" onError="this.src='public/solution_hub_logo.jpg'">
         <div>
-          <span class="font-black text-xl tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">SolveSphere</span>
-          <span class="text-[10px] text-slate-400 block -mt-1 font-semibold">Solution Hub Engine</span>
+          <span class="font-black text-xl tracking-tight bg-gradient-to-r from-emerald-700 via-teal-700 to-amber-600 bg-clip-text text-transparent">Solution Hub</span>
+          <span class="text-[10px] text-emerald-600 block -mt-1 font-bold">SolveSphere Matchmaker</span>
         </div>
       </div>
 
-      <!-- MAIN NAVIGATION MENU -->
-      <nav id="nav-menu" class="hidden md:flex space-x-6 text-xs font-semibold text-slate-600">
-        <button onclick="showView('dashboard')" id="tab-dashboard" class="nav-tab py-5 px-1 hover:text-indigo-600 transition active">Dashboard</button>
-        <button onclick="showView('suggestions-feed')" id="tab-suggestions-feed" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Top Suggestions</button>
-        <button onclick="showView('workspaces-list')" id="tab-workspaces-list" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Workspaces</button>
-        <button onclick="showView('submit-problem')" id="tab-submit-problem" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Post Problem</button>
-        <button onclick="showView('qa-forum')" id="tab-qa-forum" class="nav-tab py-5 px-1 hover:text-indigo-600 transition">Q&A Forum</button>
+      <!-- MAIN NAVIGATION MENU (DYNAMICALLY GATED BY AUTH STATUS) -->
+      <nav id="nav-menu" class="hidden md:flex space-x-6 text-xs font-bold text-slate-600">
+        <!-- Always Visible to All -->
+        <button onclick="showView('landing')" id="tab-landing" class="nav-tab py-5 px-1 hover:text-emerald-700 transition active">Main Page</button>
+        
+        <!-- Only Visible when Logged in as Solution Seeker -->
+        <button onclick="showView('problem-giver')" id="tab-problem-giver" class="hidden nav-tab py-5 px-1 hover:text-emerald-700 transition">
+          Seeker Dashboard
+        </button>
+
+        <!-- Only Visible when Logged in as Solution Giver -->
+        <button onclick="showView('solution-giver')" id="tab-solution-giver" class="hidden nav-tab py-5 px-1 hover:text-emerald-700 transition">
+          Solver Dashboard
+        </button>
+
+        <!-- Common to All -->
+        <button onclick="showView('qa-forum')" id="tab-qa-forum" class="nav-tab py-5 px-1 hover:text-emerald-700 transition">Q&A Forum</button>
       </nav>
 
-      <!-- USER PROFILE & AUTH BUTTON -->
+      <!-- AUTH & USER PROFILE ACTIONS (RIGHT SIDE) -->
       <div class="flex items-center space-x-3">
-        <div id="user-badge" class="flex items-center space-x-2 bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 text-xs font-semibold text-indigo-700">
-          <span id="badge-role" class="bg-indigo-600 text-white px-2 py-0.5 rounded-md text-[10px] uppercase font-bold">Citizen</span>
-          <span id="badge-name" class="truncate max-w-[110px]">Alex Citizen</span>
+        <!-- Logged-in User Badge with View Profile Action -->
+        <div id="user-badge" class="hidden flex items-center space-x-2 bg-emerald-50 px-3 py-1.5 rounded-full border border-amber-300 text-xs font-bold text-emerald-800 cursor-pointer hover:bg-emerald-100 transition shadow-sm" onclick="openProfileModal()">
+          <span id="badge-role" class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-2 py-0.5 rounded-md text-[10px] uppercase font-black tracking-wider shadow">Citizen</span>
+          <span id="badge-name" class="truncate max-w-[120px]">Alex Citizen</span>
+          <span class="text-xs text-amber-500">⚙️</span>
         </div>
-        <button onclick="showView('login')" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition">
-          Sign In / Register
+
+        <!-- Dynamic Auth Buttons: Login/Register (Shown when Logged Out) -->
+        <div id="auth-header-buttons" class="flex items-center space-x-2">
+          <button onclick="openAuthModal('login')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold px-3.5 py-2 rounded-xl border border-emerald-200 transition active:scale-95">
+            Log In
+          </button>
+          <button onclick="openAuthModal('register')" class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 active:scale-95 text-white text-xs font-black px-4 py-2 rounded-xl shadow-lg shadow-emerald-900/15 transition border border-amber-400/30">
+            Register
+          </button>
+        </div>
+
+        <!-- Persistent Logout Button (Shown when Logged In) -->
+        <button id="btn-logout" onclick="handleLogout()" class="hidden bg-white hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-200 transition flex items-center space-x-1.5 active:scale-95 shadow-sm">
+          <span>Logout</span>
+          <span>↳</span>
         </button>
       </div>
+
     </div>
   </header>
 
   <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
 
-    <!-- 1. SIGN-IN / REGISTER CARD SCREEN (MATCHING SPECIFICATION & DESIGN REFERENCE) -->
-    <section id="view-login" class="view-section active max-w-md mx-auto my-8">
-      <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-2xl space-y-6 animate-pop-in">
+    <!-- 0. SEPARATE MAIN LANDING PAGE FOR SOLUTION HUB (DEFAULT VIEW) -->
+    <section id="view-landing" class="view-section active space-y-12">
+      
+      <!-- HERO BANNER (EMERALD & GOLD GRADIENT WITH ACCENT GLOW) -->
+      <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 text-white p-8 sm:p-12 shadow-2xl border-2 border-amber-400/30 text-center space-y-6">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-gradient-to-r from-emerald-500/20 via-amber-500/20 to-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="inline-flex items-center space-x-2 bg-amber-400/15 backdrop-blur-md border border-amber-400/40 px-4 py-1.5 rounded-full text-xs font-black text-amber-300 shadow-inner animate-gold-shimmer">
+          <span>✨</span>
+          <span>Welcome to Solution Hub Engine</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight max-w-4xl mx-auto">
+          Crowdsourcing Societal Problems, <br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-amber-200 to-yellow-300">
+            Matching Expert Solution Providers.
+          </span>
+        </h1>
+
+        <p class="text-emerald-100 text-xs sm:text-base max-w-2xl mx-auto font-medium">
+          A dual-perspective ecosystem bridging Citizens & NGOs (Solution Seekers) with Industry & Academic Solvers (Solution Givers) through real-time AI matchmaking.
+        </p>
+
+        <!-- CTA Buttons on the Landing Page -->
+        <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <button onclick="openAuthModal('register', 'Citizen')" class="bg-gradient-to-r from-emerald-500 via-teal-600 to-amber-600 hover:from-emerald-400 hover:to-amber-500 text-white font-black px-6 py-3.5 rounded-2xl shadow-xl shadow-amber-500/15 hover:shadow-amber-500/25 transition active:scale-95 text-xs sm:text-sm flex items-center space-x-2 border border-amber-300/40">
+            <span>Enter as Solution Seeker (Citizen / NGO)</span>
+            <span>→</span>
+          </button>
+          <button onclick="openAuthModal('register', 'Industry Partner')" class="bg-white/10 hover:bg-white/20 text-amber-200 font-extrabold px-6 py-3.5 rounded-2xl border border-amber-400/40 backdrop-blur-md transition active:scale-95 text-xs sm:text-sm flex items-center space-x-2">
+            <span>Enter as Solution Giver (Organisation / Solver)</span>
+            <span>⚡</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SYMMETRIC TRIANGLE VISUAL ARRANGEMENT OF SOLUTION HUB FEATURES -->
+      <div class="space-y-6">
+        <div class="text-center space-y-2">
+          <span class="text-xs font-black text-emerald-700 uppercase tracking-wider bg-emerald-100/70 px-3 py-1 rounded-full border border-amber-300">Architecture & Features</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Symmetric Feature Hub Layout</h2>
+          <p class="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">Explore how our platform seamlessly connects societal complaints with verified solver capabilities.</p>
+        </div>
+
+        <!-- SYMMETRIC TRIANGLE CONTAINER -->
+        <div class="relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 border-2 border-emerald-100 shadow-2xl shadow-emerald-950/5 overflow-hidden">
+          
+          <!-- Connecting Background Golden SVG Lines -->
+          <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50%" y1="15%" x2="25%" y2="50%" stroke="#d97706" stroke-width="2" class="triangle-connector" />
+            <line x1="50%" y1="15%" x2="75%" y2="50%" stroke="#d97706" stroke-width="2" class="triangle-connector" />
+            <line x1="25%" y1="50%" x2="75%" y2="50%" stroke="#d97706" stroke-width="2" class="triangle-connector" />
+            <line x1="25%" y1="50%" x2="18%" y2="85%" stroke="#d97706" stroke-width="2" class="triangle-connector" />
+            <line x1="25%" y1="50%" x2="50%" y2="85%" stroke="#d97706" stroke-width="2" class="triangle-connector" />
+            <line x1="75%" y1="50%" x2="50%" y2="85%" stroke="#d97706" stroke-width="2" class="triangle-connector" />
+            <line x1="75%" y1="50%" x2="82%" y2="85%" stroke="#d97706" stroke-width="2" class="triangle-connector" />
+          </svg>
+
+          <!-- 3-TIER SYMMETRIC TRIANGLE NODES -->
+          <div class="relative z-10 space-y-8 max-w-5xl mx-auto">
+            
+            <!-- APEX NODE (TOP LEVEL - 1 CARD WITH GOLD TRIM) -->
+            <div class="flex justify-center">
+              <div class="w-full max-w-md bg-gradient-to-br from-emerald-800 via-teal-900 to-emerald-950 text-white rounded-3xl p-6 shadow-2xl border-2 border-amber-400 hover:scale-105 transition-transform duration-300 text-center space-y-3 relative group">
+                <div class="w-12 h-12 rounded-2xl bg-amber-400/20 backdrop-blur-md mx-auto flex items-center justify-center text-2xl shadow-inner border border-amber-400/40">
+                  🤖
+                </div>
+                <span class="bg-amber-400/20 text-amber-300 text-[10px] font-black px-3 py-0.5 rounded-full uppercase tracking-wider border border-amber-400/30">Apex Matchmaker</span>
+                <h3 class="font-black text-lg text-white">AI Problem-to-Partner Engine</h3>
+                <p class="text-xs text-emerald-100 leading-relaxed">
+                  Automated vector skill matching connects submitted societal complaints directly with universities, R&D labs, and industry solvers based on domain taxonomy.
+                </p>
+              </div>
+            </div>
+
+            <!-- TIER 2 NODES (MIDDLE LEVEL - 2 SYMMETRIC CARDS) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+              <!-- Left Symmetric Node -->
+              <div class="bg-white p-6 rounded-3xl border border-emerald-200 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all space-y-3">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl font-bold border border-emerald-200">
+                    📋
+                  </div>
+                  <div>
+                    <h4 class="font-black text-slate-900 text-sm">Solution Seeker Complaint Box</h4>
+                    <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">For Citizens & NGOs</span>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  Citizens and NGOs easily post real-world challenges with location tagging, photos, and severity ratings to initiate solution tracking.
+                </p>
+              </div>
+
+              <!-- Right Symmetric Node -->
+              <div class="bg-white p-6 rounded-3xl border border-amber-200 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all space-y-3">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl font-bold border border-amber-200">
+                    💼
+                  </div>
+                  <div>
+                    <h4 class="font-black text-slate-900 text-sm">Interactive Project Workspaces</h4>
+                    <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100">For Solution Providers</span>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  Dedicated workspaces where solver organisations manage timelines, log milestone progress, track locked budgets, and update live completion rates.
+                </p>
+              </div>
+            </div>
+
+            <!-- TIER 3 NODES (BASE LEVEL - 3 SYMMETRIC CARDS) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Base Left Card -->
+              <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-md hover:border-emerald-400 transition-all space-y-2">
+                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg font-bold">
+                  🔔
+                </div>
+                <h4 class="font-bold text-slate-900 text-xs">Expertise Notification Feed</h4>
+                <p class="text-[11px] text-slate-500">
+                  Solvers automatically receive instant alerts for problems matching their specific technological domain expertise.
+                </p>
+              </div>
+
+              <!-- Base Center Card -->
+              <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-md hover:border-emerald-400 transition-all space-y-2">
+                <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-lg font-bold">
+                  📈
+                </div>
+                <h4 class="font-bold text-slate-900 text-xs">Live Completion Rate Telemetry</h4>
+                <p class="text-[11px] text-slate-500">
+                  Real-time numeric progress indicators (e.g. 75% complete) transparently showcase project execution status to citizens.
+                </p>
+              </div>
+
+              <!-- Base Right Card -->
+              <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-md hover:border-amber-400 transition-all space-y-2">
+                <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-lg font-bold">
+                  🏆
+                </div>
+                <h4 class="font-bold text-slate-900 text-xs">Top 5 Suggestions Feed</h4>
+                <p class="text-[11px] text-slate-500">
+                  AI matchmaker ranks and recommends the top 5 most suited partner organisations for every submitted complaint.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 1. SIGN-IN / REGISTER AUTH SCREEN (`view-login`) -->
+    <section id="view-login" class="view-section max-w-md mx-auto my-6">
+      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-8 border-2 border-emerald-100 shadow-2xl space-y-6 animate-pop-in">
         
         <!-- Header & Logo -->
         <div class="text-center space-y-2">
-          <img src="solution_hub_logo.jpg" alt="Solution Hub" class="w-16 h-16 object-contain mx-auto rounded-2xl shadow-md border border-slate-100" onError="this.src='public/solution_hub_logo.jpg'">
-          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Welcome to SolveSphere</h2>
-          <p class="text-xs text-slate-500 font-medium">Access your role-based innovation portal</p>
+          <img src="solution_hub_logo.jpg" alt="Solution Hub" class="w-14 h-14 object-contain mx-auto rounded-2xl shadow-md border-2 border-amber-400" onError="this.src='public/solution_hub_logo.jpg'">
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Access Solution Hub</h2>
+          <p class="text-xs text-slate-500 font-medium">Select your portal role to sign in or register</p>
         </div>
 
         <!-- Pill Toggle: Login / Register -->
-        <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-2xl text-xs font-bold">
-          <button id="pill-login" onclick="switchAuthMode('login')" class="py-2.5 rounded-xl bg-white shadow-sm text-indigo-600 transition">Login</button>
-          <button id="pill-register" onclick="switchAuthMode('register')" class="py-2.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Register</button>
+        <div class="grid grid-cols-2 bg-emerald-50 p-1 rounded-2xl text-xs font-bold border border-emerald-100">
+          <button id="pill-login" onclick="switchAuthMode('login')" class="py-2.5 rounded-xl bg-white shadow-sm text-emerald-800 font-black transition">Login</button>
+          <button id="pill-register" onclick="switchAuthMode('register')" class="py-2.5 rounded-xl text-slate-500 hover:text-slate-900 font-bold transition">Register</button>
         </div>
 
-        <!-- Clean Form -->
+        <!-- Auth Mode Toggle: One-Time OTP Login vs Password -->
+        <div class="flex items-center justify-between text-xs font-bold bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+          <span class="text-slate-500 pl-1">Login Method:</span>
+          <div class="flex space-x-1">
+            <button type="button" id="method-otp" onclick="switchLoginMethod('otp')" class="px-3 py-1 rounded-lg bg-emerald-600 text-white font-extrabold shadow-sm transition">One-Time OTP Login</button>
+            <button type="button" id="method-password" onclick="switchLoginMethod('password')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">Password</button>
+          </div>
+        </div>
+
+        <!-- Auth Form -->
         <form onsubmit="handleAuthSubmit(event)" class="space-y-4 text-xs">
-          <!-- Full Name Field -->
           <div id="field-name-box" class="space-y-1">
-            <label class="font-bold text-slate-700 block">Full Name</label>
-            <input type="text" id="auth-name" required value="Alex Citizen" placeholder="e.g. Alex Citizen" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-slate-800">
+            <label class="font-bold text-slate-700 block">Full Name / Organisation Name</label>
+            <input type="text" id="auth-name" value="Alex Citizen" placeholder="e.g. Alex Citizen" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium text-slate-800">
+          </div>
+
+          <!-- Mobile Number Field -->
+          <div class="space-y-1">
+            <label class="font-bold text-slate-700 block">Mobile Number <span class="text-emerald-700 font-extrabold">(Required for OTP)</span></label>
+            <div class="relative">
+              <span class="absolute left-4 top-3 text-slate-400 font-bold">+91</span>
+              <input type="tel" id="auth-mobile" required value="98765 43210" placeholder="98765 43210" class="w-full pl-12 pr-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
+            </div>
           </div>
 
           <!-- Email Address Field -->
           <div class="space-y-1">
             <label class="font-bold text-slate-700 block">Email Address</label>
-            <input type="email" id="auth-email" required value="alex.citizen@example.com" placeholder="alex@example.com" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-slate-800">
+            <input type="email" id="auth-email" required value="alex.citizen@example.com" placeholder="alex@example.com" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium text-slate-800">
           </div>
 
-          <!-- Password Field -->
-          <div class="space-y-1">
+          <!-- One-Time OTP Code Field & Send Button -->
+          <div id="field-otp-box" class="space-y-2 bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-200">
+            <div class="flex items-center justify-between">
+              <label class="font-black text-emerald-950 block">One-Time Passcode (OTP)</label>
+              <button type="button" onclick="sendOTPPasscode()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold px-3 py-1 rounded-xl text-[11px] shadow active:scale-95 transition">
+                Send OTP 📩
+              </button>
+            </div>
+            <input type="text" id="auth-otp" value="549210" placeholder="Enter 6-digit OTP sent to Mobile" class="w-full px-4 py-2.5 border border-emerald-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono font-bold text-emerald-900 text-center tracking-widest text-sm">
+            <span class="text-[10px] text-emerald-700 font-semibold block text-center">✓ Demo OTP generated automatically: <strong>549210</strong></span>
+          </div>
+
+          <!-- Static Password Field (Shown only when Password Method selected) -->
+          <div id="field-password-box" class="hidden space-y-1">
             <label class="font-bold text-slate-700 block">Password</label>
-            <input type="password" id="auth-password" required value="password123" placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-slate-800">
+            <input type="password" id="auth-password" value="password123" placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium text-slate-800">
           </div>
 
           <!-- Select Stakeholder Role Dropdown -->
           <div class="space-y-1">
-            <label class="font-bold text-slate-700 block">Select Stakeholder Role</label>
-            <select id="auth-role" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-800 bg-white">
-              <option value="Citizen">Citizen / Community Leader</option>
-              <option value="NGO/Government">NGO / Local Government</option>
-              <option value="University">University R&D Cell</option>
-              <option value="Industry">Industry / Corporate Sponsor</option>
-              <option value="Admin">System Administrator</option>
+            <label class="font-bold text-slate-700 block">Select Stakeholder Category</label>
+            <select id="auth-role" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800 bg-white">
+              <optgroup label="Solution Seeker (Problem Giver)">
+                <option value="Citizen">Citizen / Community Leader</option>
+                <option value="NGO">NGO / Social Organisation</option>
+              </optgroup>
+              <optgroup label="Solution Giver (Solver Provider)">
+                <option value="Industry Partner">Industry Partner (AquaSense / EcoCycle)</option>
+                <option value="University Lab">University R&D Lab</option>
+                <option value="Specialized Solver">Specialized Solver / Expert</option>
+              </optgroup>
             </select>
           </div>
 
-          <!-- Bold Indigo/Purple Gradient CTA Button -->
-          <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-500 hover:to-purple-500 active:scale-95 text-white font-bold py-3.5 rounded-2xl shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center space-x-2 text-sm mt-2">
-            <span>Continue to Platform</span>
+          <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 active:scale-95 text-white font-black py-3.5 rounded-2xl shadow-xl transition-all flex items-center justify-center space-x-2 text-sm mt-2 border border-amber-300/40">
+            <span>Verify OTP & Enter Portal</span>
             <span class="text-base">→</span>
           </button>
         </form>
       </div>
     </section>
 
-    <!-- 2. MAIN DASHBOARD (RESTRUCTURED FOR FLOW & CLARITY) -->
-    <section id="view-dashboard" class="view-section space-y-8">
+    <!-- 2. UNIFIED SOLUTION SEEKER PORTAL — CITIZEN & NGO (`view-problem-giver`) -->
+    <section id="view-problem-giver" class="view-section space-y-8">
       
-      <!-- Top Overview Header & Quick Action -->
-      <div class="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 text-white rounded-3xl p-8 shadow-xl flex flex-wrap items-center justify-between gap-6 border border-indigo-500/20">
+      <!-- Top Overview Header -->
+      <div class="bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 text-white rounded-3xl p-8 shadow-2xl flex flex-wrap items-center justify-between gap-6 border-2 border-amber-400/30">
         <div class="space-y-2 max-w-2xl">
-          <div class="inline-flex items-center space-x-2 bg-indigo-500/20 border border-indigo-400/30 px-3 py-1 rounded-full text-xs font-semibold text-indigo-300">
-            <span>⚡ Solution Hub Matchmaking Engine</span>
+          <div class="inline-flex items-center space-x-2 bg-emerald-500/20 border border-amber-400/30 px-3 py-1 rounded-full text-xs font-bold text-amber-300">
+            <span>🏛️ Unified Solution Seeker Portal</span>
           </div>
-          <h2 class="text-3xl font-black">Innovation & Solution Dashboard</h2>
-          <p class="text-slate-300 text-xs md:text-sm">Real-time crowdsourced problem tracking, automated matchmaking, and progress metrics.</p>
+          <h2 class="text-3xl font-black">Citizen & NGO Solution Seeker Dashboard</h2>
+          <p class="text-emerald-100 text-xs sm:text-sm">Submit complaints, track your submitted problems, view live solving organisation completion rates, and audit top AI matchmaking recommendations in one unified portal.</p>
         </div>
 
         <div class="flex items-center space-x-3">
-          <button onclick="openWorkspaceModal()" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 active:scale-95 text-white font-bold px-5 py-3 rounded-2xl shadow-lg flex items-center space-x-2 text-xs transition">
+          <a href="#complaint-box-section" class="bg-gradient-to-r from-emerald-500 to-amber-600 hover:from-emerald-400 hover:to-amber-500 active:scale-95 text-white font-bold px-5 py-3 rounded-2xl shadow-lg flex items-center space-x-2 text-xs transition border border-amber-300/40">
             <span class="text-base">+</span>
-            <span>Create Workspace</span>
-          </button>
+            <span>Post New Complaint</span>
+          </a>
         </div>
       </div>
 
-      <!-- Stat Counter Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-[11px] text-slate-400 font-bold uppercase block">Total Problems</span>
-          <span class="text-2xl font-black text-slate-900">150</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-[11px] text-slate-400 font-bold uppercase block">Verified</span>
-          <span class="text-2xl font-black text-blue-600">126</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-[11px] text-slate-400 font-bold uppercase block">Active Projects</span>
-          <span class="text-2xl font-black text-purple-600" id="dash-active-count">3</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-[11px] text-slate-400 font-bold uppercase block">Developed</span>
-          <span class="text-2xl font-black text-amber-600">20</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-[11px] text-slate-400 font-bold uppercase block">Deployed</span>
-          <span class="text-2xl font-black text-emerald-600">14</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-[11px] text-slate-400 font-bold uppercase block">Impacted</span>
-          <span class="text-2xl font-black text-indigo-600">155,000</span>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <span class="text-[11px] text-slate-400 font-bold uppercase block">Success Rate</span>
-          <span class="text-2xl font-black text-teal-600">84%</span>
-        </div>
-      </div>
-
-      <!-- RESTRUCTURED SECTION 1: TOP 5 SITE-WIDE MATCHMAKING SUGGESTIONS FEED -->
-      <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <span class="w-3 h-3 rounded-full bg-indigo-600 animate-ping"></span>
-            <h3 class="font-black text-slate-900 text-lg">Top 5 Most Relevant Matchmaking Suggestions</h3>
-          </div>
-          <span class="text-xs text-slate-400 font-bold">Site-Wide Ranked by Relevance Score</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="top-5-suggestions-grid">
-          <!-- Rendered dynamically -->
-        </div>
-      </div>
-
-      <!-- RESTRUCTURED SECTION 2: ACTIVE WORKSPACES LIST WITH NUMERIC PROGRESS INDICATORS -->
-      <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 class="font-black text-slate-900 text-lg">Active Project Workspaces</h3>
-          <button onclick="openWorkspaceModal()" class="text-indigo-600 text-xs font-bold hover:underline">+ New Workspace</button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="dashboard-workspaces-grid">
-          <!-- Rendered dynamically with numeric percentage indicators -->
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. TOP 5 SUGGESTIONS FEED DETAILED VIEW -->
-    <section id="view-suggestions-feed" class="view-section space-y-6 max-w-4xl mx-auto">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-        <div>
-          <div class="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold mb-1">
-            <span>🎯 Matchmaking Algorithm Audit</span>
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900">Site-Wide Top 5 Relevant Suggestions Feed</h2>
-          <p class="text-xs text-slate-500">Ranked automatically by weighted multi-factor relevance scores across all reported problems.</p>
-        </div>
-      </div>
-
-      <div class="space-y-4" id="detailed-suggestions-list">
-        <!-- Rendered via JS -->
-      </div>
-    </section>
-
-    <!-- 4. WORKSPACES LIST DETAILED VIEW -->
-    <section id="view-workspaces-list" class="view-section space-y-6">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-        <div>
-          <h2 class="text-2xl font-bold text-slate-900">Concurrent Workspaces Repository</h2>
-          <p class="text-xs text-slate-500">Track task milestones, fixed estimated budgets, and numeric progress percentages.</p>
-        </div>
-        <button onclick="openWorkspaceModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow transition">
-          + Create Workspace
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="full-workspaces-grid">
-        <!-- Rendered via JS -->
-      </div>
-    </section>
-
-    <!-- 5. SUBMIT PROBLEM PAGE -->
-    <section id="view-submit-problem" class="view-section max-w-2xl mx-auto space-y-6">
-      <div class="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-xl space-y-6">
-        <div class="space-y-1">
-          <h2 class="text-2xl font-bold text-slate-900">Post a Societal Problem Statement</h2>
-          <p class="text-xs text-slate-500">Submit a real-world problem to trigger automated backend matchmaking.</p>
-        </div>
-
-        <form onsubmit="handleProblemFormSubmit(event)" class="space-y-4 text-xs">
-          <div class="space-y-1">
-            <label class="font-bold text-slate-700 block">Problem Title</label>
-            <input type="text" id="prob-form-title" required value="Smart Water Contamination Sensor Node" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label class="font-bold text-slate-700 block">Category Sector</label>
-              <select id="prob-form-category" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium bg-white">
-                <option value="Water & Sanitation">Water & Sanitation</option>
-                <option value="Renewable Energy">Renewable Energy</option>
-                <option value="Waste Management">Waste Management</option>
-                <option value="Agriculture">Agriculture</option>
-              </select>
+      <!-- UNIFIED SEEKER LAYOUT -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- LEFT COLUMN (7 COLS): COMPLAINT BOX FORM & LIST OF COMPLAINTS MADE SO FAR -->
+        <div class="lg:col-span-7 space-y-8">
+          
+          <!-- A) COMPLAINT BOX FORM -->
+          <div id="complaint-box-section" class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4">
+            <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+              <span class="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg font-black">📝</span>
+              <div>
+                <h3 class="font-black text-slate-900 text-base">Submit Problem / Complaint Box</h3>
+                <p class="text-xs text-slate-500">Report a local societal issue to trigger instant AI matchmaking.</p>
+              </div>
             </div>
-            <div class="space-y-1">
-              <label class="font-bold text-slate-700 block">Location</label>
-              <input type="text" id="prob-form-location" required value="Village X, Ranchi, Jharkhand" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">
+
+            <form onsubmit="handleProblemFormSubmit(event)" class="space-y-4 text-xs">
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700 block">Problem Title <span class="text-red-500">*</span></label>
+                <input type="text" id="prob-form-title" required value="Smart Groundwater Contamination Sensor Unit" placeholder="e.g. Clean drinking water testing in Village X" class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label class="font-bold text-slate-700 block">Category Sector</label>
+                  <select id="prob-form-category" class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium bg-white">
+                    <option value="Water & Sanitation">Water & Sanitation</option>
+                    <option value="Renewable Energy">Renewable Energy</option>
+                    <option value="Waste Management">Waste Management</option>
+                    <option value="Agriculture">Agriculture</option>
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <label class="font-bold text-slate-700 block">Location</label>
+                  <input type="text" id="prob-form-location" required value="Ranchi, Jharkhand" placeholder="City / District" class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700 block">Detailed Description & Urgent Requirements</label>
+                <textarea id="prob-form-desc" rows="3" required class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">Our community requires an affordable sensor node to detect heavy metals and nitrate pollutants in local tubewells.</textarea>
+              </div>
+
+              <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 active:scale-95 text-white font-black py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center space-x-2 text-xs">
+                <span>Submit Complaint & Trigger AI Matchmaker</span>
+                <span>⚡</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- B) LIST OF COMPLAINTS SUBMITTED SO FAR -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-black text-slate-900 text-base">List of Complaints Submitted So Far</h3>
+                <p class="text-xs text-slate-500">Track all public and citizen-submitted complaints.</p>
+              </div>
+              <span id="complaints-count-badge" class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold px-2.5 py-1 rounded-lg">3 Complaints</span>
+            </div>
+
+            <div class="space-y-3" id="citizen-complaints-list">
+              <!-- Dynamically Rendered via JS -->
             </div>
           </div>
 
-          <div class="space-y-1">
-            <label class="font-bold text-slate-700 block">Detailed Description</label>
-            <textarea id="prob-form-desc" rows="4" required class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium">Our village groundwater requires an affordable sensor node to detect heavy metals and nitrate pollutants.</textarea>
+        </div>
+
+        <!-- RIGHT COLUMN (5 COLS): INTEGRATED TOP 5 MATCHMAKING RECOMMENDATIONS & ASSIGNED SOLVERS -->
+        <div class="lg:col-span-5 space-y-8">
+          
+          <!-- C) INTEGRATED TOP 5 MATCHMAKING RECOMMENDATIONS -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-600 animate-ping"></span>
+                <h3 class="font-black text-slate-900 text-base">Top 5 Matchmaking Recommendations</h3>
+              </div>
+              <span class="text-[10px] text-amber-600 font-bold">AI Rank</span>
+            </div>
+
+            <div class="space-y-3" id="seeker-top5-suggestions">
+              <!-- Rendered via JS -->
+            </div>
           </div>
 
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center space-x-2">
-            <span>Submit Problem & Run Matchmaker</span>
-            <span>⚡</span>
-          </button>
-        </form>
+          <!-- D) ASSIGNED ORGANISATIONS & COMPLETION RATE METERS -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="font-black text-slate-900 text-base">Assigned Organisations & Completion Rates</h3>
+                <p class="text-xs text-slate-500">Solvers actively executing solutions.</p>
+              </div>
+              <span class="text-emerald-700 text-xs font-extrabold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">Live Progress</span>
+            </div>
+
+            <div class="space-y-4" id="seeker-assigned-orgs-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+
       </div>
+
     </section>
 
-    <!-- 6. Q&A FORUM PAGE -->
+    <!-- 3. UNIFIED SOLUTION GIVER PORTAL — ORGANISATION & WORKSPACE (`view-solution-giver`) -->
+    <section id="view-solution-giver" class="view-section space-y-8">
+      
+      <!-- Top Overview Header -->
+      <div class="bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 text-white rounded-3xl p-8 shadow-2xl flex flex-wrap items-center justify-between gap-6 border-2 border-amber-400/30">
+        <div class="space-y-2 max-w-2xl">
+          <div class="inline-flex items-center space-x-2 bg-amber-400/15 border border-amber-400/30 px-3 py-1 rounded-full text-xs font-bold text-amber-300">
+            <span>⚡ Unified Solution Giver Portal</span>
+          </div>
+          <h2 class="text-3xl font-black">Organisation & Workspace Dashboard</h2>
+          <p class="text-emerald-100 text-xs sm:text-sm">Receive targeted notifications matching your multiple registered expertises, click 'Work On' to initialize projects, and manage interactive workspaces in one unified view.</p>
+        </div>
+
+        <div class="flex flex-col items-end space-y-2">
+          <div class="flex items-center space-x-2 bg-white/10 p-2.5 rounded-2xl border border-white/15 backdrop-blur-md">
+            <span class="text-xs font-bold text-emerald-200">Solver Org:</span>
+            <span id="giver-org-name" class="text-xs font-black text-white bg-gradient-to-r from-emerald-600 to-amber-600 px-3 py-1 rounded-xl shadow">AquaSense Tech</span>
+          </div>
+          <button onclick="openProfileModal()" class="text-[11px] text-amber-300 hover:text-white font-bold underline">⚙️ Edit Multiple Expertises</button>
+        </div>
+      </div>
+
+      <!-- UNIFIED GIVER LAYOUT -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- LEFT COLUMN (6 COLS): EXPERTISE NOTIFICATIONS FEED -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-amber-500 animate-ping"></span>
+                <h3 class="font-black text-slate-900 text-base">Expertise Notifications Feed</h3>
+              </div>
+              <span class="text-xs text-emerald-800 font-extrabold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg" id="active-expertises-tag">Water & Energy</span>
+            </div>
+
+            <p class="text-xs text-slate-500">
+              Problems submitted by citizens and NGOs matching your registered technical domain expertises:
+            </p>
+
+            <div class="space-y-4" id="giver-notifications-feed">
+              <!-- Rendered via JS with 'Work On' Action Buttons -->
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN (6 COLS): INTEGRATED ACTIVE PROJECT WORKSPACES ENGINE -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 class="font-black text-slate-900 text-base">Active Project Workspaces</h3>
+                <p class="text-xs text-slate-500">Update project progress percentages, track locked budget, and log work updates.</p>
+              </div>
+              <button onclick="openWorkspaceModal()" class="text-emerald-700 text-xs font-bold hover:underline">+ New Workspace</button>
+            </div>
+
+            <div class="space-y-4" id="giver-active-workspaces-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 4. COMMON SHARED Q&A FORUM PAGE (`view-qa-forum`) -->
     <section id="view-qa-forum" class="view-section space-y-6 max-w-3xl mx-auto">
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-md flex items-center justify-between">
         <div>
-          <h2 class="text-2xl font-bold text-slate-900">Q&A Community Forum</h2>
-          <p class="text-xs text-slate-500">Ask questions and post solutions across all societal challenges.</p>
+          <div class="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold mb-1 border border-emerald-200">
+            <span>💬 Universal Community Q&A Forum</span>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Q&A Knowledge Sharing Forum</h2>
+          <p class="text-xs text-slate-500">Post technical questions, clarify problem constraints, and submit open solutions across all societal challenges.</p>
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
-        <h3 class="font-bold text-slate-900 text-sm">Post a Doubt</h3>
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-md space-y-4">
+        <h3 class="font-bold text-slate-900 text-sm">Post a Question or Doubt</h3>
         <form onsubmit="handlePostQA(event)" class="space-y-3 text-xs">
-          <input type="text" id="qa-input-title" required placeholder="Question Title..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-          <textarea id="qa-input-body" rows="2" required placeholder="Question details..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
-          <button type="submit" class="bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Post Question</button>
+          <input type="text" id="qa-input-title" required placeholder="Question Title (e.g., What calibration kit is needed for nitrate sensors?)..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <textarea id="qa-input-body" rows="2" required placeholder="Detailed question description..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+          <button type="submit" class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 text-white font-black px-4 py-2 rounded-xl text-xs shadow-md active:scale-95 transition">Post Question</button>
         </form>
       </div>
 
@@ -350,77 +677,214 @@
 
   </main>
 
-  <!-- WORKSPACE CREATION MODAL (EXACTLY TWO FIXED FIELDS: PROBLEM TITLE + ESTIMATED BUDGET) -->
-  <div id="workspace-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-8 border border-slate-200 shadow-2xl animate-pop-in space-y-6">
+  <!-- VIEW & EDIT USER PROFILE MODAL WITH MULTIPLE EXPERTISES -->
+  <div id="profile-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-8 border-2 border-emerald-100 shadow-2xl animate-pop-in space-y-6 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xl border border-emerald-200">👤</div>
+          <div>
+            <h3 class="text-xl font-black text-slate-900">User & Organisation Profile</h3>
+            <p class="text-xs text-slate-500">View and update your profile and domain expertises</p>
+          </div>
+        </div>
+        <button onclick="closeProfileModal()" class="text-slate-400 font-bold hover:text-slate-600 text-lg">✕</button>
+      </div>
+
+      <form onsubmit="handleProfileSave(event)" class="space-y-4 text-xs">
+        <div class="space-y-1">
+          <label class="font-bold text-slate-700 block">Full Name / Organisation Name</label>
+          <input type="text" id="prof-name" required class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
+        </div>
+
+        <div class="space-y-1">
+          <label class="font-bold text-slate-700 block">Mobile Number (One-Time Login Verified)</label>
+          <input type="tel" id="prof-mobile" value="+91 98765 43210" required class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
+        </div>
+
+        <div class="space-y-1">
+          <label class="font-bold text-slate-700 block">Email Address</label>
+          <input type="email" id="prof-email" required class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
+        </div>
+
+        <div class="space-y-1">
+          <label class="font-bold text-slate-700 block">Registered Role</label>
+          <input type="text" id="prof-role-display" readonly class="w-full px-4 py-3 border border-emerald-100 bg-emerald-50/50 rounded-2xl font-bold text-emerald-800">
+        </div>
+
+        <div class="space-y-1">
+          <label class="font-bold text-slate-700 block">Organisation Bio / Overview</label>
+          <textarea id="prof-bio" rows="2" class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">Leading IoT hardware research group specializing in rural water and energy deployment.</textarea>
+        </div>
+
+        <!-- MULTIPLE EXPERTISES SELECTION FOR SOLUTION GIVERS -->
+        <div id="prof-expertises-container" class="space-y-2 bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200">
+          <label class="font-black text-emerald-950 block">Select Multiple Technological Expertises</label>
+          <p class="text-[11px] text-slate-600">Check all domains your organisation can provide solutions for:</p>
+          
+          <div class="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-700 pt-1">
+            <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded-xl border border-slate-200 hover:border-emerald-400">
+              <input type="checkbox" class="expertise-checkbox accent-emerald-600" value="Water & Sanitation">
+              <span>💧 Water & Sanitation</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded-xl border border-slate-200 hover:border-emerald-400">
+              <input type="checkbox" class="expertise-checkbox accent-emerald-600" value="Renewable Energy">
+              <span>⚡ Renewable Energy</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded-xl border border-slate-200 hover:border-emerald-400">
+              <input type="checkbox" class="expertise-checkbox accent-emerald-600" value="Waste Management">
+              <span>♻️ Waste Management</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded-xl border border-slate-200 hover:border-emerald-400">
+              <input type="checkbox" class="expertise-checkbox accent-emerald-600" value="Agriculture">
+              <span>🌾 Agriculture</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded-xl border border-slate-200 hover:border-emerald-400">
+              <input type="checkbox" class="expertise-checkbox accent-emerald-600" value="AI & Robotics">
+              <span>🤖 AI & Robotics</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded-xl border border-slate-200 hover:border-emerald-400">
+              <input type="checkbox" class="expertise-checkbox accent-emerald-600" value="Infrastructure">
+              <span>🏗️ Infrastructure</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="pt-2 flex space-x-3">
+          <button type="button" onclick="closeProfileModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition">Cancel</button>
+          <button type="submit" class="w-1/2 bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 text-white font-black py-3 rounded-2xl shadow-lg transition">Save Profile Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- WORKSPACE CREATION MODAL -->
+  <div id="workspace-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 border-2 border-emerald-100 shadow-2xl animate-pop-in space-y-6">
       <div class="flex items-center justify-between border-b border-slate-100 pb-4">
         <div class="flex items-center space-x-2">
-          <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-black text-lg">+</span>
+          <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-lg">+</span>
           <h3 class="text-xl font-black text-slate-900">Create New Workspace</h3>
         </div>
         <button onclick="closeWorkspaceModal()" class="text-slate-400 font-bold hover:text-slate-600">✕</button>
       </div>
 
-      <p class="text-xs text-slate-500">Provide the two required fixed parameters for this workspace project.</p>
-
       <form onsubmit="handleWorkspaceCreation(event)" class="space-y-4 text-xs">
-        <!-- FIELD 1: PROBLEM TITLE -->
         <div class="space-y-1">
           <label class="font-bold text-slate-700 block">1. Problem Title <span class="text-red-500">*</span></label>
-          <input type="text" id="modal-prob-title" required value="Smart Water Monitoring Project" placeholder="Problem title you are solving..." class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-800">
+          <input type="text" id="modal-prob-title" required value="Smart Water Monitoring Project" placeholder="Problem title..." class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
         </div>
 
-        <!-- FIELD 2: ESTIMATED BUDGET (FIXED/LOCKED ONCE SET) -->
         <div class="space-y-1">
           <label class="font-bold text-slate-700 block">2. Estimated Budget (Fixed / Locked) <span class="text-red-500">*</span></label>
           <div class="relative">
             <span class="absolute left-4 top-3 text-slate-400 font-bold">₹</span>
-            <input type="number" id="modal-prob-budget" required value="35000" placeholder="35000" class="w-full pl-8 pr-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-800">
+            <input type="number" id="modal-prob-budget" required value="35000" class="w-full pl-8 pr-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
           </div>
-          <span class="text-[11px] text-amber-600 font-semibold block">🔒 Budget is locked once workspace is created.</span>
         </div>
 
         <div class="pt-2 flex space-x-3">
-          <button type="button" onclick="closeWorkspaceModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl">Cancel</button>
-          <button type="submit" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-3 rounded-2xl shadow-lg transition">Create Workspace →</button>
+          <button type="button" onclick="closeWorkspaceModal()" class="w-1/2 bg-slate-100 text-slate-700 font-bold py-3 rounded-2xl">Cancel</button>
+          <button type="submit" class="w-1/2 bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 text-white font-black py-3 rounded-2xl shadow-lg">Create Workspace →</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- FOOTER -->
-  <footer class="bg-white border-t border-slate-200 py-6 mt-12">
-    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-1">
-      <p class="font-bold text-slate-700">SolveSphere — Solution Hub Platform</p>
-      <p>Clean Numeric Progress Indicators | Top 5 Matchmaking Feed | Contained Confetti Burst FX</p>
+  <footer class="bg-white border-t border-emerald-100 py-6 mt-12 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+      <p class="font-black text-emerald-800">Solution Hub — SolveSphere Innovation Engine</p>
+      <p>Emerald & Gold Visual System | Split-Screen Login Animation | Multi-Expertise Solver System</p>
     </div>
   </footer>
 
   <!-- DYNAMIC JAVASCRIPT STATE ENGINE -->
   <script>
-    // User State
-    let currentUser = {
-      name: 'Alex Citizen',
-      email: 'alex.citizen@example.com',
-      role: 'Citizen'
-    };
+    // User State Management
+    let currentUser = null;
 
-    // Site-Wide Top 5 Matchmaking Suggestions Data
-    let top5Suggestions = [
-      { rank: 1, problemId: 'P-34E65C', problemTitle: 'Affordable Groundwater Monitoring System', category: 'Water & Sanitation', partnerName: 'AquaSense Technologies', partnerType: 'Industry', score: 40.25, location: 'Ranchi, Jharkhand', rec: 'AquaSense Technologies has core capability in IoT water sensors and hardware labs.' },
-      { rank: 2, problemId: 'P-289F10', problemTitle: 'Solar Powered Cold Storage for Farmers', category: 'Renewable Energy', partnerName: 'BuildSmart Infrastructure', partnerType: 'Industry', score: 38.50, location: 'Dhanbad, Jharkhand', rec: 'BuildSmart Infrastructure has extensive solar microgrid deployment experience.' },
-      { rank: 3, problemId: 'P-34E65C', problemTitle: 'Affordable Groundwater Monitoring System', category: 'Water & Sanitation', partnerName: 'Aranya Institute of Technology', partnerType: 'University', score: 32.50, location: 'Ranchi, Jharkhand', rec: 'Aranya Institute provides certified water quality testing labs and student R&D teams.' },
-      { rank: 4, problemId: 'P-104A92', problemTitle: 'Automated Urban Waste Segregation Unit', category: 'Waste Management', partnerName: 'EcoCycle Robotics', partnerType: 'Industry', score: 31.75, location: 'Bokaro, Jharkhand', rec: 'EcoCycle Robotics has computer-vision sorting algorithms and automated bin hardware.' },
-      { rank: 5, problemId: 'P-5472E9', problemTitle: 'Smart Water Contamination Early Warning', category: 'Water & Sanitation', partnerName: 'National Hydrology Lab', partnerType: 'Research Org', score: 29.80, location: 'Jamshedpur, Jharkhand', rec: 'National Hydrology Lab brings certified toxic chemical analysis protocols.' }
+    // Complaints Data
+    let complaintsData = [
+      {
+        id: 'P-101',
+        title: 'Groundwater Nitrate Pollutant Sensor',
+        category: 'Water & Sanitation',
+        location: 'Ranchi, Jharkhand',
+        description: 'High nitrates detected in rural tubewells. Requires automated monitoring hardware.',
+        status: 'In Progress',
+        assignedOrg: 'AquaSense Technologies',
+        completionRate: 75
+      },
+      {
+        id: 'P-102',
+        title: 'Solar Cold Storage for Perishable Crops',
+        category: 'Renewable Energy',
+        location: 'Dhanbad, Jharkhand',
+        description: 'Off-grid solar micro-cooler needed for local vegetable farmers.',
+        status: 'In Progress',
+        assignedOrg: 'BuildSmart Infrastructure',
+        completionRate: 40
+      },
+      {
+        id: 'P-103',
+        title: 'Automated Municipal Waste Segregation',
+        category: 'Waste Management',
+        location: 'Bokaro, Jharkhand',
+        description: 'Robotic sorting mechanism for wet and dry municipal garbage.',
+        status: 'Completed',
+        assignedOrg: 'EcoCycle Robotics',
+        completionRate: 100
+      }
     ];
 
-    // Workspaces List Data with Numeric Progress Indicators & Fixed Budgets
+    // Notifications Feed Pool for Solution Givers
+    let solverNotifications = [
+      {
+        id: 'P-104',
+        title: 'Micro-Hydro Turbine for Hill Streams',
+        category: 'Renewable Energy',
+        location: 'East Singhbhum, Jharkhand',
+        score: 96,
+        description: 'Stream velocity of 2.5 m/s available for 5kW micro-hydro energy generation.',
+        status: 'Open for Solvers'
+      },
+      {
+        id: 'P-105',
+        title: 'Fluoride Water Filtration System',
+        category: 'Water & Sanitation',
+        location: 'Giridih, Jharkhand',
+        score: 91,
+        description: 'Excess fluoride removal filter needed for primary school drinking fountain.',
+        status: 'Open for Solvers'
+      },
+      {
+        id: 'P-106',
+        title: 'Computer Vision Bin Sorting Mechanism',
+        category: 'Waste Management',
+        location: 'Dhanbad, Jharkhand',
+        score: 89,
+        description: 'AI model to classify organic vs plastic waste at municipal dumping points.',
+        status: 'Open for Solvers'
+      }
+    ];
+
+    // Site-Wide Top 5 Matchmaking Recommendations
+    let top5Suggestions = [
+      { rank: 1, problemTitle: 'Affordable Groundwater Monitoring', category: 'Water & Sanitation', partnerName: 'AquaSense Tech', partnerType: 'Industry', score: 98, location: 'Ranchi, Jharkhand', rec: 'AquaSense has core capability in IoT water sensors and hardware labs.' },
+      { rank: 2, problemTitle: 'Solar Cold Storage Microgrid', category: 'Renewable Energy', partnerName: 'BuildSmart Infra', partnerType: 'Industry', score: 94, location: 'Dhanbad, Jharkhand', rec: 'BuildSmart brings extensive solar microgrid deployment experience.' },
+      { rank: 3, problemTitle: 'Fluoride Filtration System', category: 'Water & Sanitation', partnerName: 'Aranya Tech Institute', partnerType: 'University Lab', score: 91, location: 'Giridih, Jharkhand', rec: 'Aranya Institute provides certified chemical testing labs and student taskforces.' },
+      { rank: 4, problemTitle: 'Automated Waste Segregation', category: 'Waste Management', partnerName: 'EcoCycle Robotics', partnerType: 'Industry', score: 88, location: 'Bokaro, Jharkhand', rec: 'EcoCycle Robotics has computer-vision sorting algorithms and automated hardware.' },
+      { rank: 5, problemTitle: 'Smart Contamination Warning', category: 'Water & Sanitation', partnerName: 'National Hydrology Lab', partnerType: 'Research Org', score: 85, location: 'Jamshedpur, Jharkhand', rec: 'National Hydrology Lab brings certified toxic chemical analysis protocols.' }
+    ];
+
+    // Active Project Workspaces
     let workspacesData = [
       {
         id: 'ws-101',
-        title: 'Smart Water Monitoring Project',
+        title: 'Groundwater Nitrate Pollutant Sensor',
         budget: 35000,
-        progress: 62, // Numeric progress percentage indicator (e.g. 62% Complete)
+        progress: 75,
         partner: 'AquaSense Technologies',
         status: 'In Progress',
         animating: false,
@@ -438,26 +902,26 @@
       },
       {
         id: 'ws-103',
-        title: 'Urban Waste Segregation Unit',
+        title: 'Automated Waste Segregation Unit',
         budget: 25000,
         progress: 100,
         partner: 'EcoCycle Robotics',
         status: 'Completed',
         animating: false,
-        justCompleted: true
+        justCompleted: false
       }
     ];
 
     let qaData = [
-      { id: 'q-1', title: 'How often are sensors calibrated?', author: 'Alex Citizen', body: 'We want to ensure rural youth can maintain calibration without expensive equipment.', replies: ['AquaSense: Calibration is required once every 6 months using standard saline solution.'] }
+      { id: 'q-1', title: 'How often are water sensors calibrated?', author: 'Alex Citizen', body: 'We want to ensure rural youth can maintain calibration without expensive equipment.', replies: ['AquaSense: Calibration is required once every 6 months using standard saline solution.'] }
     ];
 
-    // Notification Toast System
+    // Toast Notification System
     function showToast(msg, isSuccess = true) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      const bg = isSuccess ? 'bg-gradient-to-r from-indigo-600 to-purple-600' : 'bg-slate-900';
-      toast.className = `${bg} text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center space-x-2 animate-slide-up pointer-events-auto border border-white/20`;
+      const bg = isSuccess ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600' : 'bg-slate-900';
+      toast.className = `${bg} text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center space-x-2 animate-slide-up pointer-events-auto border border-amber-300/40`;
       toast.innerHTML = `<span>✓</span><span>${msg}</span>`;
       container.appendChild(toast);
       setTimeout(() => {
@@ -467,7 +931,7 @@
       }, 3200);
     }
 
-    // View Navigation Controller
+    // View Controller
     function showView(viewId) {
       document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('view-' + viewId);
@@ -480,64 +944,263 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Auth Mode Switcher (Login / Register Pill Toggle)
+    function navigateHome() {
+      if (currentUser) {
+        if (currentUser.role === 'Citizen' || currentUser.role === 'NGO') {
+          showView('problem-giver');
+        } else {
+          showView('solution-giver');
+        }
+      } else {
+        showView('landing');
+      }
+    }
+
+    // Auth Switcher & Modal
+    let currentLoginMethod = 'otp';
+
+    function switchLoginMethod(method) {
+      currentLoginMethod = method;
+      const isOtp = method === 'otp';
+      
+      document.getElementById('method-otp').className = isOtp ? 'px-3 py-1 rounded-lg bg-emerald-600 text-white font-extrabold shadow-sm transition' : 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
+      document.getElementById('method-password').className = !isOtp ? 'px-3 py-1 rounded-lg bg-emerald-600 text-white font-extrabold shadow-sm transition' : 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
+      
+      document.getElementById('field-otp-box').style.display = isOtp ? 'block' : 'none';
+      document.getElementById('field-password-box').style.display = isOtp ? 'none' : 'block';
+      
+      const submitBtn = document.getElementById('auth-submit-btn');
+      if (isOtp) {
+        submitBtn.innerHTML = `<span>Verify OTP & Enter Portal</span><span class="text-base">→</span>`;
+      } else {
+        submitBtn.innerHTML = `<span>Sign In with Password</span><span class="text-base">→</span>`;
+      }
+    }
+
+    function sendOTPPasscode() {
+      const mobile = document.getElementById('auth-mobile').value || '98765 43210';
+      const email = document.getElementById('auth-email').value || 'user@example.com';
+      showToast(`One-Time Passcode sent to +91 ${mobile} & ${email}`);
+    }
+
+    function openAuthModal(mode = 'login', defaultRole = 'Citizen') {
+      switchAuthMode(mode);
+      if (defaultRole) document.getElementById('auth-role').value = defaultRole;
+      showView('login');
+    }
+
     function switchAuthMode(mode) {
       const isLogin = mode === 'login';
-      document.getElementById('pill-login').className = isLogin ? 'py-2.5 rounded-xl bg-white shadow-sm text-indigo-600 font-bold transition' : 'py-2.5 rounded-xl text-slate-500 hover:text-slate-900 transition';
-      document.getElementById('pill-register').className = !isLogin ? 'py-2.5 rounded-xl bg-white shadow-sm text-indigo-600 font-bold transition' : 'py-2.5 rounded-xl text-slate-500 hover:text-slate-900 transition';
+      document.getElementById('pill-login').className = isLogin ? 'py-2.5 rounded-xl bg-white shadow-sm text-emerald-800 font-black transition' : 'py-2.5 rounded-xl text-slate-500 hover:text-slate-900 font-bold transition';
+      document.getElementById('pill-register').className = !isLogin ? 'py-2.5 rounded-xl bg-white shadow-sm text-emerald-800 font-black transition' : 'py-2.5 rounded-xl text-slate-500 hover:text-slate-900 font-bold transition';
       document.getElementById('field-name-box').style.display = isLogin ? 'none' : 'block';
+    }
+
+    // DRAMATIC SPLIT-SCREEN CURTAIN LOGIN TRANSITION ANIMATION
+    function triggerSplitCurtainTransition(onComplete) {
+      const curtain = document.getElementById('login-split-curtain');
+      const curtainLeft = document.getElementById('curtain-left');
+      const curtainRight = document.getElementById('curtain-right');
+
+      // Reset and display overlay
+      curtainLeft.classList.remove('curtain-open-left');
+      curtainRight.classList.remove('curtain-open-right');
+      curtain.classList.remove('hidden');
+
+      // Step 1: Close curtains over screen
+      setTimeout(() => {
+        // Perform portal navigation behind closed curtain
+        if (onComplete) onComplete();
+
+        // Step 2: Split curtains open dynamically to reveal portal homepage!
+        setTimeout(() => {
+          curtainLeft.classList.add('curtain-open-left');
+          curtainRight.classList.add('curtain-open-right');
+
+          // Hide overlay after split finishes
+          setTimeout(() => {
+            curtain.classList.add('hidden');
+          }, 850);
+        }, 300);
+      }, 200);
     }
 
     function handleAuthSubmit(e) {
       e.preventDefault();
       const role = document.getElementById('auth-role').value;
-      const name = document.getElementById('auth-name').value || 'Alex Citizen';
+      const name = document.getElementById('auth-name').value || (role.includes('Citizen') ? 'Alex Citizen' : 'AquaSense Tech');
       const email = document.getElementById('auth-email').value;
+      const mobile = document.getElementById('auth-mobile').value || '98765 43210';
 
-      currentUser = { name, email, role };
-      document.getElementById('badge-role').textContent = role;
-      document.getElementById('badge-name').textContent = name;
-
-      showToast(`Logged in as ${name} (${role})`);
-      renderDashboard();
-      showView('dashboard');
-    }
-
-    // Modal Workspace Creation Handler
-    function openWorkspaceModal() {
-      document.getElementById('workspace-modal').classList.remove('hidden');
-    }
-    function closeWorkspaceModal() {
-      document.getElementById('workspace-modal').classList.add('hidden');
-    }
-
-    function handleWorkspaceCreation(e) {
-      e.preventDefault();
-      const title = document.getElementById('modal-prob-title').value.trim();
-      const budget = parseFloat(document.getElementById('modal-prob-budget').value) || 35000;
-
-      const newWs = {
-        id: 'ws-' + Math.floor(Math.random() * 900 + 100),
-        title,
-        budget,
-        progress: 0, // Starts at 0%
-        partner: 'Pending Match',
-        status: 'In Progress',
-        animating: true, // Trigger pop-in + glow pulse animation
-        justCompleted: false
+      currentUser = {
+        name,
+        email,
+        mobile,
+        role,
+        bio: 'Active platform participant',
+        expertises: ['Water & Sanitation', 'Renewable Energy']
       };
 
-      workspacesData.unshift(newWs);
-      closeWorkspaceModal();
-
-      showToast(`Workspace '${title}' created successfully! Budget fixed at ₹${budget.toLocaleString()}`);
-      renderDashboard();
-      showView('dashboard');
+      // Trigger Split-Screen Curtain Opening Animation!
+      triggerSplitCurtainTransition(() => {
+        updateAuthUI();
+        showToast(`Welcome back, ${name}!`);
+        if (role === 'Citizen' || role === 'NGO') {
+          showView('problem-giver');
+        } else {
+          showView('solution-giver');
+        }
+      });
     }
 
-    // Trigger Contained Confetti Burst Effect on Completed Workspace Card
+    function handleLogout() {
+      currentUser = null;
+      updateAuthUI();
+      showToast('Logged out successfully');
+      showView('landing');
+    }
+
+    function updateAuthUI() {
+      const userBadge = document.getElementById('user-badge');
+      const authHeaderButtons = document.getElementById('auth-header-buttons');
+      const btnLogout = document.getElementById('btn-logout');
+      const tabSeeker = document.getElementById('tab-problem-giver');
+      const tabGiver = document.getElementById('tab-solution-giver');
+
+      if (currentUser) {
+        userBadge.classList.remove('hidden');
+        authHeaderButtons.classList.add('hidden');
+        btnLogout.classList.remove('hidden');
+
+        document.getElementById('badge-role').textContent = currentUser.role;
+        document.getElementById('badge-name').textContent = currentUser.name;
+        document.getElementById('giver-org-name').textContent = currentUser.name;
+
+        if (currentUser.role === 'Citizen' || currentUser.role === 'NGO') {
+          tabSeeker.classList.remove('hidden');
+          tabGiver.classList.add('hidden');
+        } else {
+          tabGiver.classList.remove('hidden');
+          tabSeeker.classList.add('hidden');
+        }
+      } else {
+        userBadge.classList.add('hidden');
+        authHeaderButtons.classList.remove('hidden');
+        btnLogout.classList.add('hidden');
+
+        tabSeeker.classList.add('hidden');
+        tabGiver.classList.add('hidden');
+      }
+
+      renderAllPortals();
+    }
+
+    // Profile Modal Controllers
+    function openProfileModal() {
+      if (!currentUser) {
+        openAuthModal('login');
+        return;
+      }
+
+      document.getElementById('prof-name').value = currentUser.name;
+      document.getElementById('prof-email').value = currentUser.email;
+      document.getElementById('prof-role-display').value = currentUser.role;
+      document.getElementById('prof-bio').value = currentUser.bio || '';
+
+      document.querySelectorAll('.expertise-checkbox').forEach(cb => {
+        cb.checked = currentUser.expertises ? currentUser.expertises.includes(cb.value) : false;
+      });
+
+      document.getElementById('profile-modal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profile-modal').classList.add('hidden');
+    }
+
+    function handleProfileSave(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      currentUser.name = document.getElementById('prof-name').value;
+      currentUser.email = document.getElementById('prof-email').value;
+      currentUser.bio = document.getElementById('prof-bio').value;
+
+      const selected = [];
+      document.querySelectorAll('.expertise-checkbox:checked').forEach(cb => {
+        selected.push(cb.value);
+      });
+      currentUser.expertises = selected.length > 0 ? selected : ['Water & Sanitation'];
+
+      closeProfileModal();
+      updateAuthUI();
+      showToast('Profile & domain expertises updated successfully!');
+    }
+
+    // Work On Action
+    function workOnProblem(notificationId) {
+      const notifIndex = solverNotifications.findIndex(n => n.id === notificationId);
+      if (notifIndex !== -1) {
+        const item = solverNotifications[notifIndex];
+        solverNotifications.splice(notifIndex, 1);
+
+        const newComplaint = {
+          id: item.id,
+          title: item.title,
+          category: item.category,
+          location: item.location,
+          description: item.description,
+          status: 'In Progress',
+          assignedOrg: currentUser ? currentUser.name : 'AquaSense Technologies',
+          completionRate: 15
+        };
+        complaintsData.unshift(newComplaint);
+
+        const newWs = {
+          id: 'ws-' + item.id,
+          title: item.title,
+          budget: 42000,
+          progress: 15,
+          partner: currentUser ? currentUser.name : 'AquaSense Technologies',
+          status: 'In Progress',
+          animating: true,
+          justCompleted: false
+        };
+        workspacesData.unshift(newWs);
+
+        showToast(`⚡ Workspace initialized for '${item.title}'!`);
+        renderAllPortals();
+        showView('solution-giver');
+      }
+    }
+
+    // Update Progress Percentage & Trigger Confetti
+    function updateWorkspaceNumericProgress(wsId, newPct) {
+      const ws = workspacesData.find(w => w.id === wsId);
+      if (ws) {
+        ws.progress = parseInt(newPct);
+        
+        const linkedComp = complaintsData.find(c => ws.title.toLowerCase().includes(c.title.toLowerCase()) || c.id === ws.id.replace('ws-', ''));
+        if (linkedComp) {
+          linkedComp.completionRate = ws.progress;
+          if (ws.progress >= 100) linkedComp.status = 'Completed';
+        }
+
+        if (ws.progress >= 100) {
+          ws.progress = 100;
+          ws.status = 'Completed';
+          ws.justCompleted = true;
+          showToast(`🎉 Workspace '${ws.title}' achieved 100% Completion!`);
+        } else {
+          ws.status = 'In Progress';
+          ws.justCompleted = false;
+        }
+        renderAllPortals();
+      }
+    }
+
     function triggerConfettiBurst(cardElement) {
-      const colors = ['#6366f1', '#a855f7', '#ec4899', '#10b981', '#f59e0b'];
+      const colors = ['#10b981', '#059669', '#f59e0b', '#d97706', '#ec4899'];
       for (let i = 0; i < 25; i++) {
         const particle = document.createElement('div');
         particle.className = 'confetti-particle';
@@ -555,126 +1218,164 @@
       }
     }
 
-    // Update Progress Percentage & Trigger Confetti on 100%
-    function updateWorkspaceNumericProgress(wsId, newPct) {
-      const ws = workspacesData.find(w => w.id === wsId);
-      if (ws) {
-        ws.progress = parseInt(newPct);
-        if (ws.progress >= 100) {
-          ws.progress = 100;
-          ws.status = 'Completed';
-          ws.justCompleted = true;
-          showToast(`🎉 Workspace '${ws.title}' achieved 100% Complete!`);
-        } else {
-          ws.status = 'In Progress';
-          ws.justCompleted = false;
-        }
-        renderDashboard();
-      }
-    }
+    // Render Dynamic Views
+    function renderAllPortals() {
+      // 1. Render Seeker Complaints List
+      const seekerCompList = document.getElementById('citizen-complaints-list');
+      if (seekerCompList) {
+        seekerCompList.innerHTML = '';
+        document.getElementById('complaints-count-badge').textContent = `${complaintsData.length} Complaints`;
 
-    // Render Main Dashboard & Restructured Layout
-    function renderDashboard() {
-      // 1. Render Top 5 Site-Wide Suggestions Grid
-      const sugGrid = document.getElementById('top-5-suggestions-grid');
-      sugGrid.innerHTML = '';
-      top5Suggestions.forEach(s => {
-        const card = document.createElement('div');
-        card.className = 'bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2 hover:shadow-md transition relative group';
-        card.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span class="bg-indigo-600 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full">#${s.rank} MATCH</span>
-            <span class="text-xs font-black text-indigo-600">${s.score}%</span>
-          </div>
-          <h4 class="font-bold text-slate-900 text-xs truncate" title="${s.problemTitle}">${s.problemTitle}</h4>
-          <span class="text-[10px] font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md inline-block">${s.partnerName} (${s.partnerType})</span>
-          <p class="text-[11px] text-slate-500 line-clamp-2">${s.rec}</p>
-        `;
-        sugGrid.appendChild(card);
-      });
-
-      // Render Detailed Suggestions List
-      const detList = document.getElementById('detailed-suggestions-list');
-      detList.innerHTML = '';
-      top5Suggestions.forEach(s => {
-        const item = document.createElement('div');
-        item.className = 'bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between hover:border-indigo-300 transition';
-        item.innerHTML = `
-          <div class="space-y-1">
-            <div class="flex items-center space-x-2">
-              <span class="bg-indigo-600 text-white text-xs font-black px-2.5 py-0.5 rounded-full">Rank ${s.rank}</span>
-              <span class="text-xs font-semibold text-slate-400">${s.location}</span>
-            </div>
-            <h3 class="font-bold text-slate-900 text-base">${s.problemTitle}</h3>
-            <p class="text-xs text-slate-600">${s.rec}</p>
-            <span class="text-xs font-bold text-indigo-600">Matched Partner: ${s.partnerName} (${s.partnerType})</span>
-          </div>
-          <div class="text-right">
-            <span class="text-3xl font-black text-indigo-600">${s.score}%</span>
-            <span class="text-[11px] text-slate-400 font-bold block">Relevance Score</span>
-          </div>
-        `;
-        detList.appendChild(item);
-      });
-
-      // 2. Render Active Workspaces Grid with Numeric Progress Percentage Indicators
-      const wsGrid = document.getElementById('dashboard-workspaces-grid');
-      const fullWsGrid = document.getElementById('full-workspaces-grid');
-      wsGrid.innerHTML = '';
-      fullWsGrid.innerHTML = '';
-
-      document.getElementById('dash-active-count').textContent = workspacesData.length;
-
-      workspacesData.forEach(ws => {
-        const isComplete = ws.progress >= 100;
-        const popAnimClass = ws.animating ? 'animate-pop-in animate-glow-pulse' : '';
-        const cardBg = isComplete ? 'bg-gradient-to-br from-emerald-50/60 to-white border-emerald-300' : 'bg-white border-slate-200/80';
-        
-        const cardHtml = `
-          <div id="ws-card-${ws.id}" class="${cardBg} rounded-3xl p-6 border shadow-sm space-y-4 hover:shadow-md transition relative ${popAnimClass}">
-            <div class="flex justify-between items-start">
-              <div>
-                <span class="bg-indigo-100 text-indigo-700 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md uppercase">Workspace</span>
-                <h4 class="font-black text-slate-900 text-sm mt-1">${ws.title}</h4>
-              </div>
-              <span class="${isComplete ? 'bg-emerald-600 text-white' : 'bg-indigo-50 text-indigo-700'} text-[11px] font-extrabold px-2.5 py-1 rounded-xl">
-                ${ws.status}
+        complaintsData.forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'bg-emerald-50/40 p-4 rounded-2xl border border-emerald-100 space-y-2 hover:border-emerald-400 transition shadow-sm';
+          div.innerHTML = `
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-200">${c.category}</span>
+              <span class="${c.status === 'Completed' ? 'bg-emerald-600 text-white' : 'bg-amber-100 text-amber-800 border border-amber-300'} font-black px-2 py-0.5 rounded-md text-[10px]">
+                ${c.status}
               </span>
             </div>
-
-            <!-- Fixed Locked Budget Display -->
-            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex justify-between items-center text-xs">
-              <span class="text-slate-400 font-bold">Fixed Budget (Locked):</span>
-              <span class="font-extrabold text-slate-900">₹${ws.budget.toLocaleString()}</span>
+            <h4 class="font-bold text-slate-900 text-sm">${c.title}</h4>
+            <p class="text-xs text-slate-600">${c.description}</p>
+            <div class="flex items-center justify-between text-[11px] pt-1 text-slate-400 border-t border-slate-200/60">
+              <span>📍 ${c.location}</span>
+              <span class="font-extrabold text-emerald-900">Assigned: ${c.assignedOrg}</span>
             </div>
+          `;
+          seekerCompList.appendChild(div);
+        });
+      }
 
-            <!-- CLEAN NUMERIC PROGRESS PERCENTAGE INDICATOR -->
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between items-center font-bold">
-                <span class="text-slate-600">Project Completion:</span>
-                <!-- Numeric Percentage Indicator -->
-                <span class="text-indigo-600 font-black text-sm">${ws.progress}% Complete</span>
+      // 2. Render Integrated Top 5 Recommendations in Seeker Portal
+      const seekerTop5 = document.getElementById('seeker-top5-suggestions');
+      if (seekerTop5) {
+        seekerTop5.innerHTML = '';
+        top5Suggestions.forEach(s => {
+          const item = document.createElement('div');
+          item.className = 'bg-emerald-50/30 p-3.5 rounded-2xl border border-emerald-100 flex items-center justify-between text-xs hover:shadow-md transition';
+          item.innerHTML = `
+            <div class="space-y-0.5">
+              <div class="flex items-center space-x-2">
+                <span class="bg-gradient-to-r from-emerald-600 to-amber-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">#${s.rank} MATCH</span>
+                <span class="font-bold text-slate-900">${s.partnerName}</span>
               </div>
-              
-              <!-- Progress Meter -->
-              <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 h-full rounded-full transition-all duration-500" style="width: ${ws.progress}%;"></div>
+              <p class="text-[11px] text-slate-500 truncate max-w-[200px]">${s.problemTitle}</p>
+            </div>
+            <span class="text-sm font-black text-emerald-700">${s.score}%</span>
+          `;
+          seekerTop5.appendChild(item);
+        });
+      }
+
+      // 3. Render Seeker Assigned Organisations & Completion Rate Progress Bars
+      const seekerOrgs = document.getElementById('seeker-assigned-orgs-list');
+      if (seekerOrgs) {
+        seekerOrgs.innerHTML = '';
+        complaintsData.forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'bg-emerald-50/40 p-4 rounded-2xl border border-emerald-100 space-y-2 text-xs shadow-sm';
+          div.innerHTML = `
+            <div class="flex justify-between items-center font-bold">
+              <span class="text-slate-900 font-black">${c.assignedOrg}</span>
+              <span class="text-emerald-700 font-black">${c.completionRate}% Completed</span>
+            </div>
+            <p class="text-[11px] text-slate-500 truncate">Solving: ${c.title}</p>
+            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden border border-emerald-100">
+              <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-500 h-full rounded-full transition-all duration-500" style="width: ${c.completionRate}%;"></div>
+            </div>
+          `;
+          seekerOrgs.appendChild(div);
+        });
+      }
+
+      // 4. Render Solver Domain Notification Feed Filtered by Multiple Expertises
+      const giverFeed = document.getElementById('giver-notifications-feed');
+      const tagExpertises = document.getElementById('active-expertises-tag');
+      
+      const userExpertises = (currentUser && currentUser.expertises) ? currentUser.expertises : ['Water & Sanitation', 'Renewable Energy'];
+      if (tagExpertises) tagExpertises.textContent = userExpertises.join(', ');
+
+      if (giverFeed) {
+        giverFeed.innerHTML = '';
+        const filteredNotifs = solverNotifications.filter(n => userExpertises.includes(n.category) || userExpertises.includes('All'));
+
+        if (filteredNotifs.length === 0) {
+          giverFeed.innerHTML = `<div class="text-center py-6 text-xs text-slate-400 italic">No unassigned matching problems in your active expertise domains (${userExpertises.join(', ')}).</div>`;
+        } else {
+          filteredNotifs.forEach(n => {
+            const card = document.createElement('div');
+            card.className = 'bg-emerald-50/30 p-5 rounded-2xl border border-emerald-100 space-y-3 hover:border-amber-400 transition relative shadow-sm hover:shadow-md';
+            card.innerHTML = `
+              <div class="flex justify-between items-start">
+                <span class="bg-amber-100 text-amber-800 font-black text-[10px] px-2.5 py-0.5 rounded-md uppercase border border-amber-200">${n.category}</span>
+                <span class="text-xs font-black text-emerald-700">${n.score}% Expertise Match</span>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">${n.title}</h4>
+                <p class="text-xs text-slate-600 mt-1">${n.description}</p>
+              </div>
+              <div class="flex items-center justify-between pt-2 border-t border-slate-200/60 text-xs">
+                <span class="text-slate-400 text-[11px]">📍 ${n.location}</span>
+                <button onclick="workOnProblem('${n.id}')" class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 active:scale-95 text-white font-black px-4 py-2 rounded-xl shadow-md transition flex items-center space-x-1 border border-amber-300/30">
+                  <span>Work On</span>
+                  <span>→</span>
+                </button>
+              </div>
+            `;
+            giverFeed.appendChild(card);
+          });
+        }
+      }
+
+      // 5. Render Active Workspaces Grid
+      const giverWs = document.getElementById('giver-active-workspaces-list');
+      if (giverWs) {
+        giverWs.innerHTML = '';
+        workspacesData.forEach(ws => {
+          const isComplete = ws.progress >= 100;
+          const popAnimClass = ws.animating ? 'animate-pop-in animate-glow-pulse' : '';
+          const cardBg = isComplete ? 'bg-gradient-to-br from-emerald-50/80 to-white border-emerald-400 shadow-lg' : 'bg-white border-slate-200/80 shadow-md';
+          
+          const cardHtml = `
+            <div id="ws-card-${ws.id}" class="${cardBg} rounded-3xl p-5 border space-y-4 hover:shadow-xl transition relative ${popAnimClass}">
+              <div class="flex justify-between items-start">
+                <div>
+                  <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-md uppercase border border-emerald-200">Workspace</span>
+                  <h4 class="font-black text-slate-900 text-sm mt-1">${ws.title}</h4>
+                </div>
+                <span class="${isComplete ? 'bg-emerald-600 text-white font-black' : 'bg-amber-100 text-amber-800 border border-amber-300 font-extrabold'} text-[11px] px-2.5 py-1 rounded-xl shadow-sm">
+                  ${ws.status}
+                </span>
+              </div>
+
+              <div class="bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100 flex justify-between items-center text-xs">
+                <span class="text-slate-500 font-bold">Fixed Budget (Locked):</span>
+                <span class="font-black text-slate-900">₹${ws.budget.toLocaleString()}</span>
+              </div>
+
+              <div class="space-y-1.5 text-xs">
+                <div class="flex justify-between items-center font-bold">
+                  <span class="text-slate-600">Completion Status:</span>
+                  <span class="text-emerald-700 font-black text-sm">${ws.progress}% Complete</span>
+                </div>
+                
+                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-emerald-100">
+                  <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-500 h-full rounded-full transition-all duration-500" style="width: ${ws.progress}%;"></div>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-[11px] text-slate-400 font-medium">Update Progress:</span>
+                <input type="range" min="0" max="100" value="${ws.progress}" oninput="updateWorkspaceNumericProgress('${ws.id}', this.value)" class="w-32 accent-emerald-600 cursor-pointer">
               </div>
             </div>
+          `;
+          giverWs.innerHTML += cardHtml;
+        });
+      }
 
-            <!-- Interactive Progress Slider to test Numeric Indicator & Confetti FX -->
-            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-              <span class="text-[11px] text-slate-400 font-medium">Update Progress:</span>
-              <input type="range" min="0" max="100" value="${ws.progress}" oninput="updateWorkspaceNumericProgress('${ws.id}', this.value)" class="w-28 accent-indigo-600 cursor-pointer">
-            </div>
-          </div>
-        `;
-
-        wsGrid.innerHTML += cardHtml;
-        fullWsGrid.innerHTML += cardHtml;
-      });
-
-      // Trigger Confetti FX on completed cards
+      // Confetti trigger
       workspacesData.forEach(ws => {
         if (ws.justCompleted) {
           setTimeout(() => {
@@ -689,33 +1390,53 @@
     function handleProblemFormSubmit(e) {
       e.preventDefault();
       const title = document.getElementById('prob-form-title').value;
-      showToast(`Problem '${title}' posted & backend matchmaking executed!`);
-      showView('dashboard');
+      const category = document.getElementById('prob-form-category').value;
+      const location = document.getElementById('prob-form-location').value;
+      const description = document.getElementById('prob-form-desc').value;
+
+      const newComp = {
+        id: 'P-' + Math.floor(Math.random() * 900 + 100),
+        title,
+        category,
+        location,
+        description,
+        status: 'Under Review',
+        assignedOrg: 'Pending AI Match',
+        completionRate: 0
+      };
+
+      complaintsData.unshift(newComp);
+      showToast(`Complaint '${title}' submitted! Matchmaker triggered.`);
+      renderAllPortals();
+      showView('problem-giver');
     }
 
     function handlePostQA(e) {
       e.preventDefault();
       const title = document.getElementById('qa-input-title').value;
       const body = document.getElementById('qa-input-body').value;
-      qaData.unshift({ id: 'q-' + Date.now(), title, author: currentUser.name, body, replies: [] });
+      qaData.unshift({ id: 'q-' + Date.now(), title, author: currentUser ? currentUser.name : 'Anonymous Visitor', body, replies: [] });
       showToast('Question posted to Q&A community!');
+      document.getElementById('qa-input-title').value = '';
+      document.getElementById('qa-input-body').value = '';
       renderQA();
     }
 
     function renderQA() {
       const feed = document.getElementById('qa-posts-feed');
+      if (!feed) return;
       feed.innerHTML = '';
       qaData.forEach(q => {
         const div = document.createElement('div');
-        div.className = 'bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3 text-xs';
+        div.className = 'bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-3 text-xs';
         div.innerHTML = `
           <div class="space-y-1">
-            <span class="text-[10px] text-slate-400 font-bold">Posted by: ${q.author}</span>
-            <h4 class="font-bold text-slate-900 text-sm">${q.title}</h4>
+            <span class="text-[10px] text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">Posted by: ${q.author}</span>
+            <h4 class="font-bold text-slate-900 text-sm mt-1">${q.title}</h4>
             <p class="text-slate-600">${q.body}</p>
           </div>
-          <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-slate-600">
-            <span class="font-bold text-indigo-600 block">Solutions & Answers:</span>
+          <div class="bg-emerald-50/40 p-3 rounded-2xl border border-emerald-100 text-slate-600">
+            <span class="font-black text-emerald-800 block">Solutions & Answers:</span>
             ${q.replies.length ? q.replies.map(r => `<p class="mt-1">${r}</p>`).join('') : '<span class="italic text-slate-400">No replies yet.</span>'}
           </div>
         `;
@@ -723,11 +1444,41 @@
       });
     }
 
-    // Page Initialization
+    // Modal Workspace Handlers
+    function openWorkspaceModal() {
+      document.getElementById('workspace-modal').classList.remove('hidden');
+    }
+    function closeWorkspaceModal() {
+      document.getElementById('workspace-modal').classList.add('hidden');
+    }
+
+    function handleWorkspaceCreation(e) {
+      e.preventDefault();
+      const title = document.getElementById('modal-prob-title').value.trim();
+      const budget = parseFloat(document.getElementById('modal-prob-budget').value) || 35000;
+
+      const newWs = {
+        id: 'ws-' + Math.floor(Math.random() * 900 + 100),
+        title,
+        budget,
+        progress: 0,
+        partner: currentUser ? currentUser.name : 'Pending Match',
+        status: 'In Progress',
+        animating: true,
+        justCompleted: false
+      };
+
+      workspacesData.unshift(newWs);
+      closeWorkspaceModal();
+      showToast(`Workspace '${title}' created successfully!`);
+      renderAllPortals();
+    }
+
+    // Page Load Initialization
     window.onload = function() {
-      renderDashboard();
+      updateAuthUI();
       renderQA();
-      showView('dashboard');
+      showView('landing');
     };
   </script>
 </body>
