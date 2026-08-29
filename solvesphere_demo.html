@@ -40,19 +40,19 @@
           animation: {
             'fade-in': 'fadeIn 0.4s ease-out forwards',
             'slide-up': 'slideUp 0.45s ease-out forwards',
-            'glow-pulse': 'glowPulse 2s infinite',
-            'pop-in': 'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
-            'float-slow': 'floatSlow 6s ease-in-out infinite',
-            'float-reverse': 'floatReverse 7s ease-in-out infinite',
+            'glow-pulse': 'glowPulse 2.5s infinite',
+            'pop-in': 'popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+            'float-slow': 'floatSlow 7s ease-in-out infinite',
+            'float-reverse': 'floatReverse 8s ease-in-out infinite',
             'gold-shimmer': 'goldShimmer 3s ease-in-out infinite',
           },
           keyframes: {
             fadeIn: {
-              '0%': { opacity: '0', transform: 'translateY(8px)' },
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
             },
             slideUp: {
-              '0%': { opacity: '0', transform: 'translateY(18px)' },
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
               '100%': { opacity: '1', transform: 'translateY(0)' },
             },
             popIn: {
@@ -61,19 +61,19 @@
             },
             glowPulse: {
               '0%, 100%': { boxShadow: '0 0 15px rgba(16, 185, 129, 0.25)' },
-              '50%': { boxShadow: '0 0 30px rgba(245, 158, 11, 0.45)' },
+              '50%': { boxShadow: '0 0 35px rgba(245, 158, 11, 0.5)' },
             },
             floatSlow: {
               '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
-              '50%': { transform: 'translate(15px, -20px) scale(1.05)' }
+              '50%': { transform: 'translate(18px, -22px) scale(1.06)' }
             },
             floatReverse: {
               '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
-              '50%': { transform: 'translate(-20px, 15px) scale(0.95)' }
+              '50%': { transform: 'translate(-22px, 18px) scale(0.94)' }
             },
             goldShimmer: {
-              '0%, 100%': { opacity: '0.8', filter: 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.4))' },
-              '50%': { opacity: '1', filter: 'drop-shadow(0 0 18px rgba(245, 158, 11, 0.8))' }
+              '0%, 100%': { opacity: '0.85', filter: 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.4))' },
+              '50%': { opacity: '1', filter: 'drop-shadow(0 0 20px rgba(245, 158, 11, 0.85))' }
             }
           }
         }
@@ -164,19 +164,19 @@
         </div>
       </div>
 
-      <!-- MAIN NAVIGATION MENU (DYNAMICALLY GATED BY AUTH STATUS) -->
+      <!-- MAIN NAVIGATION MENU (AUTH GATED: HIDDEN FOR LOGGED OUT USERS) -->
       <nav id="nav-menu" class="hidden md:flex space-x-6 text-xs font-bold text-slate-600">
         <!-- Always Visible to All -->
         <button onclick="showView('landing')" id="tab-landing" class="nav-tab py-5 px-1 hover:text-emerald-700 transition active">Main Page</button>
         
         <!-- Only Visible when Logged in as Solution Seeker -->
         <button onclick="showView('problem-giver')" id="tab-problem-giver" class="hidden nav-tab py-5 px-1 hover:text-emerald-700 transition">
-          Seeker Dashboard
+          Seeker Portal
         </button>
 
         <!-- Only Visible when Logged in as Solution Giver -->
         <button onclick="showView('solution-giver')" id="tab-solution-giver" class="hidden nav-tab py-5 px-1 hover:text-emerald-700 transition">
-          Solver Dashboard
+          Solver Portal
         </button>
 
         <!-- Common to All -->
@@ -343,9 +343,9 @@
                 <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-lg font-bold">
                   📈
                 </div>
-                <h4 class="font-bold text-slate-900 text-xs">Live Completion Rate Telemetry</h4>
+                <h4 class="font-bold text-slate-900 text-xs">Live Completion Status</h4>
                 <p class="text-[11px] text-slate-500">
-                  Real-time numeric progress indicators (e.g. 75% complete) transparently showcase project execution status to citizens.
+                  Real-time numeric progress indicators and status badges transparently showcase project execution status to citizens.
                 </p>
               </div>
 
@@ -374,63 +374,31 @@
         <!-- Header & Logo -->
         <div class="text-center space-y-2">
           <img src="solution_hub_logo.jpg" alt="Solution Hub" class="w-14 h-14 object-contain mx-auto rounded-2xl shadow-md border-2 border-amber-400" onError="this.src='public/solution_hub_logo.jpg'">
-          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Access Solution Hub</h2>
-          <p class="text-xs text-slate-500 font-medium">Select your portal role to sign in or register</p>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight" id="auth-title-text">Access Solution Hub</h2>
+          <p class="text-xs text-slate-500 font-medium" id="auth-subtitle-text">Select your portal role to sign in or register</p>
         </div>
 
         <!-- Pill Toggle: Login / Register -->
         <div class="grid grid-cols-2 bg-emerald-50 p-1 rounded-2xl text-xs font-bold border border-emerald-100">
-          <button id="pill-login" onclick="switchAuthMode('login')" class="py-2.5 rounded-xl bg-white shadow-sm text-emerald-800 font-black transition">Login</button>
-          <button id="pill-register" onclick="switchAuthMode('register')" class="py-2.5 rounded-xl text-slate-500 hover:text-slate-900 font-bold transition">Register</button>
-        </div>
-
-        <!-- Auth Mode Toggle: One-Time OTP Login vs Password -->
-        <div class="flex items-center justify-between text-xs font-bold bg-slate-50 p-1.5 rounded-xl border border-slate-200">
-          <span class="text-slate-500 pl-1">Login Method:</span>
-          <div class="flex space-x-1">
-            <button type="button" id="method-otp" onclick="switchLoginMethod('otp')" class="px-3 py-1 rounded-lg bg-emerald-600 text-white font-extrabold shadow-sm transition">One-Time OTP Login</button>
-            <button type="button" id="method-password" onclick="switchLoginMethod('password')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">Password</button>
-          </div>
+          <button id="pill-login" type="button" onclick="switchAuthMode('login')" class="py-2.5 rounded-xl bg-white shadow-sm text-emerald-800 font-black transition">Login</button>
+          <button id="pill-register" type="button" onclick="switchAuthMode('register')" class="py-2.5 rounded-xl text-slate-500 hover:text-slate-900 font-bold transition">Register</button>
         </div>
 
         <!-- Auth Form -->
         <form onsubmit="handleAuthSubmit(event)" class="space-y-4 text-xs">
-          <div id="field-name-box" class="space-y-1">
+          <div id="field-name-box" class="space-y-1 hidden">
             <label class="font-bold text-slate-700 block">Full Name / Organisation Name</label>
             <input type="text" id="auth-name" value="Alex Citizen" placeholder="e.g. Alex Citizen" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium text-slate-800">
           </div>
 
-          <!-- Mobile Number Field -->
-          <div class="space-y-1">
-            <label class="font-bold text-slate-700 block">Mobile Number <span class="text-emerald-700 font-extrabold">(Required for OTP)</span></label>
-            <div class="relative">
-              <span class="absolute left-4 top-3 text-slate-400 font-bold">+91</span>
-              <input type="tel" id="auth-mobile" required value="98765 43210" placeholder="98765 43210" class="w-full pl-12 pr-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
-            </div>
-          </div>
-
-          <!-- Email Address Field -->
           <div class="space-y-1">
             <label class="font-bold text-slate-700 block">Email Address</label>
             <input type="email" id="auth-email" required value="alex.citizen@example.com" placeholder="alex@example.com" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium text-slate-800">
           </div>
 
-          <!-- One-Time OTP Code Field & Send Button -->
-          <div id="field-otp-box" class="space-y-2 bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-200">
-            <div class="flex items-center justify-between">
-              <label class="font-black text-emerald-950 block">One-Time Passcode (OTP)</label>
-              <button type="button" onclick="sendOTPPasscode()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold px-3 py-1 rounded-xl text-[11px] shadow active:scale-95 transition">
-                Send OTP 📩
-              </button>
-            </div>
-            <input type="text" id="auth-otp" value="549210" placeholder="Enter 6-digit OTP sent to Mobile" class="w-full px-4 py-2.5 border border-emerald-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono font-bold text-emerald-900 text-center tracking-widest text-sm">
-            <span class="text-[10px] text-emerald-700 font-semibold block text-center">✓ Demo OTP generated automatically: <strong>549210</strong></span>
-          </div>
-
-          <!-- Static Password Field (Shown only when Password Method selected) -->
-          <div id="field-password-box" class="hidden space-y-1">
+          <div class="space-y-1">
             <label class="font-bold text-slate-700 block">Password</label>
-            <input type="password" id="auth-password" value="password123" placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium text-slate-800">
+            <input type="password" id="auth-password" required value="password123" placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200/90 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium text-slate-800">
           </div>
 
           <!-- Select Stakeholder Role Dropdown -->
@@ -449,8 +417,8 @@
             </select>
           </div>
 
-          <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 active:scale-95 text-white font-black py-3.5 rounded-2xl shadow-xl transition-all flex items-center justify-center space-x-2 text-sm mt-2 border border-amber-300/40">
-            <span>Verify OTP & Enter Portal</span>
+          <button id="auth-submit-btn" type="submit" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 active:scale-95 text-white font-black py-3.5 rounded-2xl shadow-xl transition-all flex items-center justify-center space-x-2 text-sm mt-2 border border-amber-300/40">
+            <span id="auth-submit-text">Log In to Portal</span>
             <span class="text-base">→</span>
           </button>
         </form>
@@ -467,7 +435,7 @@
             <span>🏛️ Unified Solution Seeker Portal</span>
           </div>
           <h2 class="text-3xl font-black">Citizen & NGO Solution Seeker Dashboard</h2>
-          <p class="text-emerald-100 text-xs sm:text-sm">Submit complaints, track your submitted problems, view live solving organisation completion rates, and audit top AI matchmaking recommendations in one unified portal.</p>
+          <p class="text-emerald-100 text-xs sm:text-sm">Submit complaints, track your submitted problems, view live solving organisation completion status, and audit top AI matchmaking recommendations in one unified portal.</p>
         </div>
 
         <div class="flex items-center space-x-3">
@@ -563,18 +531,18 @@
             </div>
           </div>
 
-          <!-- D) ASSIGNED ORGANISATIONS & COMPLETION RATE METERS -->
+          <!-- D) ASSIGNED ORGANISATIONS & COMPLETION STATUS (NO GRAPHICAL PROGRESS BARS) -->
           <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <h3 class="font-black text-slate-900 text-base">Assigned Organisations & Completion Rates</h3>
+                <h3 class="font-black text-slate-900 text-base">Assigned Organisations & Execution Status</h3>
                 <p class="text-xs text-slate-500">Solvers actively executing solutions.</p>
               </div>
-              <span class="text-emerald-700 text-xs font-extrabold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">Live Progress</span>
+              <span class="text-emerald-700 text-xs font-extrabold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">Live Telemetry</span>
             </div>
 
             <div class="space-y-4" id="seeker-assigned-orgs-list">
-              <!-- Rendered via JS -->
+              <!-- Rendered via JS without graphical progress bars -->
             </div>
           </div>
 
@@ -602,7 +570,7 @@
             <span class="text-xs font-bold text-emerald-200">Solver Org:</span>
             <span id="giver-org-name" class="text-xs font-black text-white bg-gradient-to-r from-emerald-600 to-amber-600 px-3 py-1 rounded-xl shadow">AquaSense Tech</span>
           </div>
-          <button onclick="openProfileModal()" class="text-[11px] text-amber-300 hover:text-white font-bold underline">⚙️ Edit Multiple Expertises</button>
+          <button onclick="openProfileModal('edit')" class="text-[11px] text-amber-300 hover:text-white font-bold underline">⚙️ View & Edit Multiple Expertises</button>
         </div>
       </div>
 
@@ -642,7 +610,7 @@
             </div>
 
             <div class="space-y-4" id="giver-active-workspaces-list">
-              <!-- Rendered via JS -->
+              <!-- Rendered via JS without graphical progress bars -->
             </div>
           </div>
         </div>
@@ -666,8 +634,8 @@
       <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-md space-y-4">
         <h3 class="font-bold text-slate-900 text-sm">Post a Question or Doubt</h3>
         <form onsubmit="handlePostQA(event)" class="space-y-3 text-xs">
-          <input type="text" id="qa-input-title" required placeholder="Question Title (e.g., What calibration kit is needed for nitrate sensors?)..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-          <textarea id="qa-input-body" rows="2" required placeholder="Detailed question description..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+          <input type="text" id="qa-input-title" required placeholder="Question Title (e.g., What calibration kit is needed for nitrate sensors?)..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+          <textarea id="qa-input-body" rows="2" required placeholder="Detailed question description..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium"></textarea>
           <button type="submit" class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 text-white font-black px-4 py-2 rounded-xl text-xs shadow-md active:scale-95 transition">Post Question</button>
         </form>
       </div>
@@ -677,6 +645,42 @@
 
   </main>
 
+  <!-- REGISTRATION OTP VERIFICATION MODAL -->
+  <div id="otp-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 border-2 border-emerald-200 shadow-2xl animate-pop-in space-y-6">
+      <div class="text-center space-y-2">
+        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto text-2xl font-black border border-amber-300">
+          🔒
+        </div>
+        <h3 class="text-xl font-black text-slate-900">Enter Registration OTP</h3>
+        <p class="text-xs text-slate-500">We sent a 6-digit confirmation code to your email. Enter it below to complete registration.</p>
+        <div class="bg-amber-50 p-2 rounded-xl border border-amber-200 text-[11px] font-bold text-amber-800" id="otp-banner-code">
+          Demo OTP Code: <span class="font-black text-emerald-800 text-sm tracking-wider" id="display-otp-val">123456</span>
+        </div>
+      </div>
+
+      <form onsubmit="handleOtpSubmit(event)" class="space-y-5">
+        <div class="flex justify-center space-x-2">
+          <input type="text" maxlength="1" class="otp-input w-11 h-12 text-center text-lg font-black border-2 border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none" required>
+          <input type="text" maxlength="1" class="otp-input w-11 h-12 text-center text-lg font-black border-2 border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none" required>
+          <input type="text" maxlength="1" class="otp-input w-11 h-12 text-center text-lg font-black border-2 border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none" required>
+          <input type="text" maxlength="1" class="otp-input w-11 h-12 text-center text-lg font-black border-2 border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none" required>
+          <input type="text" maxlength="1" class="otp-input w-11 h-12 text-center text-lg font-black border-2 border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none" required>
+          <input type="text" maxlength="1" class="otp-input w-11 h-12 text-center text-lg font-black border-2 border-slate-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none" required>
+        </div>
+
+        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 text-white font-black py-3.5 rounded-2xl shadow-xl active:scale-95 transition text-xs border border-amber-300/40">
+          Verify OTP & Login →
+        </button>
+
+        <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+          <button type="button" onclick="resendOtpCode()" class="font-bold text-emerald-700 hover:underline">Resend Code</button>
+          <button type="button" onclick="closeOtpModal()" class="text-slate-400 hover:text-slate-600">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- VIEW & EDIT USER PROFILE MODAL WITH MULTIPLE EXPERTISES -->
   <div id="profile-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-8 border-2 border-emerald-100 shadow-2xl animate-pop-in space-y-6 max-h-[90vh] overflow-y-auto">
@@ -684,22 +688,50 @@
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xl border border-emerald-200">👤</div>
           <div>
-            <h3 class="text-xl font-black text-slate-900">User & Organisation Profile</h3>
-            <p class="text-xs text-slate-500">View and update your profile and domain expertises</p>
+            <h3 class="text-xl font-black text-slate-900" id="prof-modal-title">User Profile</h3>
+            <p class="text-xs text-slate-500" id="prof-modal-subtitle">View and manage profile details</p>
           </div>
         </div>
         <button onclick="closeProfileModal()" class="text-slate-400 font-bold hover:text-slate-600 text-lg">✕</button>
       </div>
 
-      <form onsubmit="handleProfileSave(event)" class="space-y-4 text-xs">
-        <div class="space-y-1">
-          <label class="font-bold text-slate-700 block">Full Name / Organisation Name</label>
-          <input type="text" id="prof-name" required class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
+      <!-- PROFILE VIEW MODE -->
+      <div id="profile-view-container" class="space-y-4 text-xs">
+        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-100 flex items-center space-x-4">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-amber-600 text-white flex items-center justify-center font-black text-2xl shadow">
+            <span id="view-avatar-initial">A</span>
+          </div>
+          <div>
+            <h4 class="font-black text-slate-900 text-base" id="view-user-name">Alex Citizen</h4>
+            <p class="text-slate-500 font-medium" id="view-user-email">alex.citizen@example.com</p>
+            <span class="inline-block mt-1 bg-gradient-to-r from-emerald-600 to-amber-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase" id="view-user-role">Citizen</span>
+          </div>
         </div>
 
         <div class="space-y-1">
-          <label class="font-bold text-slate-700 block">Mobile Number (One-Time Login Verified)</label>
-          <input type="tel" id="prof-mobile" value="+91 98765 43210" required class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
+          <span class="font-bold text-slate-500 block uppercase tracking-wider text-[10px]">Organisation Overview / Bio</span>
+          <p class="text-slate-800 font-medium bg-slate-50 p-3 rounded-xl border border-slate-200/80" id="view-user-bio">Leading IoT hardware research group specializing in rural water and energy deployment.</p>
+        </div>
+
+        <div id="view-expertises-section" class="space-y-1">
+          <span class="font-bold text-slate-500 block uppercase tracking-wider text-[10px]">Registered Technical Expertises</span>
+          <div class="flex flex-wrap gap-2 pt-1" id="view-expertises-pills">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex space-x-3">
+          <button type="button" onclick="toggleProfileEditMode(true)" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 text-white font-black py-3 rounded-2xl shadow-lg hover:from-emerald-500 hover:to-amber-500 transition active:scale-95 text-xs flex items-center justify-center space-x-2 border border-amber-300/30">
+            <span>✏️ Edit Profile & Expertises</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PROFILE EDIT MODE -->
+      <form id="profile-edit-form" onsubmit="handleProfileSave(event)" class="space-y-4 text-xs hidden">
+        <div class="space-y-1">
+          <label class="font-bold text-slate-700 block">Full Name / Organisation Name</label>
+          <input type="text" id="prof-name" required class="w-full px-4 py-3 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold text-slate-800">
         </div>
 
         <div class="space-y-1">
@@ -751,8 +783,8 @@
         </div>
 
         <div class="pt-2 flex space-x-3">
-          <button type="button" onclick="closeProfileModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition">Cancel</button>
-          <button type="submit" class="w-1/2 bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 text-white font-black py-3 rounded-2xl shadow-lg transition">Save Profile Changes</button>
+          <button type="button" onclick="toggleProfileEditMode(false)" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-2xl transition">Cancel</button>
+          <button type="submit" class="w-1/2 bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 text-white font-black py-3 rounded-2xl shadow-lg transition">Save Changes</button>
         </div>
       </form>
     </div>
@@ -803,6 +835,9 @@
   <script>
     // User State Management
     let currentUser = null;
+    let authMode = 'login';
+    let generatedOtpCode = '123456';
+    let pendingRegistrationData = null;
 
     // Complaints Data
     let complaintsData = [
@@ -920,15 +955,15 @@
     function showToast(msg, isSuccess = true) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      const bg = isSuccess ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600' : 'bg-slate-900';
+      const bg = isSuccess ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-600' : 'bg-slate-900 border-rose-500/50';
       toast.className = `${bg} text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center space-x-2 animate-slide-up pointer-events-auto border border-amber-300/40`;
-      toast.innerHTML = `<span>✓</span><span>${msg}</span>`;
+      toast.innerHTML = `<span>${isSuccess ? '✓' : '⚠️'}</span><span>${msg}</span>`;
       container.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transition = 'opacity 0.3s ease';
         setTimeout(() => toast.remove(), 300);
-      }, 3200);
+      }, 3600);
     }
 
     // View Controller
@@ -957,32 +992,6 @@
     }
 
     // Auth Switcher & Modal
-    let currentLoginMethod = 'otp';
-
-    function switchLoginMethod(method) {
-      currentLoginMethod = method;
-      const isOtp = method === 'otp';
-      
-      document.getElementById('method-otp').className = isOtp ? 'px-3 py-1 rounded-lg bg-emerald-600 text-white font-extrabold shadow-sm transition' : 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
-      document.getElementById('method-password').className = !isOtp ? 'px-3 py-1 rounded-lg bg-emerald-600 text-white font-extrabold shadow-sm transition' : 'px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition';
-      
-      document.getElementById('field-otp-box').style.display = isOtp ? 'block' : 'none';
-      document.getElementById('field-password-box').style.display = isOtp ? 'none' : 'block';
-      
-      const submitBtn = document.getElementById('auth-submit-btn');
-      if (isOtp) {
-        submitBtn.innerHTML = `<span>Verify OTP & Enter Portal</span><span class="text-base">→</span>`;
-      } else {
-        submitBtn.innerHTML = `<span>Sign In with Password</span><span class="text-base">→</span>`;
-      }
-    }
-
-    function sendOTPPasscode() {
-      const mobile = document.getElementById('auth-mobile').value || '98765 43210';
-      const email = document.getElementById('auth-email').value || 'user@example.com';
-      showToast(`One-Time Passcode sent to +91 ${mobile} & ${email}`);
-    }
-
     function openAuthModal(mode = 'login', defaultRole = 'Citizen') {
       switchAuthMode(mode);
       if (defaultRole) document.getElementById('auth-role').value = defaultRole;
@@ -990,10 +999,15 @@
     }
 
     function switchAuthMode(mode) {
+      authMode = mode;
       const isLogin = mode === 'login';
       document.getElementById('pill-login').className = isLogin ? 'py-2.5 rounded-xl bg-white shadow-sm text-emerald-800 font-black transition' : 'py-2.5 rounded-xl text-slate-500 hover:text-slate-900 font-bold transition';
       document.getElementById('pill-register').className = !isLogin ? 'py-2.5 rounded-xl bg-white shadow-sm text-emerald-800 font-black transition' : 'py-2.5 rounded-xl text-slate-500 hover:text-slate-900 font-bold transition';
       document.getElementById('field-name-box').style.display = isLogin ? 'none' : 'block';
+      
+      document.getElementById('auth-title-text').textContent = isLogin ? 'Access Solution Hub' : 'Create Solution Hub Account';
+      document.getElementById('auth-subtitle-text').textContent = isLogin ? 'Sign in to access your portal dashboard' : 'Register your account with OTP confirmation';
+      document.getElementById('auth-submit-text').textContent = isLogin ? 'Log In to Portal' : 'Send OTP & Proceed';
     }
 
     // DRAMATIC SPLIT-SCREEN CURTAIN LOGIN TRANSITION ANIMATION
@@ -1002,22 +1016,17 @@
       const curtainLeft = document.getElementById('curtain-left');
       const curtainRight = document.getElementById('curtain-right');
 
-      // Reset and display overlay
       curtainLeft.classList.remove('curtain-open-left');
       curtainRight.classList.remove('curtain-open-right');
       curtain.classList.remove('hidden');
 
-      // Step 1: Close curtains over screen
       setTimeout(() => {
-        // Perform portal navigation behind closed curtain
         if (onComplete) onComplete();
 
-        // Step 2: Split curtains open dynamically to reveal portal homepage!
         setTimeout(() => {
           curtainLeft.classList.add('curtain-open-left');
           curtainRight.classList.add('curtain-open-right');
 
-          // Hide overlay after split finishes
           setTimeout(() => {
             curtain.classList.add('hidden');
           }, 850);
@@ -1030,27 +1039,89 @@
       const role = document.getElementById('auth-role').value;
       const name = document.getElementById('auth-name').value || (role.includes('Citizen') ? 'Alex Citizen' : 'AquaSense Tech');
       const email = document.getElementById('auth-email').value;
-      const mobile = document.getElementById('auth-mobile').value || '98765 43210';
 
-      currentUser = {
+      const userObj = {
         name,
         email,
-        mobile,
         role,
-        bio: 'Active platform participant',
+        bio: role.includes('Citizen') ? 'Active citizen community contributor.' : 'Leading IoT hardware research group specializing in rural water and energy deployment.',
         expertises: ['Water & Sanitation', 'Renewable Energy']
       };
 
-      // Trigger Split-Screen Curtain Opening Animation!
-      triggerSplitCurtainTransition(() => {
-        updateAuthUI();
-        showToast(`Welcome back, ${name}!`);
-        if (role === 'Citizen' || role === 'NGO') {
-          showView('problem-giver');
-        } else {
-          showView('solution-giver');
-        }
+      if (authMode === 'login') {
+        // Direct Login without OTP
+        currentUser = userObj;
+        triggerSplitCurtainTransition(() => {
+          updateAuthUI();
+          showToast(`Welcome back, ${name}!`);
+          if (role === 'Citizen' || role === 'NGO') {
+            showView('problem-giver');
+          } else {
+            showView('solution-giver');
+          }
+        });
+      } else {
+        // Registration Flow: Trigger OTP Modal
+        pendingRegistrationData = userObj;
+        generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        openOtpModal(generatedOtpCode);
+      }
+    }
+
+    // OTP Modal Handlers
+    function openOtpModal(otpCode) {
+      document.getElementById('display-otp-val').textContent = otpCode;
+      document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+      document.getElementById('otp-modal').classList.remove('hidden');
+      
+      const inputs = document.querySelectorAll('.otp-input');
+      if (inputs.length > 0) inputs[0].focus();
+
+      // Auto focus shift
+      inputs.forEach((input, index) => {
+        input.onkeyup = function(e) {
+          if (input.value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          } else if (e.key === 'Backspace' && index > 0) {
+            inputs[index - 1].focus();
+          }
+        };
       });
+
+      showToast(`🔑 Your Registration OTP code is: ${otpCode}`);
+    }
+
+    function closeOtpModal() {
+      document.getElementById('otp-modal').classList.add('hidden');
+    }
+
+    function resendOtpCode() {
+      generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      document.getElementById('display-otp-val').textContent = generatedOtpCode;
+      showToast(`🔑 New OTP Code sent: ${generatedOtpCode}`);
+    }
+
+    function handleOtpSubmit(e) {
+      e.preventDefault();
+      const enteredCode = Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
+
+      if (enteredCode === generatedOtpCode) {
+        currentUser = pendingRegistrationData;
+        pendingRegistrationData = null;
+        closeOtpModal();
+
+        triggerSplitCurtainTransition(() => {
+          updateAuthUI();
+          showToast(`🎉 Registration Verified! Welcome, ${currentUser.name}!`);
+          if (currentUser.role === 'Citizen' || currentUser.role === 'NGO') {
+            showView('problem-giver');
+          } else {
+            showView('solution-giver');
+          }
+        });
+      } else {
+        showToast('❌ Invalid OTP Code. Please check the code and try again.', false);
+      }
     }
 
     function handleLogout() {
@@ -1096,11 +1167,27 @@
     }
 
     // Profile Modal Controllers
-    function openProfileModal() {
+    function openProfileModal(mode = 'view') {
       if (!currentUser) {
         openAuthModal('login');
         return;
       }
+
+      document.getElementById('view-user-name').textContent = currentUser.name;
+      document.getElementById('view-user-email').textContent = currentUser.email;
+      document.getElementById('view-user-role').textContent = currentUser.role;
+      document.getElementById('view-user-bio').textContent = currentUser.bio || 'Active platform participant';
+      document.getElementById('view-avatar-initial').textContent = currentUser.name.charAt(0).toUpperCase();
+
+      const pillsContainer = document.getElementById('view-expertises-pills');
+      pillsContainer.innerHTML = '';
+      const expertises = currentUser.expertises || ['Water & Sanitation'];
+      expertises.forEach(exp => {
+        const pill = document.createElement('span');
+        pill.className = 'bg-emerald-100 text-emerald-900 border border-emerald-200 text-[11px] font-extrabold px-3 py-1 rounded-full';
+        pill.textContent = exp;
+        pillsContainer.appendChild(pill);
+      });
 
       document.getElementById('prof-name').value = currentUser.name;
       document.getElementById('prof-email').value = currentUser.email;
@@ -1111,7 +1198,15 @@
         cb.checked = currentUser.expertises ? currentUser.expertises.includes(cb.value) : false;
       });
 
+      toggleProfileEditMode(mode === 'edit');
       document.getElementById('profile-modal').classList.remove('hidden');
+    }
+
+    function toggleProfileEditMode(isEdit) {
+      document.getElementById('profile-view-container').style.display = isEdit ? 'none' : 'block';
+      document.getElementById('profile-edit-form').style.display = isEdit ? 'block' : 'none';
+      document.getElementById('prof-modal-title').textContent = isEdit ? 'Edit User Profile' : 'User Profile Details';
+      document.getElementById('prof-modal-subtitle').textContent = isEdit ? 'Update your organisation overview and multiple expertises' : 'View your current account profile and active domain expertises';
     }
 
     function closeProfileModal() {
@@ -1268,7 +1363,7 @@
         });
       }
 
-      // 3. Render Seeker Assigned Organisations & Completion Rate Progress Bars
+      // 3. Render Seeker Assigned Organisations & Completion Status (NO GRAPHICAL PROGRESS BARS)
       const seekerOrgs = document.getElementById('seeker-assigned-orgs-list');
       if (seekerOrgs) {
         seekerOrgs.innerHTML = '';
@@ -1277,12 +1372,13 @@
           div.className = 'bg-emerald-50/40 p-4 rounded-2xl border border-emerald-100 space-y-2 text-xs shadow-sm';
           div.innerHTML = `
             <div class="flex justify-between items-center font-bold">
-              <span class="text-slate-900 font-black">${c.assignedOrg}</span>
-              <span class="text-emerald-700 font-black">${c.completionRate}% Completed</span>
+              <span class="text-slate-900 font-black text-sm">${c.assignedOrg}</span>
+              <span class="text-emerald-800 font-black bg-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-200 text-xs">${c.completionRate}% Completed</span>
             </div>
-            <p class="text-[11px] text-slate-500 truncate">Solving: ${c.title}</p>
-            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden border border-emerald-100">
-              <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-500 h-full rounded-full transition-all duration-500" style="width: ${c.completionRate}%;"></div>
+            <p class="text-[11px] text-slate-600 font-medium truncate">Solving: ${c.title}</p>
+            <div class="flex items-center space-x-2 text-[11px] text-slate-500 font-bold border-t border-slate-200/60 pt-2">
+              <span>Status Telemetry:</span>
+              <span class="${c.completionRate >= 100 ? 'text-emerald-700 font-black' : 'text-amber-700 font-bold'}">${c.completionRate >= 100 ? 'Fully Executed 🎉' : 'Active Execution'}</span>
             </div>
           `;
           seekerOrgs.appendChild(div);
@@ -1328,7 +1424,7 @@
         }
       }
 
-      // 5. Render Active Workspaces Grid
+      // 5. Render Active Workspaces Grid (NO GRAPHICAL PROGRESS BARS)
       const giverWs = document.getElementById('giver-active-workspaces-list');
       if (giverWs) {
         giverWs.innerHTML = '';
@@ -1354,20 +1450,14 @@
                 <span class="font-black text-slate-900">₹${ws.budget.toLocaleString()}</span>
               </div>
 
-              <div class="space-y-1.5 text-xs">
-                <div class="flex justify-between items-center font-bold">
-                  <span class="text-slate-600">Completion Status:</span>
-                  <span class="text-emerald-700 font-black text-sm">${ws.progress}% Complete</span>
-                </div>
-                
-                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-emerald-100">
-                  <div class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-500 h-full rounded-full transition-all duration-500" style="width: ${ws.progress}%;"></div>
-                </div>
+              <div class="bg-emerald-50/40 p-3 rounded-2xl border border-emerald-100/80 flex items-center justify-between text-xs">
+                <span class="text-slate-600 font-bold">Current Execution Status:</span>
+                <span class="text-emerald-800 font-black text-sm">${ws.progress}% Complete</span>
               </div>
 
               <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span class="text-[11px] text-slate-400 font-medium">Update Progress:</span>
-                <input type="range" min="0" max="100" value="${ws.progress}" oninput="updateWorkspaceNumericProgress('${ws.id}', this.value)" class="w-32 accent-emerald-600 cursor-pointer">
+                <span class="text-[11px] text-slate-500 font-bold">Update Completion Rate:</span>
+                <input type="range" min="0" max="100" value="${ws.progress}" oninput="updateWorkspaceNumericProgress('${ws.id}', this.value)" class="w-36 accent-emerald-600 cursor-pointer">
               </div>
             </div>
           `;
@@ -1422,22 +1512,45 @@
       renderQA();
     }
 
+    function handlePostQAReply(qId) {
+      const replyInput = document.getElementById(`qa-reply-input-${qId}`);
+      if (!replyInput || !replyInput.value.trim()) return;
+
+      const replyText = replyInput.value.trim();
+      const question = qaData.find(q => q.id === qId);
+      if (question) {
+        const authorName = currentUser ? currentUser.name : 'Community Solver';
+        question.replies.push(`${authorName}: ${replyText}`);
+        showToast('Reply posted successfully!');
+        renderQA();
+      }
+    }
+
     function renderQA() {
       const feed = document.getElementById('qa-posts-feed');
       if (!feed) return;
       feed.innerHTML = '';
       qaData.forEach(q => {
         const div = document.createElement('div');
-        div.className = 'bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-3 text-xs';
+        div.className = 'bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4 text-xs';
         div.innerHTML = `
           <div class="space-y-1">
             <span class="text-[10px] text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">Posted by: ${q.author}</span>
             <h4 class="font-bold text-slate-900 text-sm mt-1">${q.title}</h4>
             <p class="text-slate-600">${q.body}</p>
           </div>
-          <div class="bg-emerald-50/40 p-3 rounded-2xl border border-emerald-100 text-slate-600">
-            <span class="font-black text-emerald-800 block">Solutions & Answers:</span>
-            ${q.replies.length ? q.replies.map(r => `<p class="mt-1">${r}</p>`).join('') : '<span class="italic text-slate-400">No replies yet.</span>'}
+          
+          <div class="bg-emerald-50/40 p-4 rounded-2xl border border-emerald-100 text-slate-700 space-y-2">
+            <span class="font-black text-emerald-800 block text-xs">Solutions & Community Answers:</span>
+            ${q.replies.length ? q.replies.map(r => `<div class="bg-white p-2.5 rounded-xl border border-emerald-100 text-xs text-slate-800 font-medium">${r}</div>`).join('') : '<span class="italic text-slate-400 text-xs">No replies yet. Be the first to answer!</span>'}
+          </div>
+
+          <!-- Interactive Reply Box -->
+          <div class="pt-2 border-t border-slate-100 flex space-x-2">
+            <input type="text" id="qa-reply-input-${q.id}" placeholder="Write an answer or reply..." class="flex-grow px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
+            <button onclick="handlePostQAReply('${q.id}')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition active:scale-95">
+              Reply
+            </button>
           </div>
         `;
         feed.appendChild(div);
